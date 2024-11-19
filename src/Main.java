@@ -12,7 +12,6 @@ public class Main {
         Program p = new Program(size, 800, 75);
 
         World w = p.getWorld();
-        System.out.println("skibdi");
         // w.setTile(new Location(0, 0), new <MyClass>());
 
         // p.setDisplayInformation(<MyClass>.class, new DisplayInformation(<Color>, "<ImageName>"));
