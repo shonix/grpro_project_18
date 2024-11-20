@@ -52,6 +52,7 @@ public class GrassTest {
             assertEquals(i+1, grass.getFood());
             assertEquals(i, grass.getAge());
         }
+
         grass.age();
         assertEquals(Grass.MAX_FOOD, grass.getFood());
         grass.age();

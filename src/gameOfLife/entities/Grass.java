@@ -1,6 +1,7 @@
 package gameOfLife.entities;
 
 import itumulator.world.Location;
+import itumulator.world.NonBlocking;
 import itumulator.world.World;
 
 import java.util.Random;
@@ -12,7 +13,7 @@ import java.util.Set;
  * Grass can grow, increasing the food it provides.
  * Grass can spread instantiating a new piece of grass in a neighbouring location.
  */
-public class Grass extends Plant{
+public class Grass extends Plant implements NonBlocking {
     public static final double GRASS_SPREAD_CHANCE = 0.10;
     public static final int MIN_FOOD = 1, MAX_FOOD = 10, MAX_AGE = 120;
 
