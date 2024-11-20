@@ -15,8 +15,8 @@ import java.util.Set;
 public class Hole implements NonBlocking, DynamicDisplayInformationProvider {
     private static final int SMALL_HOLE_LIMIT = 2; //the limit after which hole is displayed as big
     //possible images for holes
-    private static final DisplayInformation smallHole = new DisplayInformation(Color.green, "hole-small");
-    private static final DisplayInformation bigHole = new DisplayInformation(Color.green, "hole");
+    private static final DisplayInformation SMALL_HOLE = new DisplayInformation(Color.green, "hole-small");
+    private static final DisplayInformation BIG_HOLE = new DisplayInformation(Color.green, "hole");
 
     private Set<Rabbit> rabbitsInHole;
     private int capacity;
@@ -27,9 +27,9 @@ public class Hole implements NonBlocking, DynamicDisplayInformationProvider {
         this.capacity = capacity;
         this.rabbitsInHole = new HashSet<>();
         if(capacity > SMALL_HOLE_LIMIT){
-            currentDisplayInformation = bigHole;
+            currentDisplayInformation = BIG_HOLE;
         }else {
-            currentDisplayInformation = smallHole;
+            currentDisplayInformation = SMALL_HOLE;
         }
     }
 
@@ -56,9 +56,9 @@ public class Hole implements NonBlocking, DynamicDisplayInformationProvider {
     public void setCapacity(int capacity) {
         this.capacity = capacity;
         if(capacity > SMALL_HOLE_LIMIT){
-            currentDisplayInformation = bigHole;
+            currentDisplayInformation = BIG_HOLE;
         }else {
-            currentDisplayInformation = smallHole;
+            currentDisplayInformation = SMALL_HOLE;
         }
     }
 
