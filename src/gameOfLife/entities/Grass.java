@@ -1,6 +1,7 @@
 package gameOfLife.entities;
 
 import itumulator.world.Location;
+import itumulator.world.NonBlocking;
 import itumulator.world.World;
 
 import java.util.Random;
@@ -12,7 +13,7 @@ import java.util.Set;
  * Grass can grow, increasing the food it provides.
  * Grass can spread instantiating a new piece of grass in a neighbouring location.
  */
-public class Grass extends Plant{
+public class Grass extends Plant implements NonBlocking {
     public static final double GRASS_SPREAD_CHANCE = 0.10;
     public static final int MIN_FOOD = 1, MAX_FOOD = 10, MAX_AGE = 120;
 
@@ -45,12 +46,12 @@ public class Grass extends Plant{
      * @param world facilitates access to the piece of Grass' location
      */
     private void spread(World world){
-        Set<Location> empty_neighbours = world.getEmptySurroundingTiles();
-        if(empty_neighbours.isEmpty()) return; //if no neighbours: terminate method call
+        Set<Location> neighbours = world.getSurroundingTiles();
+        if(neighbours.isEmpty()) return; //if no neighbours: terminate method call
 
         Random rng = new Random();
-        for(Location loc : empty_neighbours){
-            if(rng.nextDouble() < GRASS_SPREAD_CHANCE){
+        for(Location loc : neighbours){
+            if(!world.containsNonBlocking(loc) && rng.nextDouble() < GRASS_SPREAD_CHANCE){
                 world.setTile(loc, new Grass(1));
             }
         }
@@ -63,21 +64,20 @@ public class Grass extends Plant{
     @Override
     public void act(World world){
         spread(world); //attempt spreading
-        //die if too much has been eaten, or too old
-        if(food < MIN_FOOD || age > MAX_AGE){
-            die(world);
-            return;
-        }
-        age();
+        age(world);
     }
 
     /**
-     * Ages the piece of Grass, incrementing age counter and possibly food counter.
+     * Ages the piece of Grass, incrementing age counter and possibly food counter, or kills it if too old or too much
+     * has been eaten.
      */
     @Override
-    public void age(){
-        super.age();
-        if(food < MAX_FOOD) food++;
+    public void age(World world){
+        super.age(world);
+        //die if too much has been eaten, or too old
+        if (food < MIN_FOOD || age > MAX_AGE) {
+            die(world);
+        } else if(food < MAX_FOOD) food++;
     }
 
     /**
