@@ -3,7 +3,7 @@ import java.awt.Color;
 import gameOfLife.entities.Grass;
 import gameOfLife.util.WorldPopulator;
 import gameOfLife.entities.Grass;
-import gameOfLife.entities.Hole;
+import gameOfLife.entities.Burrow;
 import itumulator.executable.DisplayInformation;
 import itumulator.executable.Program;
 import itumulator.world.Location;
@@ -22,8 +22,8 @@ public class Main {
         w.setTile(new Location(1,1), new Grass(1));
         w.setTile(new Location(2,4), new Grass(1));
         w.setTile(new Location(3,2), new Grass(1));
-        w.setTile(new Location(4,3), new Hole(1));
-        w.setTile(new Location(4,4), new Hole(3));
+        w.setTile(new Location(4,3), new Burrow(1));
+        w.setTile(new Location(4,4), new Burrow(3));
 
         p.setDisplayInformation(Grass.class, new DisplayInformation(Color.green, "grass"));
 
