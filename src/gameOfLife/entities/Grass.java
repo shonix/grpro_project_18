@@ -14,8 +14,7 @@ import java.util.Set;
  */
 public class Grass extends Plant{
     public static final double GRASS_SPREAD_CHANCE = 0.10;
-    public static final int MIN_FOOD = 1, MAX_FOOD = 10;
-    public static final int MAX_AGE = 120;
+    public static final int MIN_FOOD = 1, MAX_FOOD = 10, MAX_AGE = 120;
 
     private int food;
 
