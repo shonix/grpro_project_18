@@ -9,11 +9,11 @@ import itumulator.world.World;
 import java.io.*;
 import java.util.*;
 
-public class WorldPopulator {
+public class WorldInitializor {
     private final DataHandler dh;
     private final Set<String> entities;
 
-    public WorldPopulator(World world, String week)
+    public WorldInitializor(World world, String week)
     {
         this.dh = new DataHandler(week);
         this.entities = new HashSet<>();

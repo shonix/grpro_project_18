@@ -28,6 +28,10 @@ public class DataHandler
         return result;
     }
 
+    /**
+     * TODO
+     * @return
+     */
     public List<File> getAllFiles()
     {
         List<File> result = new ArrayList<>();
