@@ -46,12 +46,12 @@ public class Grass extends Plant implements NonBlocking {
      * @param world facilitates access to the piece of Grass' location
      */
     private void spread(World world){
-        Set<Location> empty_neighbours = world.getEmptySurroundingTiles();
-        if(empty_neighbours.isEmpty()) return; //if no neighbours: terminate method call
+        Set<Location> neighbours = world.getSurroundingTiles();
+        if(neighbours.isEmpty()) return; //if no neighbours: terminate method call
 
         Random rng = new Random();
-        for(Location loc : empty_neighbours){
-            if(rng.nextDouble() < GRASS_SPREAD_CHANCE){
+        for(Location loc : neighbours){
+            if(!world.containsNonBlocking(loc) && rng.nextDouble() < GRASS_SPREAD_CHANCE){
                 world.setTile(loc, new Grass(1));
             }
         }
