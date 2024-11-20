@@ -25,7 +25,7 @@ public class Hole implements NonBlocking, DynamicDisplayInformationProvider {
     public Hole(int capacity) {
         if(capacity < 1) throw new IllegalArgumentException("capacity must be greater than 0!");
         this.capacity = capacity;
-        this.rabbitsInHole = new HashSet<Rabbit>();
+        this.rabbitsInHole = new HashSet<>();
         if(capacity > SMALL_HOLE_LIMIT){
             currentDisplayInformation = bigHole;
         }else {
