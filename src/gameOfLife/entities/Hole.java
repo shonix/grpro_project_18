@@ -51,7 +51,7 @@ public class Hole implements NonBlocking, DynamicDisplayInformationProvider {
 
     /**
      * Sets the capacity of the hole
-     * @param capacity
+     * @param capacity the current maximum number of rabbits that can be inside hole.
      */
     public void setCapacity(int capacity) {
         this.capacity = capacity;
