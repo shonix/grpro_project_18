@@ -1,8 +1,6 @@
 package gameOfLifeTest.entitiesTest;
 
 import gameOfLife.entities.Grass;
-import itumulator.world.Location;
-import itumulator.world.World;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +22,7 @@ public class GrassTest {
     }
 
     /**
-     * Tests instansiation of Grass objects
+     * Tests instantiation of Grass objects
      */
     @Test
     public void testGrass() {
