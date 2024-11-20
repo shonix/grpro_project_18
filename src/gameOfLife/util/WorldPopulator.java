@@ -1,6 +1,8 @@
 package gameOfLife.util;
 
 import gameOfLife.entities.Grass;
+import gameOfLife.entities.Hole;
+import gameOfLife.entities.Rabbit;
 import itumulator.world.Location;
 import itumulator.world.World;
 
@@ -77,6 +79,20 @@ public class WorldPopulator {
                 {
                     Location location = new Location(rand.nextInt(world.getSize()),rand.nextInt(world.getSize()));
                     world.setTile(location, new Grass(1));
+                }
+                break;
+            case "burrow":
+                while(population >= world.getEntities().size())
+                {
+                    Location location = new Location(rand.nextInt(world.getSize()),rand.nextInt(world.getSize()));
+                    world.setTile(location, new Hole(2));
+                }
+                break;
+            case "rabbit":
+                while(population >= world.getEntities().size())
+                {
+                    Location location = new Location(rand.nextInt(world.getSize()),rand.nextInt(world.getSize()));
+                    world.setTile(location, new Rabbit());
                 }
                 break;
         }
