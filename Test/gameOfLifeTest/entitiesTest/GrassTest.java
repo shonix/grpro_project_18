@@ -1,6 +1,7 @@
 package gameOfLifeTest.entitiesTest;
 
 import gameOfLife.entities.Grass;
+import itumulator.world.World;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,15 +48,17 @@ public class GrassTest {
         assertEquals(0, grass.getAge());
         assertEquals(1, grass.getFood());
 
+        World world = new World(3);
+
         for(int i = 1; i < Grass.MAX_FOOD; i++){
-            grass.age();
+            grass.age(world);
             assertEquals(i+1, grass.getFood());
             assertEquals(i, grass.getAge());
         }
 
-        grass.age();
+        grass.age(world);
         assertEquals(Grass.MAX_FOOD, grass.getFood());
-        grass.age();
+        grass.age(world);
         assertEquals(Grass.MAX_FOOD, grass.getFood());
     }
 }

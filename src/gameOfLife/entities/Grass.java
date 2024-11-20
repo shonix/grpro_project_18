@@ -64,21 +64,20 @@ public class Grass extends Plant implements NonBlocking {
     @Override
     public void act(World world){
         spread(world); //attempt spreading
-        //die if too much has been eaten, or too old
-        if(food < MIN_FOOD || age > MAX_AGE){
-            die(world);
-            return;
-        }
-        age();
+        age(world);
     }
 
     /**
-     * Ages the piece of Grass, incrementing age counter and possibly food counter.
+     * Ages the piece of Grass, incrementing age counter and possibly food counter, or kills it if too old or too much
+     * has been eaten.
      */
     @Override
-    public void age(){
-        super.age();
-        if(food < MAX_FOOD) food++;
+    public void age(World world){
+        super.age(world);
+        //die if too much has been eaten, or too old
+        if (food < MIN_FOOD || age > MAX_AGE) {
+            die(world);
+        } else if(food < MAX_FOOD) food++;
     }
 
     /**

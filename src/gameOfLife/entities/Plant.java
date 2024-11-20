@@ -49,9 +49,12 @@ public abstract class Plant implements Actor {
     }
 
     /**
-     * Ages the Plant by one step
+     * Ages the Plant by one step.
+     * ---
+     * By itself the world parameter does nothing by default, but is introduced here to allow additional functionality
+     * in subclasses when they override this method.
      */
-    protected void age(){
+    protected void age(World world){
         age++;
     }
 
