@@ -63,7 +63,7 @@ public class Grass extends Plant{
     @Override
     public void act(World world){
         spread(world); //attempt spreading
-        //die if too much has been eaten
+        //die if too much has been eaten, or too old
         if(food < MIN_FOOD || age > MAX_AGE){
             die(world);
             return;
@@ -75,7 +75,7 @@ public class Grass extends Plant{
      * Ages the piece of Grass, incrementing age counter and possibly food counter.
      */
     @Override
-    protected void age(){
+    public void age(){
         super.age();
         if(food < MAX_FOOD) food++;
     }
