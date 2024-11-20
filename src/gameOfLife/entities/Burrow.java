@@ -6,26 +6,25 @@ import itumulator.world.NonBlocking;
 
 import java.awt.*;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 /**
- * Represents a hole a rabbit can hide in
+ * Represents a burrow a rabbit can hide in
  */
-public class Hole implements NonBlocking, DynamicDisplayInformationProvider {
-    private static final int SMALL_HOLE_LIMIT = 2; //the limit after which hole is displayed as big
-    //possible images for holes
+public class Burrow implements NonBlocking, DynamicDisplayInformationProvider {
+    private static final int SMALL_HOLE_LIMIT = 2; //the limit after which burrow is displayed as big
+    //possible images for burrows
     private static final DisplayInformation SMALL_HOLE = new DisplayInformation(Color.green, "hole-small");
     private static final DisplayInformation BIG_HOLE = new DisplayInformation(Color.green, "hole");
 
-    private Set<Rabbit> rabbitsInHole;
+    private Set<Rabbit> rabbitsInBurrow;
     private int capacity;
     private DisplayInformation currentDisplayInformation;
 
-    public Hole(int capacity) {
+    public Burrow(int capacity) {
         if(capacity < 1) throw new IllegalArgumentException("capacity must be greater than 0!");
         this.capacity = capacity;
-        this.rabbitsInHole = new HashSet<>();
+        this.rabbitsInBurrow = new HashSet<>();
         if(capacity > SMALL_HOLE_LIMIT){
             currentDisplayInformation = BIG_HOLE;
         }else {
@@ -34,7 +33,7 @@ public class Hole implements NonBlocking, DynamicDisplayInformationProvider {
     }
 
     /**
-     * Returns the capacity of the hole
+     * Returns the capacity of the burrow
      * @return capacity
      */
     public int getCapacity() {
@@ -42,16 +41,16 @@ public class Hole implements NonBlocking, DynamicDisplayInformationProvider {
     }
 
     /**
-     * Returns the set representing the rabbits currently residing in the hole
+     * Returns the set representing the rabbits currently residing in the burrow
      * @return Set<Rabbit> rabbitsInHole
      */
     public Set<Rabbit> getRabbitsInHole() {
-        return rabbitsInHole;
+        return rabbitsInBurrow;
     }
 
     /**
-     * Sets the capacity of the hole
-     * @param capacity the current maximum number of rabbits that can be inside hole.
+     * Sets the capacity of the burrow
+     * @param capacity the current maximum number of rabbits that can be inside burrow.
      */
     public void setCapacity(int capacity) {
         this.capacity = capacity;
@@ -63,24 +62,24 @@ public class Hole implements NonBlocking, DynamicDisplayInformationProvider {
     }
 
     /**
-     * Attempts to add a rabbit to the hole
-     * @param rabbit the rabbit to be added to the hole
+     * Attempts to add a rabbit to the burrow
+     * @param rabbit the rabbit to be added to the burrow
      */
     public void addRabbit(Rabbit rabbit){
-        rabbitsInHole.add(rabbit);
+        rabbitsInBurrow.add(rabbit);
     }
 
     /**
-     * Attempts to remove a rabbit from the hole
-     * @param rabbit the rabbit to be removed from the hole
+     * Attempts to remove a rabbit from the burrow
+     * @param rabbit the rabbit to be removed from the burrow
      */
     public void removeRabbit(Rabbit rabbit) {
-        rabbitsInHole.remove(rabbit);
+        rabbitsInBurrow.remove(rabbit);
     }
 
     /**
-     * Method to get the current DisplayInformation for the hole, which is subject to change
-     * @return currentDisplayInformation current display information to be given when hole is drawn
+     * Method to get the current DisplayInformation for the burrow, which is subject to change
+     * @return currentDisplayInformation current display information to be given when burrow is drawn
      */
     @Override
     public DisplayInformation getInformation() {

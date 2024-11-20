@@ -4,8 +4,10 @@ import gameOfLife.entities.Rabbit;
 import gameOfLife.entities.Grass;
 import gameOfLife.entities.Hole;
 import gameOfLife.util.WorldInitializor;
+import gameOfLife.entities.Burrow;
 import itumulator.executable.DisplayInformation;
 import itumulator.executable.Program;
+import itumulator.world.Location;
 import itumulator.world.World;
 
 public class Main {
