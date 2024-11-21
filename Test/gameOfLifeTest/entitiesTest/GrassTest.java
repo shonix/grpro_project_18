@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class GrassTest {
     Grass grass;
-    int typicalFood = Grass.MAX_FOOD - Grass.MIN_FOOD;
+    int typicalFood = Grass.MAX_PROVIDED_SUSTENANCE - Grass.MIN_PROVIDED_SUSTENANCE;
 
     @BeforeEach
     public void setUp() {
@@ -29,16 +29,16 @@ public class GrassTest {
     public void testGrass() {
         //test min-1
         assertThrows(IllegalArgumentException.class, () -> {
-            new Grass(Grass.MIN_FOOD-1);
+            new Grass(Grass.MIN_PROVIDED_SUSTENANCE-1);
         });
         //test max+1
         assertThrows(IllegalArgumentException.class, () -> {
-            new Grass(Grass.MAX_FOOD+1);
+            new Grass(Grass.MAX_PROVIDED_SUSTENANCE +1);
         });
         //test max
-        assertDoesNotThrow(() -> { new Grass(Grass.MAX_FOOD); });
+        assertDoesNotThrow(() -> { new Grass(Grass.MAX_PROVIDED_SUSTENANCE); });
         //test min
-        assertDoesNotThrow(() -> { new Grass(Grass.MIN_FOOD); });
+        assertDoesNotThrow(() -> { new Grass(Grass.MIN_PROVIDED_SUSTENANCE); });
         //test typical value
         assertDoesNotThrow(() -> { new Grass(typicalFood); });
     }
@@ -46,19 +46,19 @@ public class GrassTest {
     @Test
     public void testAge() {
         assertEquals(0, grass.getAge());
-        assertEquals(1, grass.getFood());
+        assertEquals(1, grass.getProvidedSustenance());
 
         World world = new World(3);
 
-        for(int i = 1; i < Grass.MAX_FOOD; i++){
+        for(int i = 1; i < Grass.MAX_PROVIDED_SUSTENANCE; i++){
             grass.age(world);
-            assertEquals(i+1, grass.getFood());
+            assertEquals(i+1, grass.getProvidedSustenance());
             assertEquals(i, grass.getAge());
         }
 
         grass.age(world);
-        assertEquals(Grass.MAX_FOOD, grass.getFood());
+        assertEquals(Grass.MAX_PROVIDED_SUSTENANCE, grass.getProvidedSustenance());
         grass.age(world);
-        assertEquals(Grass.MAX_FOOD, grass.getFood());
+        assertEquals(Grass.MAX_PROVIDED_SUSTENANCE, grass.getProvidedSustenance());
     }
 }
