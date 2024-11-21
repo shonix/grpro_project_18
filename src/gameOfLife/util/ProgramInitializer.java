@@ -13,18 +13,20 @@ import java.util.*;
 public class ProgramInitializer {
     private final DataHandler dh;
     private final Set<String> entities;
-    private int resolution;
-    private int programDelay;
+    private final int resolution;
+    private final int programDelay;
     private List<Program> programs;
 
     /**
-     * TODO
-     * @param week
-     * @param fileName
+     * Initializes the program, as well as populates the world in said program, based on input file supplied.
+     * @param folderName Name of folder for input files to be imported.
+     * @param fileName Name of file, in folder, to be used for world generation.
+     * @param resolution Resolution of program screen.
+     * @param programDelay Delay of simulation steps (act).
      */
-    public ProgramInitializer(String week, String fileName, int resolution, int programDelay)
+    public ProgramInitializer(String folderName, String fileName, int resolution, int programDelay)
     {
-        this.dh = new DataHandler(week);
+        this.dh = new DataHandler(folderName);
         this.entities = new HashSet<>();
         this.programs = new ArrayList<>();
         this.resolution = resolution;
@@ -36,8 +38,8 @@ public class ProgramInitializer {
     }
 
     /**
-     * TODO
-     * @return
+     * Initializes and returns programs for all input files in cached folder.
+     * @return List of programs with populated worlds.
      */
     public List<Program> initializeAllWPrograms()
     {
@@ -70,9 +72,9 @@ public class ProgramInitializer {
      */
     private void loadEntities(File file)
     {
-        List<File> loadedFiles = null;
+        List<File> loadedFiles;
         Map<String, String> fileMap = new HashMap<>();
-        Program program = null;
+        Program program;
 
         if(file != null)
         {
@@ -126,7 +128,7 @@ public class ProgramInitializer {
     private void createEntity(World world, String entity, Map<String, String> fileMap, String key)
     {
         Random rand = new Random();
-        int amount = 0;
+        int amount;
         if(fileMap.get(key).contains("-"))
         {
             //Creates a random amount of entities between the first and second digit declared in the file.

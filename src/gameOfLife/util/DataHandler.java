@@ -57,7 +57,7 @@ public class DataHandler
      */
     private void fileCacher(String folderName)
     {
-        cache = new HashMap<String, File>();
+        cache = new HashMap<>();
 
         loadFolder(".\\data\\"+folderName+"\\");
         loadFolder("..\\data"+folderName+"\\");
@@ -85,6 +85,8 @@ public class DataHandler
                 }
             }
         } catch (IllegalArgumentException e){
+            System.out.println("Cache loader error: " + e.getMessage());
+        } catch (NullPointerException e) {
             System.out.println("Cache loader error: " + e.getMessage());
         }
     }
