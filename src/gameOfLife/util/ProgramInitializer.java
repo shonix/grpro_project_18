@@ -10,9 +10,11 @@ import itumulator.world.World;
 import java.io.*;
 import java.util.*;
 
-public class WorldInitializor {
+public class ProgramInitializer {
     private final DataHandler dh;
     private final Set<String> entities;
+    private int resolution;
+    private int programDelay;
     private List<Program> programs;
 
     /**
@@ -20,11 +22,13 @@ public class WorldInitializor {
      * @param week
      * @param fileName
      */
-    public WorldInitializor(String week, String fileName)
+    public ProgramInitializer(String week, String fileName, int resolution, int programDelay)
     {
         this.dh = new DataHandler(week);
         this.entities = new HashSet<>();
         this.programs = new ArrayList<>();
+        this.resolution = resolution;
+        this.programDelay = programDelay;
 
         initializeEntities();
         File file = dh.getFile(fileName);
@@ -35,7 +39,7 @@ public class WorldInitializor {
      * TODO
      * @return
      */
-    public List<Program> initializeAllWorlds()
+    public List<Program> initializeAllWPrograms()
     {
         initializeEntities();
         loadEntities(null);
@@ -43,26 +47,26 @@ public class WorldInitializor {
     }
 
     /**
-     * Getter for returning all worlds created while initializing worlds.
-     * @return List of all worlds created in initialization.
+     * Getter for returning all Programs created while initializing programs.
+     * @return List of all Programs created in initialization.
      */
-    public List<Program> getWorlds() {
+    public List<Program> getPrograms() {
         return programs;
     }
 
     /**
-     * TODO
-     * @param size
-     * @return
+     * Creates a new Program with a world the size of given input, read from input file.
+     * @param size Size of world, as dictated by input file.
+     * @return A new Program with world created inside.
      */
     private Program createProgram(int size)
     {
-        return new Program(size,800,1000);
+        return new Program(size,this.resolution,this.programDelay);
     }
 
     /**
-     * TODO
-     * @param file
+     * Handles reading through the given input file, and loading in values needed for creating entities for the world.
+     * @param file File used for loading in all entities.
      */
     private void loadEntities(File file)
     {
@@ -174,7 +178,7 @@ public class WorldInitializor {
                 while(population >= world.getEntities().size())
                 {
                     Location location = new Location(rand.nextInt(world.getSize()),rand.nextInt(world.getSize()));
-                    if(!world.isTileEmpty(location)) {
+                    if(world.isTileEmpty(location)) {
                         world.setTile(location, new Rabbit());
                     }
                 }
