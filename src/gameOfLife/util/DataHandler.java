@@ -49,8 +49,8 @@ public class DataHandler
     {
         cache = new HashMap<String, File>();
 
-        loadFolder("./data/"+weekNumber+"/");
-        loadFolder("../data"+weekNumber+"/");
+        loadFolder(".\\data\\"+weekNumber+"\\");
+        loadFolder("..\\data"+weekNumber+"\\");
     }
 
     /**
@@ -74,7 +74,7 @@ public class DataHandler
                     }
                 }
             }
-        } catch (Exception e){
+        } catch (IllegalArgumentException e){
             System.out.println("Cache loader error: " + e.getMessage());
         }
     }

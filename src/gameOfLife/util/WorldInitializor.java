@@ -3,6 +3,7 @@ package gameOfLife.util;
 import gameOfLife.entities.Grass;
 import gameOfLife.entities.Burrow;
 import gameOfLife.entities.Rabbit;
+import itumulator.executable.Program;
 import itumulator.world.Location;
 import itumulator.world.World;
 
@@ -12,41 +13,41 @@ import java.util.*;
 public class WorldInitializor {
     private final DataHandler dh;
     private final Set<String> entities;
-    private List<World> worlds;
+    private List<Program> programs;
 
     /**
      * TODO
      * @param week
      * @param fileName
      */
-    public WorldInitializor(String week,String fileName)
+    public WorldInitializor(String week, String fileName)
     {
         this.dh = new DataHandler(week);
         this.entities = new HashSet<>();
-        this.worlds = new ArrayList<>();
+        this.programs = new ArrayList<>();
 
         initializeEntities();
         File file = dh.getFile(fileName);
-        loadEntities( file);
+        loadEntities(file);
     }
 
     /**
      * TODO
      * @return
      */
-    public List<World> initializeAllWorlds()
+    public List<Program> initializeAllWorlds()
     {
         initializeEntities();
         loadEntities(null);
-        return worlds;
+        return programs;
     }
 
     /**
      * Getter for returning all worlds created while initializing worlds.
      * @return List of all worlds created in initialization.
      */
-    public List<World> getWorlds() {
-        return worlds;
+    public List<Program> getWorlds() {
+        return programs;
     }
 
     /**
@@ -54,9 +55,9 @@ public class WorldInitializor {
      * @param size
      * @return
      */
-    private World createWorld(int size)
+    private Program createProgram(int size)
     {
-        return new World(size);
+        return new Program(size,800,1000);
     }
 
     /**
@@ -67,7 +68,7 @@ public class WorldInitializor {
     {
         List<File> loadedFiles = null;
         Map<String, String> fileMap = new HashMap<>();
-        World world = null;
+        Program program = null;
 
         if(file != null)
         {
@@ -83,12 +84,15 @@ public class WorldInitializor {
                 BufferedReader br = new BufferedReader(new FileReader(f));
                 Scanner scan  = new Scanner(br);
 
-                    world = createWorld(Integer.parseInt(scan.nextLine()));
-                    worlds.add(world);
+                    program = createProgram(Integer.parseInt(scan.nextLine()));
+                    programs.add(program);
 
                 //Inserting each line of file into map ([0] contains entity type, [1] contains population size).
-                String[]fileContent = scan.nextLine().split(" ");
-                fileMap.put(fileContent[0], fileContent[1]);
+
+                while(scan.hasNextLine()) {
+                    String[] fileContent = scan.nextLine().split(" ");
+                    fileMap.put(fileContent[0], fileContent[1]);
+                }
 
                 for(String entity : this.entities) //For every creatable object.
                 {
@@ -96,7 +100,7 @@ public class WorldInitializor {
                     {
                         if(entity.equals(key)) //If the object in the file == creatable object in entities map.
                         {
-                            createEntity(world, entity, fileMap, key);
+                            createEntity(program.getWorld(), entity, fileMap, key);
                         }
                     }
                 }
@@ -108,7 +112,7 @@ public class WorldInitializor {
     }
 
 
-    /**
+    /** //Remove side effects - Don't call populateWorld.
      * Creates a new entity for the given world, using the information provided by the files in the fileMap.
      * @param world World object which holds all information of the simulation.
      * @param entity The name of the entity being created.
