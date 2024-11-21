@@ -6,18 +6,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Handler for reading in all input files for the project.
+ */
 public class DataHandler
 {
     private Map<String, File> cache;
-    public DataHandler(String week)
+
+    /**
+     * Constructs a cache from the chosen folder, containing files for later use.
+     * @param dataFolder Folder inside project where input files are located.
+     */
+    public DataHandler(String dataFolder)
     {
-        fileCacher(week);
+        this.cache = new HashMap<>();
+        fileCacher(dataFolder);
     }
 
     /**
-     * TODO
-     * @param cacheString
-     * @return
+     * Returns File with name matching a filename in cache.
+     * @param cacheString Name of file which exists in the cache.
+     * @return File with matched name from cache.
      */
     public File getFile(String cacheString)
     {
@@ -29,8 +38,8 @@ public class DataHandler
     }
 
     /**
-     * TODO
-     * @return
+     * Returns a list of all cached Files.
+     * @return Returns a list of all files loaded into the cache.
      */
     public List<File> getAllFiles()
     {
@@ -43,19 +52,20 @@ public class DataHandler
     }
 
     /**
-     * TODO
+     * Caches all files from folder corresponding to the weeknumber.
+     * @param folderName name of folder wishing to cache.
      */
-    private void fileCacher(String weekNumber)
+    private void fileCacher(String folderName)
     {
-        cache = new HashMap<String, File>();
+        cache = new HashMap<>();
 
-        loadFolder("./data/"+weekNumber+"/");
-        loadFolder("../data"+weekNumber+"/");
+        loadFolder(".\\data\\"+folderName+"\\");
+        loadFolder("..\\data"+folderName+"\\");
     }
 
     /**
-     * TODO
-     * @param folderPath
+     * Loads in all the files in the folder chosen to cache.
+     * @param folderPath Path to the folder to load into cache.
      */
     private void loadFolder(String folderPath){
         try {
@@ -74,7 +84,9 @@ public class DataHandler
                     }
                 }
             }
-        } catch (Exception e){
+        } catch (IllegalArgumentException e){
+            System.out.println("Cache loader error: " + e.getMessage());
+        } catch (NullPointerException e) {
             System.out.println("Cache loader error: " + e.getMessage());
         }
     }

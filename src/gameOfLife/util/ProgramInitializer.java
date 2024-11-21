@@ -3,71 +3,78 @@ package gameOfLife.util;
 import gameOfLife.entities.Grass;
 import gameOfLife.entities.Burrow;
 import gameOfLife.entities.Rabbit;
+import itumulator.executable.Program;
 import itumulator.world.Location;
 import itumulator.world.World;
 
 import java.io.*;
 import java.util.*;
 
-public class WorldInitializor {
+public class ProgramInitializer {
     private final DataHandler dh;
     private final Set<String> entities;
-    private List<World> worlds;
+    private final int resolution;
+    private final int programDelay;
+    private List<Program> programs;
 
     /**
-     * TODO
-     * @param week
-     * @param fileName
+     * Initializes the program, as well as populates the world in said program, based on input file supplied.
+     * @param folderName Name of folder for input files to be imported.
+     * @param fileName Name of file, in folder, to be used for world generation.
+     * @param resolution Resolution of program screen.
+     * @param programDelay Delay of simulation steps (act).
      */
-    public WorldInitializor(String week,String fileName)
+    public ProgramInitializer(String folderName, String fileName, int resolution, int programDelay)
     {
-        this.dh = new DataHandler(week);
+        this.dh = new DataHandler(folderName);
         this.entities = new HashSet<>();
-        this.worlds = new ArrayList<>();
+        this.programs = new ArrayList<>();
+        this.resolution = resolution;
+        this.programDelay = programDelay;
 
         initializeEntities();
         File file = dh.getFile(fileName);
-        loadEntities( file);
+        loadEntities(file);
     }
 
     /**
-     * TODO
-     * @return
+     * Initializes and returns programs for all input files in cached folder.
+     * @return List of programs with populated worlds.
      */
-    public List<World> initializeAllWorlds()
+    public List<Program> initializeAllWPrograms()
     {
         initializeEntities();
         loadEntities(null);
-        return worlds;
+        return programs;
     }
 
     /**
-     * Getter for returning all worlds created while initializing worlds.
-     * @return List of all worlds created in initialization.
+     * Getter for returning all Programs created while initializing programs.
+     * @return List of all Programs created in initialization.
      */
-    public List<World> getWorlds() {
-        return worlds;
+    public List<Program> getPrograms() {
+        return programs;
     }
 
     /**
-     * TODO
-     * @param size
-     * @return
+     * Creates a new Program with a world the size of given input, read from input file.
+     * @param size Size of world, as dictated by input file.
+     * @return A new Program with world created inside.
      */
-    private World createWorld(int size)
+    private Program createProgram(int size)
     {
-        return new World(size);
+        return new Program(size,this.resolution,this.programDelay);
     }
 
     /**
-     * TODO
-     * @param file
+     * Handles reading through the given input file, and loading in values needed for creating entities for the world.
+     * @param file File used for loading in all entities.
      */
     private void loadEntities(File file)
     {
-        List<File> loadedFiles = null;
+        List<File> loadedFiles;
         Map<String, String> fileMap = new HashMap<>();
-        World world = null;
+        Program program;
 
         if(file != null)
         {
@@ -83,12 +90,15 @@ public class WorldInitializor {
                 BufferedReader br = new BufferedReader(new FileReader(f));
                 Scanner scan  = new Scanner(br);
 
-                    world = createWorld(Integer.parseInt(scan.nextLine()));
-                    worlds.add(world);
+                    program = createProgram(Integer.parseInt(scan.nextLine()));
+                    programs.add(program);
 
                 //Inserting each line of file into map ([0] contains entity type, [1] contains population size).
-                String[]fileContent = scan.nextLine().split(" ");
-                fileMap.put(fileContent[0], fileContent[1]);
+
+                while(scan.hasNextLine()) {
+                    String[] fileContent = scan.nextLine().split(" ");
+                    fileMap.put(fileContent[0], fileContent[1]);
+                }
 
                 for(String entity : this.entities) //For every creatable object.
                 {
@@ -96,7 +106,7 @@ public class WorldInitializor {
                     {
                         if(entity.equals(key)) //If the object in the file == creatable object in entities map.
                         {
-                            createEntity(world, entity, fileMap, key);
+                            createEntity(program.getWorld(), entity, fileMap, key);
                         }
                     }
                 }
@@ -108,7 +118,7 @@ public class WorldInitializor {
     }
 
 
-    /**
+    /** //Remove side effects - Don't call populateWorld.
      * Creates a new entity for the given world, using the information provided by the files in the fileMap.
      * @param world World object which holds all information of the simulation.
      * @param entity The name of the entity being created.
@@ -118,7 +128,7 @@ public class WorldInitializor {
     private void createEntity(World world, String entity, Map<String, String> fileMap, String key)
     {
         Random rand = new Random();
-        int amount = 0;
+        int amount;
         if(fileMap.get(key).contains("-"))
         {
             //Creates a random amount of entities between the first and second digit declared in the file.
@@ -170,7 +180,7 @@ public class WorldInitializor {
                 while(population >= world.getEntities().size())
                 {
                     Location location = new Location(rand.nextInt(world.getSize()),rand.nextInt(world.getSize()));
-                    if(!world.isTileEmpty(location)) {
+                    if(world.isTileEmpty(location)) {
                         world.setTile(location, new Rabbit());
                     }
                 }
