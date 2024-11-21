@@ -10,35 +10,35 @@ import java.util.Set;
 /**
  * Class representing a piece of grass, an extension of a Plant.
  * Grass can be eaten by certain Animals as implemented by them.
- * Grass can grow, increasing the food it provides.
+ * Grass can grow, increasing the providedSustenance it provides.
  * Grass can spread instantiating a new piece of grass in a neighbouring location.
  */
 public class Grass extends Plant implements NonBlocking {
     public static final double GRASS_SPREAD_CHANCE = 0.10;
-    public static final int MIN_FOOD = 1, MAX_FOOD = 10, MAX_AGE = 120;
+    public static final int MIN_PROVIDED_SUSTENANCE = 1, MAX_PROVIDED_SUSTENANCE = 10, MAX_AGE = 120;
 
-    private int food;
+    private int providedSustenance;
 
-    public Grass(int food){
+    public Grass(int sustenance){
         super(true);
-        if(food < MIN_FOOD || food > MAX_FOOD) throw new IllegalArgumentException("Invalid amount of food");
-        this.food = food;
+        if(providedSustenance < MIN_PROVIDED_SUSTENANCE || providedSustenance > MAX_PROVIDED_SUSTENANCE) throw new IllegalArgumentException("Invalid amount of sustenance");
+        this.providedSustenance = sustenance;
     }
 
     /**
-     * Returns the amount of food the Grass provides.
-     * @return food. Maximum amount provided when eaten.
+     * Returns the amount of providedSustenance the Grass provides.
+     * @return providedSustenance. Maximum amount provided when eaten.
      */
-    public int getFood() {
-        return food;
+    public int getProvidedSustenance() {
+        return providedSustenance;
     }
 
     /**
-     * Sets the maximum amount of food the piece of Grass provides when eaten
-     * @param food the amount of food
+     * Sets the maximum amount of providedSustenance the piece of Grass provides when eaten
+     * @param sustenance the amount of sustenance the piece of grass provides
      */
-    public void setFood(int food) {
-        this.food = food;
+    public void setSustenance(int sustenance) {
+        this.providedSustenance = sustenance;
     }
 
     /**
@@ -68,16 +68,16 @@ public class Grass extends Plant implements NonBlocking {
     }
 
     /**
-     * Ages the piece of Grass, incrementing age counter and possibly food counter, or kills it if too old or too much
+     * Ages the piece of Grass, incrementing age counter and possibly providedSustenance counter, or kills it if too old or too much
      * has been eaten.
      */
     @Override
     public void age(World world){
         super.age(world);
         //die if too much has been eaten, or too old
-        if (food < MIN_FOOD || age > MAX_AGE) {
+        if (providedSustenance < MIN_PROVIDED_SUSTENANCE || age > MAX_AGE) {
             die(world);
-        } else if(food < MAX_FOOD) food++;
+        } else if(providedSustenance < MAX_PROVIDED_SUSTENANCE) providedSustenance++;
     }
 
     /**
