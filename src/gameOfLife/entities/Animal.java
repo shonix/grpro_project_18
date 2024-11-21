@@ -1,15 +1,14 @@
 package gameOfLife.entities;
 
+import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
-public class Animal {
-    private double age;
-    private double ageOfMaturity;
+public class Animal extends Entities implements Actor {
+    private int age;
+    private int ageOfMaturity;
     private Sex sex;
     private double energyMax;
     private double actualEnergy;
@@ -26,12 +25,17 @@ public class Animal {
         }
     }
 
-    public Animal(double age, Sex sex, double ageOfMaturity) {
+    public Animal(int age, Sex sex, double ageOfMaturity) {
         this.age = age;
         this.sex = sex;
         this.energyMax = calculateMaxEnergy(age, ageOfMaturity);
         actualEnergy = energyMax;
         isAwake = true;
+    }
+
+    @Override
+    public void act(World world){
+
     }
 
     /**
@@ -41,7 +45,6 @@ public class Animal {
     private double calculateMaxEnergy(double age, double ageOfMaturity) {
         return Math.pow(age, 2) + ageOfMaturity * age;
     }
-
 
     public Object getTarget() {return target;}
 
@@ -54,41 +57,39 @@ public class Animal {
     public boolean isAwake() { return isAwake; }
 
 
-    public void pathToLocation(World world, Location targetLocation) {
-        int currentShortestPath = Integer.MIN_VALUE;
-        List<Location> tilesToShortestPath = new ArrayList<>();
+    public void moveActor(World world, Actor actor, List<Location> locations) {
+        if (world.getEmptySurroundingTiles().isEmpty()) {
+            world.move(actor, world.getLocation(actor));
+        } else {
+            Location nextLocation = computeNextRandom(locations);
+            world.move(actor, nextLocation);
+            world.setCurrentLocation(nextLocation);
+
+        }
+    }
+
+    public List<Location> findNextTileInShortestPath(World world, Location targetLocation) {
+        int currentShortestPathLength = Integer.MAX_VALUE;
+        Map<Location, Integer> mapOfShortestLocation = new HashMap<>(); //has to maintain a map instead of Location variable
 
         for (Location tile : world.getEmptySurroundingTiles()) {
-            if (getDistanceToLocation(tile, targetLocation, world) > currentShortestPath) {
-                currentShortestPath = getDistanceToLocation(tile, targetLocation, world);
-                tilesToShortestPath.add(tile);
+            if (getDistanceToLocation(tile, targetLocation, world) < currentShortestPathLength) {
+                currentShortestPathLength = getDistanceToLocation(tile, targetLocation, world);
+                mapOfShortestLocation.put(tile, currentShortestPathLength);
             }
         }
-        nex
-        world.move(this, computeNextRandomMove(world, tilesToShortestPath));
-        world.setCurrentLocation(tilesToShortestPath);
-    }
-
-    private Location computeNextRandomMove(World world, List<Location> locations) {
-        return locations.get((new Random()).nextInt(locations.size()));
-    }
-
-    public int getDistanceFromActorToLocation(Location targetLocation, World world) {
-        return getDistanceToLocation(world.getLocation(this), targetLocation, world);
-    }
-
-    public int getDistanceToLocation(Location startLocation, Location targetLocation, World world) {
-        boolean locationFound = false;
-        int distanceToTarget = 1;
-
-        while (!locationFound) {
-            if (world.getSurroundingTiles(startLocation, distanceToTarget).contains(targetLocation)) {
-                locationFound = true;
-            } else {
-                distanceToTarget++;
+        if (world.getEmptySurroundingTiles().isEmpty()) {
+            if (currentShortestPathLength <= getDistanceFromActorToLocation(targetLocation, world)) {
+                return List.of(world.getLocation(this));
             }
-        } return distanceToTarget;
+        }
+        int finalCurrentShortestPathLength = currentShortestPathLength;
+        return mapOfShortestLocation.entrySet().stream()
+                .filter(entry -> (entry.getValue() > finalCurrentShortestPathLength)) // Filter condition
+                .map(Map.Entry::getKey) // Extract the key
+                .toList();
     }
+    
 
 }
 

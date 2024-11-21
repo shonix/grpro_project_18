@@ -23,7 +23,6 @@ import java.util.Set;
 public class World {
     private static int DAY_DURATION = 20;
     private static int IS_DAY_TIME = 10;
-
     private Object[][][] tiles;
     private Map<Object, Location> entities;
     private int size;
@@ -162,6 +161,7 @@ public class World {
         validateLocation(object);
         return entities.get(object);
     }
+
 
     /**
      * Get immediate tiles surrounding the current location (as defined by

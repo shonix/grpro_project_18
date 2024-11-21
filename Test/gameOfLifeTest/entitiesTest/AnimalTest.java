@@ -5,6 +5,9 @@ import itumulator.world.Location;
 import itumulator.world.World;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class AnimalTest {
@@ -30,18 +33,20 @@ class AnimalTest {
     @Test
     void pathToLocation_actorMoves_actorMovesAsExpected() {
         setupAnimalInWorld();
-        animal.pathToLocation(world, (new Location(10,10)));
-        assert(world.getLocation(animal).getX() == 1 && world.getLocation(animal).getY() == 0 ||
-                world.getLocation(animal).getX() == 0 && world.getLocation(animal).getY() == 1 ||
-                world.getLocation(animal).getX() == 1 && world.getLocation(animal).getY() == 1);
-
+        animal.moveActor(world, animal, animal.findNextTileInShortestPath(world, (new Location(10, 10))));
+        assert(world.getLocation(animal).getX() == 1 && world.getLocation(animal).getY() == 1);
     }
 
     @Test
     void getDistanceFromActorToLocation_distanceCheck_distanceIsAccurate() {
         setupAnimalInWorld();
-        assertEquals(animal.getDistanceFromActorToLocation((new Location(0,1)), world), 1);
-        assertEquals(animal.getDistanceFromActorToLocation((new Location(10,10)), world), 10);
+        assertEquals(3, animal.getDistanceFromActorToLocation((new Location(3,3)), world));
+        assertEquals(1, animal.getDistanceFromActorToLocation((new Location(1,1)), world));
+        assertEquals(0, animal.getDistanceFromActorToLocation((new Location(0,0)), world));
+        animal.moveActor(world, animal, List.of(new Location(1,0)));
+        assertEquals(3, animal.getDistanceFromActorToLocation((new Location(3,3)), world));
+        animal.moveActor(world, animal, List.of(new Location(1,1)));
+        assertEquals(2, animal.getDistanceFromActorToLocation((new Location(3,3)), world));
 
     }
 }
