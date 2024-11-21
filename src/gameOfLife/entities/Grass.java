@@ -21,7 +21,7 @@ public class Grass extends Plant implements NonBlocking {
 
     public Grass(int sustenance){
         super(true);
-        if(providedSustenance < MIN_PROVIDED_SUSTENANCE || providedSustenance > MAX_PROVIDED_SUSTENANCE) throw new IllegalArgumentException("Invalid amount of sustenance");
+        if(sustenance < MIN_PROVIDED_SUSTENANCE || sustenance > MAX_PROVIDED_SUSTENANCE) throw new IllegalArgumentException("Invalid amount of sustenance");
         this.providedSustenance = sustenance;
     }
 
