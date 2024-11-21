@@ -15,8 +15,9 @@ public class Main {
         Program p = new Program(size, 800, 75);
         World w = p.getWorld();
 
-        WorldInitializor pop = new WorldInitializor(w, "week-1");
-        p.setDisplayInformation(Grass.class, new DisplayInformation(Color.green, "gwass"));
+        WorldInitializor pop = new WorldInitializor("week-1", "t1-1a");
+        World world = pop.getWorlds().getFirst();
+        p.setDisplayInformation(Grass.class, new DisplayInformation(Color.green, "grass"));
         p.setDisplayInformation(Rabbit.class, new DisplayInformation(Color.red, "rabbit-small"));
         p.setDisplayInformation(Burrow.class, new DisplayInformation(Color.red, "hole"));
 
