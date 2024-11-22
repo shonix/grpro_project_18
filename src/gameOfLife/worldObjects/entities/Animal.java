@@ -56,6 +56,10 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
      */
     public abstract int getAgeOfMaturity();
 
+    /**
+     * Method to update the entity's currentDisplayInformation
+     */
+    public abstract void updateDisplayInformation();
     /*
     END OF ABSTRACT METHODS
      */
@@ -129,8 +133,6 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
     public DisplayInformation getInformation(){
         return currentDisplayInformation;
     }
-
-    public abstract void updateDisplayInformation();
 }
 
 
