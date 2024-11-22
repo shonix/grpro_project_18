@@ -129,6 +129,8 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
     public DisplayInformation getInformation(){
         return currentDisplayInformation;
     }
+
+    public abstract void updateDisplayInformation();
 }
 
 

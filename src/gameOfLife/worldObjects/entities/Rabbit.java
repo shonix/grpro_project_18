@@ -5,6 +5,7 @@ import itumulator.executable.DisplayInformation;
 import itumulator.world.World;
 
 import java.awt.*;
+import java.util.Map;
 
 public class Rabbit extends Animal {
     //class fields begin
@@ -19,10 +20,15 @@ public class Rabbit extends Animal {
     private static final DisplayInformation LARGE_RABBIT_SLEEPING = new DisplayInformation(RABBIT_COLOR, "rabbit-sleeping");
     private static final DisplayInformation LARGE_RABBIT_FUNGI = new DisplayInformation(RABBIT_COLOR, "rabbit-fungi");
     private static final DisplayInformation LARGE_RABBIT_FUNGI_SLEEPING = new DisplayInformation(RABBIT_COLOR, "rabbit-fungi-sleeping");
+    private static final Map<Integer, DisplayInformation> DISPLAY_INFORMATION_MAP = Map.of(
+            0, SMALL_RABBIT_FUNGI_SLEEPING, 1, SMALL_RABBIT_FUNGI,
+            2, SMALL_RABBIT_SLEEPING, 3, SMALL_RABBIT,
+            4, LARGE_RABBIT_FUNGI_SLEEPING, 5, LARGE_RABBIT_FUNGI,
+            6, LARGE_RABBIT_SLEEPING, 7, LARGE_RABBIT
+    );
     //class fields end
 
     //instance fields begin
-    private DisplayInformation currentDisplayInformation;
     private Burrow burrow;
     private boolean isHiding;
 
@@ -38,7 +44,7 @@ public class Rabbit extends Animal {
         this.isHiding = false;
 
         //set display image
-
+        updateDisplayInformation();
     }
 
     public Rabbit(int age, Sex sex, boolean isAwake){
@@ -47,6 +53,7 @@ public class Rabbit extends Animal {
 
     public Rabbit() {
         this(0, Sex.FEMALE, true, false);
+
     }
 
     /**
@@ -74,6 +81,21 @@ public class Rabbit extends Animal {
     }
 
     @Override
-    public void die(World world){}
+    public void die(World world){
+        world.delete(this);
+    }
+
+    /**
+     * Updates the currentDisplayInformation field of the rabbit.
+     * Current implementation is hard to read, but did away with nested if statements
+     */
+    @Override
+    public void updateDisplayInformation() {
+        int state = 0;
+        if(age >= AGE_OF_MATURITY) state+=4;
+        if(!isInfected) state+=2;
+        if(isAwake) state += 1;
+        currentDisplayInformation = DISPLAY_INFORMATION_MAP.get(state);
+    }
 
 }
