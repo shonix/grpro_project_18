@@ -65,6 +65,7 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
      * Method to instruct animal to sleep
      */
     public abstract void sleep();
+
     /*
     END OF ABSTRACT METHODS
      */
@@ -133,7 +134,11 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
                 .map(Map.Entry::getKey) // Extract the key
                 .toList();
     }
-    
+
+    public boolean isFemale(){
+        return sex.equals(Sex.FEMALE);
+    }
+
     @Override
     public DisplayInformation getInformation(){
         return currentDisplayInformation;
