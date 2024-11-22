@@ -9,7 +9,9 @@ import java.util.Map;
 
 public class Rabbit extends Animal {
     //class fields begin
-    public static final double AGE_OF_MATURITY = 60;
+    public static final int AGE_OF_MATURITY = 60; //3 simulation days
+    public static final int MAX_AGE = 240; // 12 simulation days
+    public static final double DAILY_ENERGY_REDUCTION = 1.0;
     //define on the class, all possible images a rabbit can have
     public static final Color RABBIT_COLOR = new Color(218, 205, 184); //color on top-down world view
     private static final DisplayInformation SMALL_RABBIT = new DisplayInformation(RABBIT_COLOR, "rabbit-small");
@@ -34,7 +36,13 @@ public class Rabbit extends Animal {
 
     //instance fields end
 
-
+    /**
+     * Constructor for rabbit with full parameter control.
+     * @param age the number of steps this rabbit has been alive for
+     * @param sex reproductive female or male
+     * @param isAwake if it is awake
+     * @param isInfected if it is infected with fungi
+     */
     public Rabbit(int age, Sex sex, boolean isAwake, boolean isInfected){
         super(age, sex, isAwake, isInfected);
         /*Rabbits right now are created without a burrow associated with it
@@ -47,10 +55,21 @@ public class Rabbit extends Animal {
         updateDisplayInformation();
     }
 
+    /**
+     * Constructor for Rabbit that doesn't take infection argument.
+     * Calls the constructor with full parameters, with isInfected set to false.
+     * @param age the number of steps this rabbit has been alive for
+     * @param sex reproductive female or male
+     * @param isAwake if it is awake
+     */
     public Rabbit(int age, Sex sex, boolean isAwake){
         this(age, sex, isAwake, false);
     }
 
+    /**
+     * Constructor for Rabbit, that doesn't any arguments, which means the rabbit gets default parameters
+     * Calls the constructor with full parameters, with age set to 0, sex set to female, isAwake set to true and isInfected set to false
+     */
     public Rabbit() {
         this(0, Sex.FEMALE, true, false);
 
@@ -65,21 +84,43 @@ public class Rabbit extends Animal {
         return Math.pow(age, 2) + AGE_OF_MATURITY * age;
     }
 
+    /**
+     * Method that ages the rabbit and lowers it energy
+     * then checks if it is too old or has no energy and kills accordingly
+     * @param world the world in which the entity exists.
+     */
     @Override
     public void age(World world){
-
+        age++;
+        actualEnergy -= DAILY_ENERGY_REDUCTION;
+        if(age > MAX_AGE || actualEnergy <= 0){
+            die(world);
+        }
     }
 
+    /**
+     * Returns the Rabbit class field for age at which rabbits are mature adults.
+     * @return AGE_OF_MATURITY
+     */
     @Override
     public int getAgeOfMaturity() {
-        return 0;
+        return AGE_OF_MATURITY;
     }
 
+    /**
+     * Method to be called by simulator to instruct the rabbit to act and age.
+     * @param world providing details of the position on which the entity is currently located and much more.
+     */
     @Override
     public void act(World world){
 
+        age(world);
     }
 
+    /**
+     * Method instructing rabbit to die, deleting it from the world.
+     * @param world providing details of the position on which the entity is currently located and much more.
+     */
     @Override
     public void die(World world){
         world.delete(this);
