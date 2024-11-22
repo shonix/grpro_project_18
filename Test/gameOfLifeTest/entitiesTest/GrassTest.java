@@ -1,6 +1,6 @@
 package gameOfLifeTest.entitiesTest;
 
-import gameOfLife.entities.Grass;
+import gameOfLife.worldObjects.entities.Grass;
 import itumulator.world.World;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

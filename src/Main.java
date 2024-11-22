@@ -1,9 +1,9 @@
 import java.awt.Color;
 
-import gameOfLife.entities.Rabbit;
-import gameOfLife.entities.Grass;
+import gameOfLife.worldObjects.entities.Rabbit;
+import gameOfLife.worldObjects.entities.Grass;
 import gameOfLife.util.ProgramInitializer;
-import gameOfLife.entities.Burrow;
+import gameOfLife.worldObjects.Burrow;
 import itumulator.executable.DisplayInformation;
 import itumulator.executable.Program;
 

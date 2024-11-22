@@ -1,5 +1,6 @@
-package gameOfLife.entities;
+package gameOfLife.worldObjects;
 
+import gameOfLife.worldObjects.entities.Rabbit;
 import itumulator.executable.DisplayInformation;
 import itumulator.executable.DynamicDisplayInformationProvider;
 import itumulator.world.NonBlocking;

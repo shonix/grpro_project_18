@@ -1,10 +1,9 @@
-package gameOfLife.entities;
+package gameOfLife.worldObjects.entities;
 
 import itumulator.world.Location;
 import itumulator.world.NonBlocking;
 import itumulator.world.World;
 
-import java.util.Random;
 import java.util.Set;
 
 /**
@@ -17,27 +16,9 @@ public class Grass extends Plant implements NonBlocking {
     public static final double GRASS_SPREAD_CHANCE = 0.10;
     public static final int MIN_PROVIDED_SUSTENANCE = 1, MAX_PROVIDED_SUSTENANCE = 10, MAX_AGE = 120;
 
-    private int providedSustenance;
-
     public Grass(int sustenance){
-        super(true);
+        super(0,true);
         if(sustenance < MIN_PROVIDED_SUSTENANCE || sustenance > MAX_PROVIDED_SUSTENANCE) throw new IllegalArgumentException("Invalid amount of sustenance");
-        this.providedSustenance = sustenance;
-    }
-
-    /**
-     * Returns the amount of providedSustenance the Grass provides.
-     * @return providedSustenance. Maximum amount provided when eaten.
-     */
-    public int getProvidedSustenance() {
-        return providedSustenance;
-    }
-
-    /**
-     * Sets the maximum amount of providedSustenance the piece of Grass provides when eaten
-     * @param sustenance the amount of sustenance the piece of grass provides
-     */
-    public void setSustenance(int sustenance) {
         this.providedSustenance = sustenance;
     }
 
@@ -49,9 +30,8 @@ public class Grass extends Plant implements NonBlocking {
         Set<Location> neighbours = world.getSurroundingTiles();
         if(neighbours.isEmpty()) return; //if no neighbours: terminate method call
 
-        Random rng = new Random();
         for(Location loc : neighbours){
-            if(!world.containsNonBlocking(loc) && rng.nextDouble() < GRASS_SPREAD_CHANCE){
+            if(!world.containsNonBlocking(loc) && Math.random() < GRASS_SPREAD_CHANCE){
                 world.setTile(loc, new Grass(1));
             }
         }
@@ -64,7 +44,7 @@ public class Grass extends Plant implements NonBlocking {
     @Override
     public void act(World world){
         spread(world); //attempt spreading
-        age(world);
+        age(world); //age and possibly die or increase in sustenance provided
     }
 
     /**
@@ -73,7 +53,7 @@ public class Grass extends Plant implements NonBlocking {
      */
     @Override
     public void age(World world){
-        super.age(world);
+        age++;
         //die if too much has been eaten, or too old
         if (providedSustenance < MIN_PROVIDED_SUSTENANCE || age > MAX_AGE) {
             die(world);

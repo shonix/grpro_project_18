@@ -1,19 +1,18 @@
-package gameOfLife.entities;
+package gameOfLife.worldObjects.entities;
 
+import itumulator.executable.DynamicDisplayInformationProvider;
 import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
 
 import java.util.*;
 
-public class Animal extends Entities implements Actor {
-    private int age;
-    private int ageOfMaturity;
-    private Sex sex;
-    private double energyMax;
-    private double actualEnergy;
-    private boolean isAwake;
-    private Object target; // can be hole or grass
+public abstract class Animal extends Entity implements DynamicDisplayInformationProvider {
+    protected Sex sex;
+    protected double energyMax;
+    protected double actualEnergy;
+    protected boolean isAwake, isInfected;
+    protected Object target;
 
 
     public enum Sex {
@@ -25,35 +24,69 @@ public class Animal extends Entities implements Actor {
         }
     }
 
-    public Animal(int age, Sex sex, double ageOfMaturity) {
-        this.age = age;
+    public Animal(int age, Sex sex, boolean isAwake, boolean isInfected) {
+        super(age);
         this.sex = sex;
-        this.energyMax = calculateMaxEnergy(age, ageOfMaturity);
-        actualEnergy = energyMax;
-        isAwake = true;
+        this.isAwake = isAwake;
+        this.isInfected = isInfected;
     }
 
-    @Override
-    public void act(World world){
-
+    public Animal(int age, Sex sex, boolean isAwake){
+        this(age, sex, isAwake, false);
     }
+
+    public Animal(){
+        this(0, Sex.FEMALE, true, false);
+    }
+
+    /*
+    START OF ABSTRACT METHODS
+     */
 
     /**
-     * Calculates the maximum energy level of an animal as a parabolic function,
-     * with the vertex representing the age at which the animal is fully matured.
+     * Calculates the maximum energy level of an animal.
      */
-    private double calculateMaxEnergy(double age, double ageOfMaturity) {
-        return Math.pow(age, 2) + ageOfMaturity * age;
-    }
+    protected abstract double calculateMaxEnergy(double age);
 
+    /**
+     * Get entity's age of maturity
+     * @return ageOfMaturity
+     */
+    public abstract int getAgeOfMaturity();
+
+    /*
+    END OF ABSTRACT METHODS
+     */
+
+    /**
+     * Get the target of the entity.
+     * @return Object which can be a location, another entity
+     * or anything the entity might be interested in knowing where is
+     */
     public Object getTarget() {return target;}
 
-
-    public double getAge() { return age; }
-    public double getAgeOfMaturity() { return ageOfMaturity; }
+    /**
+     * Get the reproductive sex of the entity, female or male.
+     * @return Sex
+     */
     public Sex getSex() { return sex; }
+
+    /**
+     * Get the maximum amount of energy the entity can have
+     * @return energyMax
+     */
     public double getEnergyMax() { return energyMax; }
+
+    /**
+     * Get the energy the entity currently posses.
+     * @return actualEnergy
+     */
     public double getActualEnergy() { return actualEnergy; }
+
+    /**
+     * Get whether the entity is awake or not
+     * @return isAwake
+     */
     public boolean isAwake() { return isAwake; }
 
 

@@ -1,14 +1,12 @@
 package gameOfLifeTest.entitiesTest;
 
-import gameOfLife.entities.Animal;
+import gameOfLife.worldObjects.entities.Animal;
 import itumulator.world.Location;
 import itumulator.world.World;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class AnimalTest {
     World world;
