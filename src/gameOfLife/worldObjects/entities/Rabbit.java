@@ -11,7 +11,7 @@ public class Rabbit extends Animal {
     //class fields begin
     public static final int AGE_OF_MATURITY = 60; //3 simulation days
     public static final int MAX_AGE = 240; // 12 simulation days
-    public static final double DAILY_ENERGY_REDUCTION = 1.0;
+    public static final double DAILY_ENERGY_REDUCTION = 0.1;
     //define on the class, all possible images a rabbit can have
     public static final Color RABBIT_COLOR = new Color(218, 205, 184); //color on top-down world view
     private static final DisplayInformation SMALL_RABBIT = new DisplayInformation(RABBIT_COLOR, "rabbit-small");
@@ -50,6 +50,7 @@ public class Rabbit extends Animal {
          */
         this.burrow = null;
         this.isHiding = false;
+        this.actualEnergy = calculateMaxEnergy();
 
         //set display image
         updateDisplayInformation();
@@ -80,8 +81,8 @@ public class Rabbit extends Animal {
      * with the vertex representing the age at which the animal is fully matured.
      */
     @Override
-    protected double calculateMaxEnergy(double age) {
-        return Math.pow(age, 2) + AGE_OF_MATURITY * age;
+    protected double calculateMaxEnergy() {
+        return Math.pow(age, 2) + AGE_OF_MATURITY * age + 5;
     }
 
     /**
@@ -113,8 +114,14 @@ public class Rabbit extends Animal {
      */
     @Override
     public void act(World world){
-
+        if(world.isNight()){
+            sleep();
+        }else{
+            isAwake = true;
+            //Something
+        }
         age(world);
+        updateDisplayInformation();
     }
 
     /**
@@ -124,6 +131,14 @@ public class Rabbit extends Animal {
     @Override
     public void die(World world){
         world.delete(this);
+    }
+
+    /**
+     * Instructs the rabbit to sleep, changing isAwake to false
+     */
+    @Override
+    public void sleep() {
+        isAwake = false;
     }
 
     /**
