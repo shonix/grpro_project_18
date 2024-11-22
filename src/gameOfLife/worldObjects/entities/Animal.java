@@ -48,7 +48,7 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
     /**
      * Calculates the maximum energy level of an animal.
      */
-    protected abstract double calculateMaxEnergy(double age);
+    protected abstract double calculateMaxEnergy();
 
     /**
      * Get entity's age of maturity
@@ -60,6 +60,11 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
      * Method to update the entity's currentDisplayInformation
      */
     public abstract void updateDisplayInformation();
+
+    /**
+     * Method to instruct animal to sleep
+     */
+    public abstract void sleep();
     /*
     END OF ABSTRACT METHODS
      */
