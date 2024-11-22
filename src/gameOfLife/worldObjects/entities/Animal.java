@@ -1,5 +1,6 @@
 package gameOfLife.worldObjects.entities;
 
+import itumulator.executable.DisplayInformation;
 import itumulator.executable.DynamicDisplayInformationProvider;
 import itumulator.simulator.Actor;
 import itumulator.world.Location;
@@ -13,6 +14,7 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
     protected double actualEnergy;
     protected boolean isAwake, isInfected;
     protected Object target;
+    protected DisplayInformation currentDisplayInformation;
 
 
     public enum Sex {
@@ -123,7 +125,10 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
                 .toList();
     }
     
-
+    @Override
+    public DisplayInformation getInformation(){
+        return currentDisplayInformation;
+    }
 }
 
 
