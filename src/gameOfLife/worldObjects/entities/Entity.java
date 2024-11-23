@@ -75,7 +75,7 @@ public abstract class Entity implements Actor{
         return locations.get((new Random()).nextInt(locations.size()));
     }
 
-    public int getDistanceFromActorToLocation(Location targetLocation, World world) {
+    public int getDistanceFromActorToLocation(World world, Location targetLocation) {
         return getDistanceToLocation(world.getLocation(this), targetLocation, world);
     }
 
@@ -96,7 +96,8 @@ public abstract class Entity implements Actor{
 
 
     public int getDistanceToNonBlockingObject(Location startLocation, Object searchType, World world) {
-        if ((world.containsNonBlocking(startLocation) && searchType.getClass().isInstance(world.getTile(startLocation)))) { return 0;}
+        if ((world.containsNonBlocking(startLocation) && searchType.getClass().isInstance(world.getTile(startLocation))))
+            return 0;
 
         boolean locationFound = false;
         int distanceToTarget = 1;
@@ -109,6 +110,31 @@ public abstract class Entity implements Actor{
                 }
             } distanceToTarget++;
         } return distanceToTarget;
+    }
+
+    /**
+     * Returns the closest edible object.
+     * @param world world object.
+     * @param startLocation From where the check is made
+     * @return Closest edible object.
+     */
+    public Edible getClosestEdible(World world, Location startLocation)
+    {
+        int currShortest = Integer.MAX_VALUE;
+        Object foundGrass = null;
+        for ( Object o :world.getEntities().keySet())
+        {
+            if(o instanceof Edible)
+            {
+                int distance = getDistanceToLocation(startLocation,world.getEntities().get(o),world);
+                if(distance < currShortest)
+                {
+                    currShortest = distance;
+                    foundGrass = o;
+                }
+            }
+        }
+        return (Edible) foundGrass;
     }
 
 

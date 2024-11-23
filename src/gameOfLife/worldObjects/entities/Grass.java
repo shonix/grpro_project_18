@@ -13,7 +13,7 @@ import java.util.Set;
  * Grass can spread instantiating a new piece of grass in a neighbouring location.
  */
 public class Grass extends Plant implements NonBlocking {
-    public static final double GRASS_SPREAD_CHANCE = 0.10;
+    public static final double GRASS_SPREAD_CHANCE = 0.01;
     public static final int MIN_PROVIDED_SUSTENANCE = 1, MAX_PROVIDED_SUSTENANCE = 10, MAX_AGE = 120;
 
     public Grass(int sustenance){
@@ -29,7 +29,6 @@ public class Grass extends Plant implements NonBlocking {
     private void spread(World world){
         Set<Location> neighbours = world.getSurroundingTiles();
         if(neighbours.isEmpty()) return; //if no neighbours: terminate method call
-
         for(Location loc : neighbours){
             if(!world.containsNonBlocking(loc) && Math.random() < GRASS_SPREAD_CHANCE){
                 world.setTile(loc, new Grass(1));

@@ -5,7 +5,7 @@ import itumulator.world.World;
 /**
  * Abstract representation of a plant, which is to be inherited from, that implements Actor interface to be able to act in the world
  */
-public abstract class Plant extends Entity{
+public abstract class Plant extends Entity implements Edible{
     protected boolean isEdible;
     protected int providedSustenance;
 

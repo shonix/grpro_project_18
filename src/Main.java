@@ -13,7 +13,7 @@ public class Main {
     public static void main(String[] args) {
         int resolution = 800;
         int programDelay = 100;
-        ProgramInitializer pi = new ProgramInitializer("week-1", "t1-3a", resolution, programDelay);
+        ProgramInitializer pi = new ProgramInitializer("week-1", "t1-1c", resolution, programDelay);
         List<Program> programs = pi.getPrograms();
         for(Program p : programs) {
             p.setDisplayInformation(Grass.class, new DisplayInformation(Color.green, "grass"));
@@ -21,10 +21,7 @@ public class Main {
             p.setDisplayInformation(Rabbit.class, new DisplayInformation(Color.green, "rabbit-large"));
 
             p.show();
-            for(int i = 0; i < 50; i++)
-            {
-                p.simulate();
-            }
+
 
         }
 //        Program program = pi.getPrograms().getFirst();

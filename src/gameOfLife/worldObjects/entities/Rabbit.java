@@ -6,6 +6,7 @@ import itumulator.world.Location;
 import itumulator.world.World;
 
 import java.awt.*;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -22,7 +23,7 @@ public class Rabbit extends Animal {
     private static final DisplayInformation SMALL_RABBIT_SLEEPING = new DisplayInformation(RABBIT_COLOR, "rabbit-small-sleeping");
     private static final DisplayInformation SMALL_RABBIT_FUNGI = new DisplayInformation(RABBIT_COLOR, "rabbit-fungi-small");
     private static final DisplayInformation SMALL_RABBIT_FUNGI_SLEEPING = new DisplayInformation(RABBIT_COLOR, "rabbit-fungi-small-sleeping");
-    private static final DisplayInformation LARGE_RABBIT = new DisplayInformation(RABBIT_COLOR, "rabbit");
+    private static final DisplayInformation LARGE_RABBIT = new DisplayInformation(RABBIT_COLOR, "rabbit-large");
     private static final DisplayInformation LARGE_RABBIT_SLEEPING = new DisplayInformation(RABBIT_COLOR, "rabbit-sleeping");
     private static final DisplayInformation LARGE_RABBIT_FUNGI = new DisplayInformation(RABBIT_COLOR, "rabbit-fungi");
     private static final DisplayInformation LARGE_RABBIT_FUNGI_SLEEPING = new DisplayInformation(RABBIT_COLOR, "rabbit-fungi-sleeping");
@@ -42,6 +43,7 @@ public class Rabbit extends Animal {
         SEEK_SHELTER,
         SEEK_FOOD,
         SEEK_MATE,
+        WAKE_UP,
         DEFAULT
     }
     //class fields end
@@ -142,6 +144,11 @@ public class Rabbit extends Animal {
         } else if (world.getCurrentTime() >= 8) {
             return Action.SEEK_SHELTER;
         }
+        if(!isAwake)
+        {
+            return Action.WAKE_UP;
+        }
+
         if(currentEnergy < hungryThreshold) return Action.SEEK_FOOD;
         if(foundPossibleMate(world)) return Action.SEEK_MATE;
         return Action.DEFAULT;
@@ -152,12 +159,31 @@ public class Rabbit extends Animal {
             case Action.SLEEP:
                 sleep();
                 break;
+            case Action.WAKE_UP:
+                wakeUp();
+                break;
             case Action.SEEK_SHELTER:
                 this.seekTarget(world, world.getLocation(burrow)); //needs to handle if rabbit has no hole correctly
             case Action.SEEK_FOOD:
-                this.seekTarget(world, world.getLocation(burrow));
+                Edible closestEdible = getClosestEdible(world, world.getLocation(this));
+                if(closestEdible != null)
+                {
+                    Location locEdible = world.getLocation(closestEdible);
+                    Location curr = world.getLocation(this);
+                    if (locEdible.equals(curr))
+                    {
+                        eatFood(world, (Plant) closestEdible);
+                    }
+                    else
+                    {
+                        List<Location> path = findNextTileInShortestPath(world, world.getLocation(closestEdible));
+                        world.move(this, path.getFirst());
+                    }
+                }
+                break;
             case Action.SEEK_MATE:
-                throw new UnsupportedOperationException("Not supported yet.");
+                moveActor(world,this,world.getEmptySurroundingTiles(world.getLocation(this)).stream().toList());
+                break;
             default:
                 //stand still
                 break;
@@ -173,13 +199,13 @@ public class Rabbit extends Animal {
         world.remove(this);
     }
 
-    private void eatFood(Plant grass) {
+    private void eatFood(World world, Plant grass) {
         if (grass.getProvidedSustenance() + currentEnergy > energyMax) {
             currentEnergy = energyMax;
         } else {
             currentEnergy += grass.getProvidedSustenance();
         }
-
+        world.delete(grass);
     }
 
 
@@ -217,6 +243,11 @@ public class Rabbit extends Animal {
     @Override
     public void sleep() {
         isAwake = false;
+    }
+
+    private void wakeUp()
+    {
+        isAwake = true;
     }
 
     /**

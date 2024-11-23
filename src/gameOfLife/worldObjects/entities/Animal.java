@@ -31,6 +31,7 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
         this.sex = sex;
         this.isAwake = isAwake;
         this.isInfected = isInfected;
+        this.energyMax  = 100;
         this.hungryThreshold = energyMax / 2;
     }
 
@@ -124,7 +125,7 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
                 mapOfShortestLocation.put(tile, currentShortestPathLength);
             }
         }
-        if (world.getEmptySurroundingTiles().isEmpty() || (currentShortestPathLength <= getDistanceFromActorToLocation(targetLocation, world))) {
+        if (world.getEmptySurroundingTiles().isEmpty() || (currentShortestPathLength > getDistanceFromActorToLocation(world, targetLocation))) {
             return List.of(world.getLocation(this));
         }
 
