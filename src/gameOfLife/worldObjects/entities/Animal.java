@@ -11,11 +11,11 @@ import java.util.*;
 public abstract class Animal extends Entity implements DynamicDisplayInformationProvider {
     protected Sex sex;
     protected double energyMax;
-    protected double actualEnergy;
+    protected double currentEnergy;
     protected boolean isAwake, isInfected;
     protected Object target;
     protected DisplayInformation currentDisplayInformation;
-
+    protected double hungryThreshold;
 
     public enum Sex {
         MALE, FEMALE;
@@ -31,6 +31,7 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
         this.sex = sex;
         this.isAwake = isAwake;
         this.isInfected = isInfected;
+        this.hungryThreshold = energyMax / 2;
     }
 
     public Animal(int age, Sex sex, boolean isAwake){
@@ -91,9 +92,9 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
 
     /**
      * Get the energy the entity currently posses.
-     * @return actualEnergy
+     * @return currentEnergy
      */
-    public double getActualEnergy() { return actualEnergy; }
+    public double getCurrentEnergy() { return currentEnergy; }
 
     /**
      * Get whether the entity is awake or not
@@ -115,7 +116,7 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
 
     public List<Location> findNextTileInShortestPath(World world, Location targetLocation) {
         int currentShortestPathLength = Integer.MAX_VALUE;
-        Map<Location, Integer> mapOfShortestLocation = new HashMap<>(); //has to maintain a map instead of Location variable
+        Map<Location, Integer> mapOfShortestLocation = new HashMap<>();
 
         for (Location tile : world.getEmptySurroundingTiles()) {
             if (getDistanceToLocation(tile, targetLocation, world) < currentShortestPathLength) {
@@ -123,17 +124,29 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
                 mapOfShortestLocation.put(tile, currentShortestPathLength);
             }
         }
-        if (world.getEmptySurroundingTiles().isEmpty()) {
-            if (currentShortestPathLength <= getDistanceFromActorToLocation(targetLocation, world)) {
-                return List.of(world.getLocation(this));
-            }
+        if (world.getEmptySurroundingTiles().isEmpty() || (currentShortestPathLength <= getDistanceFromActorToLocation(targetLocation, world))) {
+            return List.of(world.getLocation(this));
         }
+
         int finalCurrentShortestPathLength = currentShortestPathLength;
+
         return mapOfShortestLocation.entrySet().stream()
-                .filter(entry -> (entry.getValue() > finalCurrentShortestPathLength)) // Filter condition
-                .map(Map.Entry::getKey) // Extract the key
-                .toList();
+                .filter(entry -> (entry.getValue() == finalCurrentShortestPathLength)) // filter condition
+                .map(Map.Entry::getKey) // extract the key
+                .toList(); //returns immutable list
     }
+
+    /**
+     * Begins pathing towards a desired target by choosing the adjacent tile that leads
+     * to the shortest path - (stays still if moving would create greater distance between animal and target Location)
+     * @param world game world
+     */
+    public void seekTarget(World world, Location target) {
+        this.target = target;
+        Location targetLocation = world.getLocation(this.getTarget());
+        moveActor(world, this, findNextTileInShortestPath(world, targetLocation));
+    }
+
 
     public boolean isFemale(){
         return sex.equals(Sex.FEMALE);

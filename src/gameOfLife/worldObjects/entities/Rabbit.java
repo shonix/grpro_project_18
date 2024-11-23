@@ -14,7 +14,7 @@ public class Rabbit extends Animal {
     public static final int AGE_OF_MATURITY = 60; //3 simulation days
     public static final int MAX_AGE = 240; // 12 simulation days
     public static final double DAILY_ENERGY_REDUCTION = 0.1;
-    public static final double HUNGRY_THRESHOLD = 2.0;
+
 
     //define on the class, all possible images a rabbit can have
     public static final Color RABBIT_COLOR = new Color(218, 205, 184); //color on top-down world view
@@ -49,6 +49,7 @@ public class Rabbit extends Animal {
     //instance fields begin
     private Burrow burrow;
     private boolean isHiding;
+    ;
 
     //instance fields end
 
@@ -66,7 +67,7 @@ public class Rabbit extends Animal {
          */
         this.burrow = null;
         this.isHiding = false;
-        this.actualEnergy = calculateMaxEnergy();
+        this.currentEnergy = calculateMaxEnergy();
 
         //set display image
         updateDisplayInformation();
@@ -109,8 +110,8 @@ public class Rabbit extends Animal {
     @Override
     public void age(World world){
         age++;
-        actualEnergy -= DAILY_ENERGY_REDUCTION;
-        if(age > MAX_AGE || actualEnergy <= 0){
+        currentEnergy -= DAILY_ENERGY_REDUCTION;
+        if(age > MAX_AGE || currentEnergy <= 0){
             die(world);
         }
     }
@@ -141,7 +142,7 @@ public class Rabbit extends Animal {
         } else if (world.getCurrentTime() >= 8) {
             return Action.SEEK_SHELTER;
         }
-        if(actualEnergy < HUNGRY_THRESHOLD) return Action.SEEK_FOOD;
+        if(currentEnergy < hungryThreshold) return Action.SEEK_FOOD;
         if(foundPossibleMate(world)) return Action.SEEK_MATE;
         return Action.DEFAULT;
     }
@@ -152,9 +153,9 @@ public class Rabbit extends Animal {
                 sleep();
                 break;
             case Action.SEEK_SHELTER:
-                throw new UnsupportedOperationException("Not supported yet.");
+                this.seekTarget(world, world.getLocation(burrow)); //needs to handle if rabbit has no hole correctly
             case Action.SEEK_FOOD:
-                throw new UnsupportedOperationException("Not supported yet.");
+                this.seekTarget(world, world.getLocation(burrow));
             case Action.SEEK_MATE:
                 throw new UnsupportedOperationException("Not supported yet.");
             default:
@@ -162,6 +163,30 @@ public class Rabbit extends Animal {
                 break;
         }
     }
+
+
+    private void hideInBurrow(World world, Burrow burrow) {
+        if (burrow == null) {
+            createHole();
+        }
+        burrow.addRabbit(this);
+        world.remove(this);
+    }
+
+    private void eatFood(Plant grass) {
+        if (grass.getProvidedSustenance() + currentEnergy > energyMax) {
+            currentEnergy = energyMax;
+        } else {
+            currentEnergy += grass.getProvidedSustenance();
+        }
+
+    }
+
+
+    private void createHole() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 
     private boolean foundPossibleMate(World world){
         Set<Location> tiles = world.getSurroundingTiles(3);

@@ -94,4 +94,23 @@ public abstract class Entity implements Actor{
         } return distanceToTarget;
     }
 
+
+    public int getDistanceToNonBlockingObject(Location startLocation, Object searchType, World world) {
+        if ((world.containsNonBlocking(startLocation) && searchType.getClass().isInstance(world.getTile(startLocation)))) { return 0;}
+
+        boolean locationFound = false;
+        int distanceToTarget = 1;
+
+        while (!locationFound) {
+            for (Location tile : world.getSurroundingTiles(startLocation, distanceToTarget)) {
+                if(world.containsNonBlocking(tile) && searchType.getClass().isInstance(world.getTile(tile))) {
+                    locationFound = true;
+                    break;
+                }
+            } distanceToTarget++;
+        } return distanceToTarget;
+    }
+
+
+
 }

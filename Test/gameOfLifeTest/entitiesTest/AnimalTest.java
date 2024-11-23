@@ -1,12 +1,15 @@
 package gameOfLifeTest.entitiesTest;
 
 import gameOfLife.worldObjects.entities.Animal;
+import gameOfLife.worldObjects.entities.Rabbit;
 import itumulator.world.Location;
 import itumulator.world.World;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class AnimalTest {
     World world;
@@ -20,7 +23,7 @@ class AnimalTest {
 
 
     private void setupAnimalInWorld() {
-        animal = new Animal(1, Animal.Sex.MALE, 2);
+        animal = new Rabbit();
         initialLocation = new Location(0, 0);
         world.setDay();
         world.setCurrentLocation(initialLocation);
