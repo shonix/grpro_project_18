@@ -163,7 +163,9 @@ public class Rabbit extends Animal {
                 wakeUp();
                 break;
             case Action.SEEK_SHELTER:
-                this.seekTarget(world, world.getLocation(burrow)); //needs to handle if rabbit has no hole correctly
+                if(this.burrow != null){
+                    this.seekTarget(world, world.getLocation(burrow)); //needs to handle if rabbit has no hole correctly - Should be fixed TODO delete this comment.
+                }
             case Action.SEEK_FOOD:
                 Edible closestEdible = getClosestEdible(world, world.getLocation(this));
                 if(closestEdible != null)
