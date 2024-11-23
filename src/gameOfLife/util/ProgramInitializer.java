@@ -73,7 +73,7 @@ public class ProgramInitializer {
     private void loadEntities(File file)
     {
         List<File> loadedFiles;
-        Map<String, String> fileMap = new HashMap<>();
+        Map<String, String> fileMap = new HashMap<>(); // maps each type of entity contained in the file to how many of each to be created
         Program program;
 
         if(file != null)
@@ -89,8 +89,8 @@ public class ProgramInitializer {
             {
                 BufferedReader br = new BufferedReader(new FileReader(f));
                 Scanner scan  = new Scanner(br);
-
-                    program = createProgram(Integer.parseInt(scan.nextLine()));
+                int worldSize = Integer.parseInt(scan.nextLine());
+                    program = createProgram(worldSize);
                     programs.add(program);
 
                 //Inserting each line of file into map ([0] contains entity type, [1] contains population size).

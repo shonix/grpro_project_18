@@ -94,22 +94,6 @@ public abstract class Entity implements Actor{
     }
 
 
-    public int getDistanceToNonBlockingObject(Location startLocation, Object searchType, World world) {
-        if ((world.containsNonBlocking(startLocation) && searchType.getClass().isInstance(world.getTile(startLocation))))
-            return 0;
-
-        boolean locationFound = false;
-        int distanceToTarget = 1;
-
-        while (!locationFound) {
-            for (Location tile : world.getSurroundingTiles(startLocation, distanceToTarget)) {
-                if(world.containsNonBlocking(tile) && searchType.getClass().isInstance(world.getTile(tile))) {
-                    locationFound = true;
-                    break;
-                }
-            } distanceToTarget++;
-        } return distanceToTarget;
-    }
 
     /**
      * Returns the closest edible object.
@@ -121,7 +105,7 @@ public abstract class Entity implements Actor{
     {
         int currShortest = Integer.MAX_VALUE;
         Object foundGrass = null;
-        for ( Object o :world.getEntities().keySet())
+        for ( Object o : world.getEntities().keySet())
         {
             if(o instanceof Edible)
             {

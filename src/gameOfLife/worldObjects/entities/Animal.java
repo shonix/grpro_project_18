@@ -125,8 +125,8 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
                 mapOfShortestLocation.put(tile, currentShortestPathLength);
             }
         }
-        if (world.getEmptySurroundingTiles().isEmpty() || (currentShortestPathLength > getDistanceFromActorToLocation(world, targetLocation))) {
-            return List.of(world.getLocation(this));
+        if (world.getEmptySurroundingTiles().isEmpty() || (currentShortestPathLength >= getDistanceFromActorToLocation(world, targetLocation))) {
+            return List.of(world.getLocation(this)); //does not move if locked in, or movement increases distance to target
         }
 
         int finalCurrentShortestPathLength = currentShortestPathLength;
