@@ -1,13 +1,10 @@
 package gameOfLife.util;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
- * Handler for reading in all input files for the project.
+ * A class to allow caching of all files in data folder. Strips any subdirectory and only maintains name (thus they must be unique even in subdirectories).
  */
 public class DataHandler
 {
@@ -84,9 +81,7 @@ public class DataHandler
                     }
                 }
             }
-        } catch (IllegalArgumentException e){
-            System.out.println("Cache loader error: " + e.getMessage());
-        } catch (NullPointerException e) {
+        } catch (IllegalArgumentException | NullPointerException e){
             System.out.println("Cache loader error: " + e.getMessage());
         }
     }
