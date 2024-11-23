@@ -51,7 +51,6 @@ public class Rabbit extends Animal {
     //instance fields begin
     private Burrow burrow;
     private boolean isHiding;
-    ;
 
     //instance fields end
 
@@ -221,7 +220,7 @@ public class Rabbit extends Animal {
         for(Location loc : tiles){
             if (world.getTile(loc) instanceof Rabbit) {
                 if (((Rabbit) world.getTile(loc)).isFemale()) {
-                    target = ((Rabbit) world.getTile(loc));
+                    target = ((Rabbit) world.getTile(loc)); // Check if target is a rabbit. If this is done, no reason for casting.
                     return true;
                 }
             }
