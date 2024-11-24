@@ -41,13 +41,13 @@ class AnimalTest {
     @Test
     void getDistanceFromActorToLocation_distanceCheck_distanceIsAccurate() {
         setupAnimalInWorld();
-        assertEquals(3, animal.getDistanceFromActorToLocation((new Location(3,3)), world));
-        assertEquals(1, animal.getDistanceFromActorToLocation((new Location(1,1)), world));
-        assertEquals(0, animal.getDistanceFromActorToLocation((new Location(0,0)), world));
+        assertEquals(3, animal.getDistanceFromActorToLocation(world, (new Location(3,3))));
+        assertEquals(1, animal.getDistanceFromActorToLocation(world, (new Location(1,1))));
+        assertEquals(0, animal.getDistanceFromActorToLocation(world, (new Location(0,0))));
         animal.moveActor(world, animal, List.of(new Location(1,0)));
-        assertEquals(3, animal.getDistanceFromActorToLocation((new Location(3,3)), world));
+        assertEquals(3, animal.getDistanceFromActorToLocation(world, (new Location(3,3))));
         animal.moveActor(world, animal, List.of(new Location(1,1)));
-        assertEquals(2, animal.getDistanceFromActorToLocation((new Location(3,3)), world));
+        assertEquals(2, animal.getDistanceFromActorToLocation(world, (new Location(3,3))));
 
     }
 }

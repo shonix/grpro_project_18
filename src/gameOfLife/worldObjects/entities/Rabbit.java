@@ -14,9 +14,7 @@ public class Rabbit extends Animal {
     private static final int AGE_OF_MATURITY = 60; //3 simulation days
     private static final int MAX_AGE = 240; // 12 simulation days
     private static final double DAILY_ENERGY_REDUCTION = 0.1;
-    private int mateSearchRadius;
-
-
+    private int mateSearchRadius; //TODO consider changing to class constant
 
     //define on the class, all possible images a rabbit can have
     public static final Color RABBIT_COLOR = new Color(218, 205, 184); //color on top-down world view
@@ -133,6 +131,12 @@ public class Rabbit extends Animal {
         updateDisplayInformation();
     }
 
+    /**
+     * Method for rabbit to dertermine what action it needs to perform, returning an Action enum corresponding to the
+     * first applicable conditions of the rabbit, according to a specific priority of actions
+     * @param world in which the rabbit exists
+     * @return Action enum signifying what action the rabbit must take
+     */
     @Override
     protected Action determineAction(World world){
         if(world.getCurrentTime() >= 12)
@@ -162,6 +166,11 @@ public class Rabbit extends Animal {
         return Action.DEFAULT;
     }
 
+    /**
+     * Instructs the rabbit to perform a specific action, calling other methods to do the actual actions.
+     * @param world the world in which the Animal exitsts
+     * @param action the action to be taken
+     */
     @Override
     protected void performAction(World world, Action action){
         switch (action){
@@ -180,6 +189,10 @@ public class Rabbit extends Animal {
                     this.seekTarget(world, world.getLocation(burrow)); //needs to handle if rabbit has no hole correctly - Should be fixed TODO delete this comment.
                 }
             case Action.SEEK_FOOD:
+                /*
+                TODO
+                can we move this functionality to its own method?
+                 */
                 Edible closestEdible = getClosestEdible(world, world.getLocation(this));
                 if(closestEdible != null)
                 {
@@ -214,36 +227,30 @@ public class Rabbit extends Animal {
         world.remove(this);
     }
 
+    /**
+     * Will eat a piece of grass, increasing the rabbit's currentEnergy according to the sustenance the grass provides.
+     * It will furthermore instruct the piece of grass to die
+     * @param world
+     * @param grass
+     */
     private void eatFood(World world, Plant grass) {
         if (grass.getProvidedSustenance() + currentEnergy > energyMax) {
             currentEnergy = energyMax;
         } else {
             currentEnergy += grass.getProvidedSustenance();
         }
-        world.delete(grass);
+        grass.die(world);
     }
 
-
+    /**
+     * TODO
+     */
     private void createHole() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-
-    private boolean foundPossibleMate(World world){
-        Set<Location> tiles = world.getSurroundingTiles(3);
-        for(Location loc : tiles){
-            if (world.getTile(loc) instanceof Rabbit) {
-                if (((Rabbit) world.getTile(loc)).isFemale()) {
-                    target = ((Rabbit) world.getTile(loc)); // Check if target is a rabbit. If this is done, no reason for casting.
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     /**
-     *
+     * TODO
      * @param world
      * @param radius
      * @return
@@ -286,11 +293,19 @@ public class Rabbit extends Animal {
         }
     }
 
+    /**
+     * Set the rabbits pregnant status
+     * @param pregnant true if pregnant, false if not.
+     */
     public void setPregnant(boolean pregnant)
     {
         this.isPregnant = pregnant;
     }
 
+    /**
+     * If the rabbit is pregnant and has an empty tile next to it, it will give birth and create a new rabbit.
+     * @param world in which the rabbit exists.
+     */
     public void giveBirth(World world)
     {
         List<Location> emptySurroundingTiles = world.getEmptySurroundingTiles(world.getLocation(this)).stream().toList();
@@ -317,6 +332,13 @@ public class Rabbit extends Animal {
         isAwake = false;
     }
 
+    /**
+     * Instructs the rabbit to attempt waking up. If the rabbit is hiding, it will also be asleep and in a whole,
+     * therefore it must be checked that it can exit the burrow it is residing in. If it can't nothing happens and in
+     * effect the rabbit will stay asleep in its burrow. Otherwise it will either just wake up from the tile it was
+     * standing on, or wake up and exit the burrow it was in.
+     * @param world the world the rabbit exists in
+     */
     private void wakeUp(World world) {
         if(isHiding){
             Set<Location> emptyTiles = world.getSurroundingTiles(world.getLocation(burrow));
