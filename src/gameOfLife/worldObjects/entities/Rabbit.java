@@ -1,6 +1,5 @@
 package gameOfLife.worldObjects.entities;
 
-import gameOfLife.util.WorldHandler;
 import gameOfLife.worldObjects.Burrow;
 import itumulator.executable.DisplayInformation;
 import itumulator.world.Location;
