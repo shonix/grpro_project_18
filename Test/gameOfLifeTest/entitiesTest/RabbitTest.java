@@ -87,4 +87,140 @@ public class RabbitTest {
         if(world.getTile(new Location(0,0)) instanceof Rabbit) allRabbits++; //does a rabbit exist on tile 0,0?
         assertEquals(4, allRabbits); // assert that there only exists 4 rabbits in the whole world
     }
+
+    /**
+     * K1-2a project specification test.
+     */
+    @Test
+    void testRabbitPlacedFromFile(){
+        //TODO
+    }
+
+    /**
+     * K1-2b project specification test.
+     */
+    @Test
+    void testRabbitDeath(){
+        //TODO
+    }
+
+    /**
+     * K1-2c project specification test.
+     */
+    @Test
+    void testRabbitEatGrass1(){
+        //TODO
+    }
+
+    /**
+     * K1-2c project specification test.
+     */
+    @Test
+    void testRabbitDieFromStarvation(){}
+
+    /**
+     *
+     */
+    @Test
+    void testRabbitDieFromOldAge(){
+        //TODO
+    }
+
+    /**
+     *
+     */
+    @Test
+    void testRabbitDieFromPredator(){
+        //TODO
+    }
+
+    /**
+     * K1-2d project specification test.
+     */
+    @Test
+    void testRabbitAging(){
+        //TODO
+    }
+
+    /**
+     * K1-2e project specification test.
+     */
+    @Test
+    void testRabbitProcreation1(){
+        //TODO
+    }
+
+    /**
+     * K1-2e project specification test.
+     */
+    @Test
+    void testRabbitProcreation2(){
+        //TODO
+    }
+
+    /**
+     * K1-2f project specification test.
+     */
+    @Test
+    void testRabbitDigBurrow1(){
+        //TODO
+    }
+
+    /**
+     * K1-2f project specification test.
+     */
+    @Test
+    void testRabbitDigBurrow2(){
+        //TODO
+    }
+
+    /**
+     * K1-2f project specification test.
+     */
+    @Test
+    void testRabbitShareBurrow(){
+        //TODO
+    }
+
+    /**
+     * K1-2f project specification test.
+     */
+    @Test
+    void testRabbitHasOneBurrow1(){
+        //TODO
+    }
+
+    /**
+     * K1-2f project specification test.
+     */
+    @Test
+    void testRabbitHasOneBurrow2(){
+        //TODO
+    }
+
+    /**
+     * K1-2g project specification test.
+     */
+    @Test
+    void testRabbitSeekBurrow1(){
+        //TODO
+    }
+
+
+    /**
+     * K1-2g project specification test.
+     */
+    @Test
+    void testRabbitSeekBurrow2(){
+        //TODO
+    }
+
+
+    /**
+     * K1-2g project specification test.
+     */
+    @Test
+    void testRabbitSeekBurrow3(){
+        //TODO
+    }
 }
