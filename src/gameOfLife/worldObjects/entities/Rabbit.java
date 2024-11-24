@@ -40,15 +40,6 @@ public class Rabbit extends Animal {
             7, LARGE_RABBIT
     );
 
-    private enum Action{
-        SLEEP,
-        WAKE_UP,
-        GIVE_BIRTH,
-        SEEK_SHELTER,
-        SEEK_FOOD,
-        SEEK_MATE,
-        DEFAULT
-    }
     //class fields end
 
     //instance fields begin
@@ -141,7 +132,8 @@ public class Rabbit extends Animal {
         updateDisplayInformation();
     }
 
-    private Action determineAction(World world){
+    @Override
+    protected Action determineAction(World world){
         if(world.getCurrentTime() >= 12)
             return Action.SLEEP;
 
@@ -166,11 +158,11 @@ public class Rabbit extends Animal {
             }
         }
 
-
         return Action.DEFAULT;
     }
 
-    private void performAction(World world, Action action){
+    @Override
+    protected void performAction(World world, Action action){
         switch (action){
             case Action.SLEEP:
                 sleep();

@@ -17,6 +17,16 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
     protected DisplayInformation currentDisplayInformation;
     protected double hungryThreshold;
 
+    public enum Action{
+        SLEEP,
+        WAKE_UP,
+        GIVE_BIRTH,
+        SEEK_SHELTER,
+        SEEK_FOOD,
+        SEEK_MATE,
+        DEFAULT
+    }
+
     public enum Sex {
         MALE, FEMALE;
 
@@ -68,6 +78,19 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
      */
     public abstract void sleep();
 
+    /**
+     * Method for performing an action. To be called in the act method
+     * @param world the world in which the Animal exitsts
+     * @param action the action to be taken
+     */
+    protected abstract void performAction(World world, Action action);
+
+    /**
+     * Determines what action the animal must take.
+     * @param world
+     * @return Action. an Action enum signifying the action the animal is about to take.
+     */
+    protected abstract Action determineAction(World world);
     /*
     END OF ABSTRACT METHODS
      */
