@@ -6,15 +6,17 @@ import itumulator.world.Location;
 import itumulator.world.World;
 
 import java.awt.*;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class Rabbit extends Animal {
     //class fields begin
-    public static final int AGE_OF_MATURITY = 60; //3 simulation days
-    public static final int MAX_AGE = 240; // 12 simulation days
-    public static final double DAILY_ENERGY_REDUCTION = 0.1;
+    private static final int AGE_OF_MATURITY = 60; //3 simulation days
+    private static final int MAX_AGE = 240; // 12 simulation days
+    private static final double DAILY_ENERGY_REDUCTION = 0.1;
+    private int mateSearchRadius;
+    private Rabbit currentMate;
+    private boolean isPregnant = false;
 
 
     //define on the class, all possible images a rabbit can have
@@ -40,10 +42,11 @@ public class Rabbit extends Animal {
 
     private enum Action{
         SLEEP,
+        WAKE_UP,
+        GIVE_BIRTH,
         SEEK_SHELTER,
         SEEK_FOOD,
         SEEK_MATE,
-        WAKE_UP,
         DEFAULT
     }
     //class fields end
@@ -69,6 +72,7 @@ public class Rabbit extends Animal {
         this.burrow = null;
         this.isHiding = false;
         this.currentEnergy = calculateMaxEnergy();
+        this.mateSearchRadius = 2;
 
         //set display image
         updateDisplayInformation();
@@ -138,18 +142,31 @@ public class Rabbit extends Animal {
     }
 
     private Action determineAction(World world){
-        if(world.getCurrentTime() >= 12){
+        if(world.getCurrentTime() >= 12)
             return Action.SLEEP;
-        } else if (world.getCurrentTime() >= 8) {
+
+        else if (world.getCurrentTime() >= 8)
             return Action.SEEK_SHELTER;
-        }
+
         if(!isAwake)
-        {
             return Action.WAKE_UP;
+
+        if(currentEnergy < hungryThreshold)
+            return Action.SEEK_FOOD;
+
+        if(!isFemale() && age >= getAgeOfMaturity())
+        {
+            if(currentMate != null)
+            {
+                return Action.SEEK_MATE;
+            }
+            else
+            {
+                this.currentMate = findMate(world, mateSearchRadius);
+            }
         }
 
-        if(currentEnergy < hungryThreshold) return Action.SEEK_FOOD;
-        if(foundPossibleMate(world)) return Action.SEEK_MATE;
+
         return Action.DEFAULT;
     }
 
@@ -160,6 +177,10 @@ public class Rabbit extends Animal {
                 break;
             case Action.WAKE_UP:
                 wakeUp();
+                if(isPregnant)
+                {
+                    giveBirth(world);
+                }
                 break;
             case Action.SEEK_SHELTER:
                 if(this.burrow != null){
@@ -183,14 +204,14 @@ public class Rabbit extends Animal {
                 }
                 break;
             case Action.SEEK_MATE:
-                moveActor(world,this,world.getEmptySurroundingTiles(world.getLocation(this)).stream().toList());
+                seekMateAndCopulate(world);
                 break;
             default:
-                //stand still
+                if(new Random().nextBoolean())
+                    moveActor(world,this,world.getEmptySurroundingTiles(world.getLocation(this)).stream().toList()); // Move randomly / idle
                 break;
         }
     }
-
 
     private void hideInBurrow(World world, Burrow burrow) {
         if (burrow == null) {
@@ -228,6 +249,63 @@ public class Rabbit extends Animal {
         return false;
     }
 
+    /**
+     *
+     * @param world
+     * @param radius
+     * @return
+     */
+    private Rabbit findMate(World world, int radius)
+    {
+        for(Object o : world.getEntities().keySet())
+        {
+            if(o instanceof Rabbit rabbit) //I don't like this at all - "Pattern variable". (Might want to ask TA about this).
+            {
+                if(rabbit.isFemale() && getDistanceFromActorToLocation(world,world.getLocation(o)) <= radius && rabbit.age > rabbit.getAgeOfMaturity()) //Pretty long oneliner.. Basically checks if rabbit is female, and is withing given search radius.
+                {
+                    return rabbit;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * TODO
+     * @param world
+     */
+    private void seekMateAndCopulate(World world)
+    {
+        if(world.getEntities().containsKey(currentMate))
+        {
+            if(getDistanceFromActorToLocation(world,world.getLocation(currentMate)) <= 1)
+            {
+                currentMate.setPregnant(true);
+                currentMate = null;
+            }
+            else {
+                List<Location> path = findNextTileInShortestPath(world, world.getLocation(currentMate));
+                world.move(this, path.getFirst());
+            }
+        }
+        else {
+            currentMate = null;
+        }
+    }
+
+    public void setPregnant(boolean pregnant)
+    {
+        this.isPregnant = pregnant;
+    }
+
+    public void giveBirth(World world)
+    {
+        List<Location> emptySurroundingTiles = world.getEmptySurroundingTiles(world.getLocation(this)).stream().toList();
+        if(!emptySurroundingTiles.isEmpty()) {
+            world.setTile(emptySurroundingTiles.getFirst(), new Rabbit(0, new Random().nextBoolean()?Animal.Sex.FEMALE: Animal.Sex.MALE, false, this.isInfected));
+            isPregnant = false;
+        }
+    }
 
     /**
      * Method instructing rabbit to die, deleting it from the world.

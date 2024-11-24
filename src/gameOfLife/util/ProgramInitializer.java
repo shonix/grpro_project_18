@@ -1,5 +1,6 @@
 package gameOfLife.util;
 
+import gameOfLife.worldObjects.entities.Animal;
 import gameOfLife.worldObjects.entities.Grass;
 import gameOfLife.worldObjects.Burrow;
 import gameOfLife.worldObjects.entities.Rabbit;
@@ -181,7 +182,7 @@ public class ProgramInitializer {
                 {
                     Location location = new Location(rand.nextInt(world.getSize()),rand.nextInt(world.getSize()));
                     if(world.isTileEmpty(location)) {
-                        world.setTile(location, new Rabbit());
+                        world.setTile(location, new Rabbit(0, rand.nextBoolean()?Animal.Sex.FEMALE: Animal.Sex.MALE, true, false));
                     }
                 }
                 break;
