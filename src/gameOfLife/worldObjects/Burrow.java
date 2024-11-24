@@ -118,9 +118,7 @@ public class Burrow implements NonBlocking, DynamicDisplayInformationProvider {
      * @param world
      */
     public void destroyBurrow(World world){
-        for(Rabbit rabbit : owners){
-            rabbit.setBurrow(null);
-        }
+
         Set<Location> emptyTiles = world.getEmptySurroundingTiles(world.getLocation(this));
 
         //find number of rabbits to place and place them
@@ -136,7 +134,10 @@ public class Burrow implements NonBlocking, DynamicDisplayInformationProvider {
         }
         //kill any remaining rabbits
         for(Rabbit rabbitToDie : rabbitsInBurrow){
-            rabbitToDie.die(world);
+            world.delete(rabbitToDie);
+        }
+        for(Rabbit r : owners){
+            r.setBurrow(null);
         }
         world.delete(this);
     }

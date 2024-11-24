@@ -1,12 +1,16 @@
 package gameOfLifeTest.entitiesTest;
 
 import gameOfLife.worldObjects.Burrow;
+import gameOfLife.worldObjects.entities.Animal;
 import gameOfLife.worldObjects.entities.Rabbit;
 import itumulator.world.Location;
 import itumulator.world.World;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -59,16 +63,28 @@ public class RabbitTest {
     void testExitBurrow2(){
         world = new World(2);
         world.setTile(new Location(0,0), burrow);
+        assertEquals(1, world.getEntities().size()); // a burrow has been added to the map and thus world
         world.setTile(new Location(0,0), r1);
+        assertEquals(2, world.getEntities().size()); // a rabbit has been added to the world map
         world.setTile(new Location(0,1), r2);
+        assertEquals(3, world.getEntities().size()); // yet another rabbit has been added
         world.setTile(new Location(1,0), r3);
+        assertEquals(4, world.getEntities().size()); // a final rabbit has been added to the world map
         world.add(r4);
+        assertEquals(5, world.getEntities().size()); // a rabbit is added to the world but not the map
         world.add(r5);
+        assertEquals(6, world.getEntities().size()); // a second rabbit is added to the world but not the map
         burrow.addOwner(r4);
         burrow.addRabbit(r4);
+        r4.setHiding(true);
         burrow.addOwner(r5);
         burrow.addRabbit(r5);
+        r5.setHiding(true);
+        assertEquals(2, burrow.getRabbitsInHole().size()); // assert burrow has exactly 2 rabbits
         burrow.destroyBurrow(world);
-        assertEquals(5, world.getEntities().size());
+        assertEquals(4, world.getEntities().size()); // a rabbit and a burrow have been removed
+        int allRabbits = world.getAll(Rabbit.class, world.getSurroundingTiles(new Location(0,0), world.getSize()+1)).size(); //all rabbits except on tile 0,0
+        if(world.getTile(new Location(0,0)) instanceof Rabbit) allRabbits++; //does a rabbit exist on tile 0,0?
+        assertEquals(4, allRabbits); // assert that there only exists 4 rabbits in the whole world
     }
 }
