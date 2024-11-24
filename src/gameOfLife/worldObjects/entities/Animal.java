@@ -16,6 +16,11 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
     protected Object target;
     protected DisplayInformation currentDisplayInformation;
     protected double hungryThreshold;
+    /*
+    TODO consider moving hungryThreshold back to individual animal implementations and as a class constant,
+    TODO such that different animal species has a different hunger threshold, some animals will do something earlier than
+    TODO others.
+     */
 
     public enum Action{
         SLEEP,

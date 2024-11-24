@@ -13,15 +13,28 @@ import java.util.Set;
  * Represents a burrow a rabbit can hide in
  */
 public class Burrow implements NonBlocking, DynamicDisplayInformationProvider {
+    // class fields begin
+
     private static final int SMALL_HOLE_LIMIT = 2; //the limit after which burrow is displayed as big
+
     //possible images for burrows
     private static final DisplayInformation SMALL_HOLE = new DisplayInformation(Color.green, "hole-small");
     private static final DisplayInformation BIG_HOLE = new DisplayInformation(Color.green, "hole");
+
+    // class fields end
+
+    // instance fields begin
 
     private Set<Rabbit> rabbitsInBurrow;
     private int capacity;
     private DisplayInformation currentDisplayInformation;
 
+    // instance fields end
+
+    /**
+     * Burrow constructor
+     * @param capacity the initial maximum amount of rabbits the burrow can encompass as any given time
+     */
     public Burrow(int capacity) {
         if(capacity < 1) throw new IllegalArgumentException("capacity must be greater than 0!");
         this.capacity = capacity;
