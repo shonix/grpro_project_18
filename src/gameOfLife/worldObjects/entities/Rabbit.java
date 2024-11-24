@@ -199,25 +199,7 @@ public class Rabbit extends Animal {
                     this.seekTarget(world, world.getLocation(burrow)); //needs to handle if rabbit has no hole correctly - Should be fixed TODO delete this comment.
                 }
             case Action.SEEK_FOOD:
-                /*
-                TODO
-                can we move this functionality to its own method?
-                 */
-                Edible closestEdible = getClosestEdible(world, world.getLocation(this));
-                if(closestEdible != null)
-                {
-                    Location locEdible = world.getLocation(closestEdible);
-                    Location curr = world.getLocation(this);
-                    if (locEdible.equals(curr))
-                    {
-                        eatFood(world, (Plant) closestEdible);
-                    }
-                    else
-                    {
-                        List<Location> path = findNextTileInShortestPath(world, world.getLocation(closestEdible));
-                        world.move(this, path.getFirst());
-                    }
-                }
+                seekFood(world);
                 break;
             case Action.SEEK_MATE:
                 seekMateAndCopulate(world);
@@ -259,6 +241,24 @@ public class Rabbit extends Animal {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    public void seekFood(World world)
+    {
+        Edible closestEdible = getClosestEdible(world, world.getLocation(this));
+        if(closestEdible != null)
+        {
+            Location locEdible = world.getLocation(closestEdible);
+            Location curr = world.getLocation(this);
+            if (locEdible.equals(curr))
+            {
+                eatFood(world, (Plant) closestEdible);
+            }
+            else
+            {
+                List<Location> path = findNextTileInShortestPath(world, world.getLocation(closestEdible));
+                world.move(this, path.getFirst());
+            }
+        }
+    }
 
     /**
      * TODO
