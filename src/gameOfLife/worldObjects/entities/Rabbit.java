@@ -1,5 +1,6 @@
 package gameOfLife.worldObjects.entities;
 
+import gameOfLife.util.WorldHandler;
 import gameOfLife.worldObjects.Burrow;
 import itumulator.executable.DisplayInformation;
 import itumulator.world.Location;
@@ -41,8 +42,10 @@ public class Rabbit extends Animal {
 
     //instance fields begin
     private Burrow burrow;
+    private Rabbit currentMate; //TODO consider changing type to Animal and move to Animal class
     private boolean isHiding;
-
+    private boolean isPregnant = false; //TODO consider moving to Animal class
+    private Rabbit mother;
     //instance fields end
 
     /**
@@ -61,7 +64,7 @@ public class Rabbit extends Animal {
         this.isHiding = false;
         this.currentEnergy = calculateMaxEnergy();
         this.mateSearchRadius = 2;
-
+        this.mother = null;
         //set display image
         updateDisplayInformation();
     }
@@ -209,9 +212,7 @@ public class Rabbit extends Animal {
                 }
                 break;
             case Action.SEEK_SHELTER:
-                if(this.burrow != null){
-                    this.seekTarget(world, world.getLocation(burrow)); //needs to handle if rabbit has no hole correctly - Should be fixed TODO delete this comment.
-                }
+                seekShelter(world);
             case Action.SEEK_FOOD:
                 seekFood(world);
                 break;
@@ -220,9 +221,33 @@ public class Rabbit extends Animal {
                 break;
             default:
                 if(new Random().nextBoolean())
-                    moveActor(world,this,world.getEmptySurroundingTiles(world.getLocation(this)).stream().toList()); // Move randomly / idle
+                    moveActor(world, world.getEmptySurroundingTiles(world.getLocation(this)).stream().toList()); // Move randomly / idle
                 break;
         }
+    }
+
+    private void seekShelter(World world) {
+        if (burrow == null) {
+            createBurrow(world);
+        } else if (this.getDistanceToLocation(world, world.getLocation(this), world.getLocation(burrow)) == 0) {
+            burrow.addRabbit(this);
+            world.remove(this);
+        } else {
+            this.moveActor(world, findNextTileInShortestPath(world, world.getLocation(burrow)));
+
+        }
+    }
+
+    private void createBurrow(World world) {
+        if (isBurrowOneTile(world)) {
+            world.move(world, computeNextRandom(this.getEmptyAdjacentTiles(world))); //should move to adjacent tiles without hole. Change multiple methods in entity to take and return Sets instead. Much smarter
+        } else if (isGrassOneTile(world)) {
+            world.delete(WorldHandler.getClosestOfEntity(world, Grass.class, (this)));
+            world.setTile(world.getLocation(this), (new Burrow(3, this)));
+        } else {
+            world.setTile(world.getLocation(this), (new Burrow(3, this)));
+        }
+
     }
 
     private void hideInBurrow(World world, Burrow burrow) {
@@ -231,6 +256,14 @@ public class Rabbit extends Animal {
         }
         burrow.addRabbit(this);
         world.remove(this);
+    }
+
+    private boolean isGrassOneTile(World world) {
+        return !world.getAll(Grass.class, List.of(world.getLocation(this))).isEmpty(); //fix to work (find out if current tile currently has grass)
+    }
+
+    private boolean isBurrowOneTile(World world) {
+        return !world.getAll(Burrow.class, List.of(world.getLocation(this))).isEmpty(); //fix to work (find out if current tile currently has grass)
     }
 
     /**

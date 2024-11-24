@@ -211,12 +211,12 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
 
 
 
-    public void moveActor(World world, Actor actor, List<Location> locations) {
+    public void moveActor(World world,List<Location> locations) {
         if (world.getEmptySurroundingTiles().isEmpty()) {
-            world.move(actor, world.getLocation(actor));
+            world.move(this, world.getLocation(this));
         } else {
             Location nextLocation = computeNextRandom(locations);
-            world.move(actor, nextLocation);
+            world.move(this, nextLocation);
             world.setCurrentLocation(nextLocation);
 
         }
@@ -227,8 +227,8 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
         Map<Location, Integer> mapOfShortestLocation = new HashMap<>();
 
         for (Location tile : world.getEmptySurroundingTiles()) {
-            if (getDistanceToLocation(tile, targetLocation, world) < currentShortestPathLength) {
-                currentShortestPathLength = getDistanceToLocation(tile, targetLocation, world);
+            if (getDistanceToLocation(world, targetLocation, tile) < currentShortestPathLength) {
+                currentShortestPathLength = getDistanceToLocation(world, targetLocation, tile);
                 mapOfShortestLocation.put(tile, currentShortestPathLength);
             }
         }
@@ -252,7 +252,7 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
     public void seekTarget(World world, Location target) {
         this.target = target;
         Location targetLocation = world.getLocation(this.getTarget());
-        moveActor(world, this, findNextTileInShortestPath(world, targetLocation));
+        moveActor(world, findNextTileInShortestPath(world, targetLocation));
     }
 
     @Override

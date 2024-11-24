@@ -75,10 +75,10 @@ public abstract class Entity implements Actor{
     }
 
     public int getDistanceFromActorToLocation(World world, Location targetLocation) {
-        return getDistanceToLocation(world.getLocation(this), targetLocation, world);
+        return getDistanceToLocation(world, world.getLocation(this), targetLocation);
     }
 
-    public int getDistanceToLocation(Location startLocation, Location targetLocation, World world) {
+    public int getDistanceToLocation(World world, Location startLocation, Location targetLocation) {
         if (startLocation.equals(targetLocation)) { return 0;}
 
         boolean locationFound = false;
@@ -109,7 +109,7 @@ public abstract class Entity implements Actor{
         {
             if(o instanceof Edible)
             {
-                int distance = getDistanceToLocation(startLocation,world.getEntities().get(o),world);
+                int distance = getDistanceToLocation(world, startLocation,world.getEntities().get(o));
                 if(distance < currShortest)
                 {
                     currShortest = distance;

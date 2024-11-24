@@ -34,7 +34,7 @@ class AnimalTest {
     @Test
     void pathToLocation_actorMoves_actorMovesAsExpected() {
         setupAnimalInWorld();
-        animal.moveActor(world, animal, animal.findNextTileInShortestPath(world, (new Location(10, 10))));
+        animal.moveActor(world, animal.findNextTileInShortestPath(world, (new Location(10, 10))));
         assert(world.getLocation(animal).getX() == 1 && world.getLocation(animal).getY() == 1);
     }
 
@@ -44,9 +44,9 @@ class AnimalTest {
         assertEquals(3, animal.getDistanceFromActorToLocation(world, (new Location(3,3))));
         assertEquals(1, animal.getDistanceFromActorToLocation(world, (new Location(1,1))));
         assertEquals(0, animal.getDistanceFromActorToLocation(world, (new Location(0,0))));
-        animal.moveActor(world, animal, List.of(new Location(1,0)));
+        animal.moveActor(world, List.of(new Location(1,0)));
         assertEquals(3, animal.getDistanceFromActorToLocation(world, (new Location(3,3))));
-        animal.moveActor(world, animal, List.of(new Location(1,1)));
+        animal.moveActor(world, List.of(new Location(1,1)));
         assertEquals(2, animal.getDistanceFromActorToLocation(world, (new Location(3,3))));
 
     }
