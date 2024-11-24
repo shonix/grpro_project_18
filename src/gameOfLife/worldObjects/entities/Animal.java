@@ -96,15 +96,34 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
      * @return Action. an Action enum signifying the action the animal is about to take.
      */
     protected abstract Action determineAction(World world);
+
+    /**
+     * find a mate for the animal within a given radius
+     * @param world the animal exists in
+     * @param radius for which a mate is searched within
+     * @return Animal the mate for this animal. SHOULD BE OF THE SAME TYPE!
+     */
+    protected abstract Animal findMate(World world, int radius);
+
+    /**
+     * Method for instructing the animal to seek a mate and if possible, procreate.
+     * @param world in which the animal exists
+     */
+    protected abstract void seekMateAndCopulate(World world);
+
+    /**
+     * Method for instructing the animal to eat
+     * @param world
+     */
+    protected abstract void eat(World world);
+
     /*
     END OF ABSTRACT METHODS
      */
 
     public void setAwake(boolean awake) {isAwake = awake;}
 
-    public boolean getAwake() {return isAwake;}
-
-    public void getInfected(boolean infected) {isInfected = infected;}
+    public void setInfected(boolean infected) {isInfected = infected;}
 
     public boolean isInfected() {
         return isInfected;
