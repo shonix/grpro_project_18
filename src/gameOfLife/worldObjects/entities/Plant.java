@@ -4,6 +4,7 @@ package gameOfLife.worldObjects.entities;
  * Abstract representation of a plant, which is to be inherited from, that implements Actor interface to be able to act in the world
  */
 public abstract class Plant extends Entity implements Edible{
+    //TODO consider removing Edible interface implementation. Not all plants are edible (and not even all the time) and not edible by all creatures (fx. bush with(out) berries -> only bears?)
     protected boolean isEdible;
     protected int providedSustenance;
 

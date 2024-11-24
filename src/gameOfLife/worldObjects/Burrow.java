@@ -3,9 +3,12 @@ package gameOfLife.worldObjects;
 import gameOfLife.worldObjects.entities.Rabbit;
 import itumulator.executable.DisplayInformation;
 import itumulator.executable.DynamicDisplayInformationProvider;
+import itumulator.world.Location;
 import itumulator.world.NonBlocking;
+import itumulator.world.World;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -25,7 +28,7 @@ public class Burrow implements NonBlocking, DynamicDisplayInformationProvider {
 
     // instance fields begin
 
-    private Set<Rabbit> rabbitsInBurrow;
+    private Set<Rabbit> rabbitsInBurrow, owners;
     private int capacity;
     private DisplayInformation currentDisplayInformation;
 
@@ -39,6 +42,7 @@ public class Burrow implements NonBlocking, DynamicDisplayInformationProvider {
         if(capacity < 1) throw new IllegalArgumentException("capacity must be greater than 0!");
         this.capacity = capacity;
         this.rabbitsInBurrow = new HashSet<>();
+        this.owners = new HashSet<>();
         if(capacity > SMALL_HOLE_LIMIT){
             currentDisplayInformation = BIG_HOLE;
         }else {
@@ -89,6 +93,52 @@ public class Burrow implements NonBlocking, DynamicDisplayInformationProvider {
      */
     public void removeRabbit(Rabbit rabbit) {
         rabbitsInBurrow.remove(rabbit);
+    }
+
+    /**
+     * Adds to the set of owners the rabbit in question and sets the rabbits burrow to this burrow
+     * @param rabbit
+     */
+    public void addOwner(Rabbit rabbit) {
+        owners.add(rabbit);
+        rabbit.setBurrow(this);
+    }
+    /**
+     * Removes from the set of owners the rabbit in question, and sets the rabbits burrow to null
+     * @param rabbit
+     */
+    public void removeOwner(Rabbit rabbit) {
+        owners.remove(rabbit);
+        rabbit.setBurrow(null);
+    }
+
+    /**
+     * Destroys the Burrow, deleting it from the world and attempts to place any rabbits inside around Burrow. Any
+     * not placed are killed. All rabbits associated with burrow gets their burrow set to null
+     * @param world
+     */
+    public void destroyBurrow(World world){
+        for(Rabbit rabbit : owners){
+            rabbit.setBurrow(null);
+        }
+        Set<Location> emptyTiles = world.getEmptySurroundingTiles(world.getLocation(this));
+
+        //find number of rabbits to place and place them
+        int rabbitsToPlace = Math.min(rabbitsInBurrow.size(), emptyTiles.size());
+        Rabbit rabbit;
+        Location location;
+        for(int i = 1; i<= rabbitsToPlace; i++){
+            rabbit = rabbitsInBurrow.iterator().next();
+            location = emptyTiles.iterator().next();
+            rabbit.exitBurrow(world, location);
+            emptyTiles.remove(location);
+            rabbitsInBurrow.remove(rabbit);
+        }
+        //kill any remaining rabbits
+        for(Rabbit rabbitToDie : rabbitsInBurrow){
+            rabbitToDie.die(world);
+        }
+        world.delete(this);
     }
 
     /**

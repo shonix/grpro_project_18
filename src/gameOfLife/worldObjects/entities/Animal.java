@@ -100,6 +100,16 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
     END OF ABSTRACT METHODS
      */
 
+    public void setAwake(boolean awake) {isAwake = awake;}
+
+    public boolean getAwake() {return isAwake;}
+
+    public void getInfected(boolean infected) {isInfected = infected;}
+
+    public boolean isInfected() {
+        return isInfected;
+    }
+
     /**
      * Get the target of the entity.
      * @return Object which can be a location, another entity

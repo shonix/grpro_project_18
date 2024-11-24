@@ -88,6 +88,16 @@ public class Rabbit extends Animal {
 
     }
 
+    public Burrow getBurrow() {return burrow;}
+
+    public void setBurrow(Burrow burrow) {this.burrow = burrow;}
+
+    public void setHiding(boolean isHiding) {this.isHiding = isHiding;}
+
+    public boolean isHiding() {
+        return isHiding;
+    }
+
     /**
      * Calculates the maximum energy level of an animal as a parabolic function,
      * with the vertex representing the age at which the animal is fully matured.
@@ -249,6 +259,7 @@ public class Rabbit extends Animal {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+
     /**
      * TODO
      * @param world
@@ -344,16 +355,36 @@ public class Rabbit extends Animal {
             Set<Location> emptyTiles = world.getSurroundingTiles(world.getLocation(burrow));
             if(world.isTileEmpty(world.getLocation(burrow))) emptyTiles.add(world.getLocation(burrow));
             if(!emptyTiles.isEmpty()){
-                world.setTile(emptyTiles.iterator().next(), this);
-                burrow.removeRabbit(this);
-                isHiding = false;
-                isAwake = true;
+                exitBurrow(world, emptyTiles);
             }
             //if it is hiding, but no tile is empty, nothing happens this step
 
         }else{
             isAwake = true;
         }
+    }
+
+    public void exitBurrow(World world, Set<Location> neighbors) {
+        if(!isHiding) throw new IllegalStateException("Rabbit is not hidden!");
+        if(neighbors.isEmpty()) throw new IllegalStateException("There are no available tiles!");
+        world.setTile(neighbors.iterator().next(), this);
+        burrow.removeRabbit(this);
+        isHiding = false;
+        isAwake = true;
+    }
+
+    /**
+     * OVERLOADED METHOD, sets the rabbit on a specified location
+     * @param world
+     * @param location
+     */
+    public void exitBurrow(World world, Location location) {
+        if(!isHiding) throw new IllegalStateException("Rabbit is not hidden!");
+        if(!world.isTileEmpty(location)) throw new IllegalStateException("Tile is not available!");
+        world.setTile(location, this);
+        burrow.removeRabbit(this);
+        isHiding = false;
+        isAwake = true;
     }
 
     /**
