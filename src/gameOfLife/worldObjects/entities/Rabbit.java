@@ -15,8 +15,7 @@ public class Rabbit extends Animal {
     private static final int MAX_AGE = 240; // 12 simulation days
     private static final double DAILY_ENERGY_REDUCTION = 0.1;
     private int mateSearchRadius;
-    private Rabbit currentMate;
-    private boolean isPregnant = false;
+
 
 
     //define on the class, all possible images a rabbit can have
@@ -44,7 +43,9 @@ public class Rabbit extends Animal {
 
     //instance fields begin
     private Burrow burrow;
+    private Rabbit currentMate;
     private boolean isHiding;
+    private boolean isPregnant = false;
 
     //instance fields end
 
@@ -168,7 +169,7 @@ public class Rabbit extends Animal {
                 sleep();
                 break;
             case Action.WAKE_UP:
-                wakeUp();
+                wakeUp(world);
                 if(isPregnant)
                 {
                     giveBirth(world);
@@ -316,9 +317,21 @@ public class Rabbit extends Animal {
         isAwake = false;
     }
 
-    private void wakeUp()
-    {
-        isAwake = true;
+    private void wakeUp(World world) {
+        if(isHiding){
+            Set<Location> emptyTiles = world.getSurroundingTiles(world.getLocation(burrow));
+            if(world.isTileEmpty(world.getLocation(burrow))) emptyTiles.add(world.getLocation(burrow));
+            if(!emptyTiles.isEmpty()){
+                world.setTile(emptyTiles.iterator().next(), this);
+                burrow.removeRabbit(this);
+                isHiding = false;
+                isAwake = true;
+            }
+            //if it is hiding, but no tile is empty, nothing happens this step
+
+        }else{
+            isAwake = true;
+        }
     }
 
     /**
