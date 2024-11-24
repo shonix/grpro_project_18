@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class RabbitTest {
-    private Rabbit r1, r2, r3, r4;
+    private Rabbit r1, r2, r3, r4, r5;
     private Burrow burrow;
     private World world;
 
@@ -21,6 +21,7 @@ public class RabbitTest {
         r2 = new Rabbit();
         r3 = new Rabbit();
         r4 = new Rabbit();
+        r5 = new Rabbit();
         burrow = new Burrow(2);
         world = new World(5);
     }
@@ -31,6 +32,7 @@ public class RabbitTest {
         r2 = null;
         r3 = null;
         r4 = null;
+        r5 = null;
         burrow = null;
         world = null;
     }
@@ -55,6 +57,18 @@ public class RabbitTest {
 
     @Test
     void testExitBurrow2(){
-
+        world = new World(2);
+        world.setTile(new Location(0,0), burrow);
+        world.setTile(new Location(0,0), r1);
+        world.setTile(new Location(0,1), r2);
+        world.setTile(new Location(1,0), r3);
+        world.add(r4);
+        world.add(r5);
+        burrow.addOwner(r4);
+        burrow.addRabbit(r4);
+        burrow.addOwner(r5);
+        burrow.addRabbit(r5);
+        burrow.destroyBurrow(world);
+        assertEquals(5, world.getEntities().size());
     }
 }
