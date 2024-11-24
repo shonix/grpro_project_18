@@ -27,6 +27,8 @@ public class Rabbit extends Animal {
     private static final DisplayInformation LARGE_RABBIT_SLEEPING = new DisplayInformation(RABBIT_COLOR, "rabbit-sleeping");
     private static final DisplayInformation LARGE_RABBIT_FUNGI = new DisplayInformation(RABBIT_COLOR, "rabbit-fungi");
     private static final DisplayInformation LARGE_RABBIT_FUNGI_SLEEPING = new DisplayInformation(RABBIT_COLOR, "rabbit-fungi-sleeping");
+    private static final DisplayInformation LARGE_RABBIT_PREGNANT = new DisplayInformation(RABBIT_COLOR, "rabbit-large-pregnant");
+    private static final DisplayInformation LARGE_RABBIT_PREGNANT_SLEEPING = new DisplayInformation(RABBIT_COLOR, "rabbit-large-pregnant-sleeping");
     private static final Map<Integer, DisplayInformation> DISPLAY_INFORMATION_MAP = Map.of(
             0, SMALL_RABBIT_FUNGI_SLEEPING,
             1, SMALL_RABBIT_FUNGI,
@@ -35,7 +37,10 @@ public class Rabbit extends Animal {
             4, LARGE_RABBIT_FUNGI_SLEEPING,
             5, LARGE_RABBIT_FUNGI,
             6, LARGE_RABBIT_SLEEPING,
-            7, LARGE_RABBIT
+            7, LARGE_RABBIT,
+            8, LARGE_RABBIT_PREGNANT,
+            9, LARGE_RABBIT_PREGNANT_SLEEPING
+
     );
 
     //class fields end
@@ -184,10 +189,7 @@ public class Rabbit extends Animal {
             {
                 return Action.SEEK_MATE;
             }
-            else
-            {
-                this.currentMate = findMate(world, mateSearchRadius);
-            }
+            this.currentMate = findMate(world, mateSearchRadius);
         }
 
         return Action.DEFAULT;
@@ -204,6 +206,7 @@ public class Rabbit extends Animal {
             case Action.SLEEP:
                 sleep();
                 break;
+
             case Action.WAKE_UP:
                 wakeUp(world);
                 if(isPregnant)
@@ -211,14 +214,17 @@ public class Rabbit extends Animal {
                     giveBirth(world);
                 }
                 break;
+
             case Action.SEEK_SHELTER:
                 seekShelter(world);
             case Action.SEEK_FOOD:
                 seekFood(world);
                 break;
+
             case Action.SEEK_MATE:
                 seekMateAndCopulate(world);
                 break;
+
             default:
                 if(new Random().nextBoolean())
                     moveActor(world, world.getEmptySurroundingTiles(world.getLocation(this)).stream().toList()); // Move randomly / idle
@@ -290,6 +296,11 @@ public class Rabbit extends Animal {
                 List<Location> path = findNextTileInShortestPath(world, world.getLocation(closestEdible));
                 world.move(this, path.getFirst());
             }
+        }
+        else
+        {
+            if(new Random().nextInt(100) > 80)
+                moveActor(world,world.getEmptySurroundingTiles(world.getLocation(this)).stream().toList()); // Move randomly / idle
         }
     }
 
@@ -443,9 +454,11 @@ public class Rabbit extends Animal {
     @Override
     public void updateDisplayInformation() {
         int state = 0;
-        if(age >= AGE_OF_MATURITY) state+=4;
-        if(!isInfected) state+=2;
+        if(age >= AGE_OF_MATURITY) state +=4;
+        if(!isInfected) state +=2;
         if(isAwake) state += 1;
+        if(isPregnant) state +=1;
+        if(isPregnant && !isAwake) state +=2;
         currentDisplayInformation = DISPLAY_INFORMATION_MAP.get(state);
     }
 
