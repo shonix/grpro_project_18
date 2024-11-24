@@ -88,12 +88,28 @@ public class Rabbit extends Animal {
 
     }
 
+    /**
+     * Return the burrow the rabbit is associated with. If rabbit is not associated with a burrow returns null.
+     * @return burrow if not null, otherwise null
+     */
     public Burrow getBurrow() {return burrow;}
 
+    /**
+     * Sets the burrow of the rabbit to a new burrow
+     * @param burrow
+     */
     public void setBurrow(Burrow burrow) {this.burrow = burrow;}
 
+    /**
+     * Sets the isHiding status
+     * @param isHiding boolean
+     */
     public void setHiding(boolean isHiding) {this.isHiding = isHiding;}
 
+    /**
+     * Returns the isHiding status.
+     * @return boolean
+     */
     public boolean isHiding() {
         return isHiding;
     }
@@ -178,7 +194,7 @@ public class Rabbit extends Animal {
 
     /**
      * Instructs the rabbit to perform a specific action, calling other methods to do the actual actions.
-     * @param world the world in which the Animal exitsts
+     * @param world the world in which the Animal exists
      * @param action the action to be taken
      */
     @Override
@@ -220,28 +236,14 @@ public class Rabbit extends Animal {
     }
 
     /**
-     * Will eat a piece of grass, increasing the rabbit's currentEnergy according to the sustenance the grass provides.
-     * It will furthermore instruct the piece of grass to die
-     * @param world
-     * @param grass
-     */
-    private void eatFood(World world, Plant grass) {
-        if (grass.getProvidedSustenance() + currentEnergy > energyMax) {
-            currentEnergy = energyMax;
-        } else {
-            currentEnergy += grass.getProvidedSustenance();
-        }
-        grass.die(world);
-    }
-
-    /**
      * TODO
      */
     private void createHole() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void seekFood(World world)
+    @Override
+    protected void seekFood(World world)
     {
         Edible closestEdible = getClosestEdible(world, world.getLocation(this));
         if(closestEdible != null)
@@ -250,7 +252,7 @@ public class Rabbit extends Animal {
             Location curr = world.getLocation(this);
             if (locEdible.equals(curr))
             {
-                eatFood(world, (Plant) closestEdible);
+                eatGrass(world, (Plant) closestEdible);
             }
             else
             {
@@ -261,12 +263,28 @@ public class Rabbit extends Animal {
     }
 
     /**
+     * Will eat a piece of grass, increasing the rabbit's currentEnergy according to the sustenance the grass provides.
+     * It will furthermore instruct the piece of grass to die
+     * @param world
+     * @param grass
+     */
+    private void eatGrass(World world, Plant grass) {
+        if (grass.getProvidedSustenance() + currentEnergy > energyMax) {
+            currentEnergy = energyMax;
+        } else {
+            currentEnergy += grass.getProvidedSustenance();
+        }
+        grass.die(world);
+    }
+
+    /**
      * TODO
      * @param world
      * @param radius
      * @return
      */
-    private Rabbit findMate(World world, int radius)
+    @Override
+    protected Rabbit findMate(World world, int radius)
     {
         for(Object o : world.getEntities().keySet())
         {
@@ -285,7 +303,8 @@ public class Rabbit extends Animal {
      * TODO
      * @param world
      */
-    private void seekMateAndCopulate(World world)
+    @Override
+    protected void seekMateAndCopulate(World world)
     {
         if(world.getEntities().containsKey(currentMate))
         {
@@ -305,19 +324,11 @@ public class Rabbit extends Animal {
     }
 
     /**
-     * Set the rabbits pregnant status
-     * @param pregnant true if pregnant, false if not.
-     */
-    public void setPregnant(boolean pregnant)
-    {
-        this.isPregnant = pregnant;
-    }
-
-    /**
      * If the rabbit is pregnant and has an empty tile next to it, it will give birth and create a new rabbit.
      * @param world in which the rabbit exists.
      */
-    public void giveBirth(World world)
+    @Override
+    protected void giveBirth(World world)
     {
         List<Location> emptySurroundingTiles = world.getEmptySurroundingTiles(world.getLocation(this)).stream().toList();
         if(!emptySurroundingTiles.isEmpty()) {
@@ -350,7 +361,8 @@ public class Rabbit extends Animal {
      * standing on, or wake up and exit the burrow it was in.
      * @param world the world the rabbit exists in
      */
-    private void wakeUp(World world) {
+    @Override
+    protected void wakeUp(World world) {
         if(isHiding){
             Set<Location> emptyTiles = world.getSurroundingTiles(world.getLocation(burrow));
             if(world.isTileEmpty(world.getLocation(burrow))) emptyTiles.add(world.getLocation(burrow));
@@ -364,6 +376,12 @@ public class Rabbit extends Animal {
         }
     }
 
+    /**
+     * OVERLOADED METHOD, sets the rabbit on a random tile free tiles around the burrow
+     * @param world in which the rabbit exists
+     * @param neighbors Set of locations to be set down around. Given as an argument to allow functionality that
+     *                  mutates this set.
+     */
     public void exitBurrow(World world, Set<Location> neighbors) {
         if(!isHiding) throw new IllegalStateException("Rabbit is not hidden!");
         if(neighbors.isEmpty()) throw new IllegalStateException("There are no available tiles!");
@@ -375,8 +393,8 @@ public class Rabbit extends Animal {
 
     /**
      * OVERLOADED METHOD, sets the rabbit on a specified location
-     * @param world
-     * @param location
+     * @param world in which the rabbit exists
+     * @param location on which the rabbit is to be set
      */
     public void exitBurrow(World world, Location location) {
         if(!isHiding) throw new IllegalStateException("Rabbit is not hidden!");

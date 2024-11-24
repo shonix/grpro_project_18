@@ -12,7 +12,7 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
     protected Sex sex;
     protected double energyMax;
     protected double currentEnergy;
-    protected boolean isAwake, isInfected;
+    protected boolean isAwake, isInfected, isPregnant;
     protected Object target;
     protected DisplayInformation currentDisplayInformation;
     protected double hungryThreshold;
@@ -46,6 +46,7 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
         this.sex = sex;
         this.isAwake = isAwake;
         this.isInfected = isInfected;
+        this.isPregnant = false;
         this.energyMax  = 100;
         this.hungryThreshold = energyMax / 2;
     }
@@ -115,16 +116,63 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
      * Method for instructing the animal to eat
      * @param world
      */
-    protected abstract void eat(World world);
+    protected abstract void seekFood(World world);
+
+    /**
+     * Instructs the animal to give birth to new animals
+     * @param world in which the animal exists
+     */
+    protected abstract void giveBirth(World world);
+
+    /**
+     * Instructs the animal to wake up in the world
+     * @param world in which the animal exists
+     */
+    protected abstract void wakeUp(World world);
 
     /*
     END OF ABSTRACT METHODS
      */
 
+    /**
+     * Return true if animal is female.
+     * @return boolean for if animal is female.
+     */
+    public boolean isFemale(){
+        return sex.equals(Sex.FEMALE);
+    }
+
+    /**
+     * Get the isPregnant status
+     * @return isPregnant boolean
+     */
+    public boolean isPregnant(){return isPregnant;}
+
+    /**
+     * Set the rabbits pregnant status
+     * @param pregnant true if pregnant, false if not.
+     */
+    public void setPregnant(boolean pregnant)
+    {
+        this.isPregnant = pregnant;
+    }
+
+    /**
+     * Set isAwake status
+     * @param awake boolean
+     */
     public void setAwake(boolean awake) {isAwake = awake;}
 
+    /**
+     * Set isInfected status
+     * @param infected boolean
+     */
     public void setInfected(boolean infected) {isInfected = infected;}
 
+    /**
+     * Return the isInfected status.
+     * @return isInfected boolean
+     */
     public boolean isInfected() {
         return isInfected;
     }
@@ -159,6 +207,7 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
      * @return isAwake
      */
     public boolean isAwake() { return isAwake; }
+
 
 
     public void moveActor(World world, Actor actor, List<Location> locations) {
@@ -203,11 +252,6 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
         this.target = target;
         Location targetLocation = world.getLocation(this.getTarget());
         moveActor(world, this, findNextTileInShortestPath(world, targetLocation));
-    }
-
-
-    public boolean isFemale(){
-        return sex.equals(Sex.FEMALE);
     }
 
     @Override
