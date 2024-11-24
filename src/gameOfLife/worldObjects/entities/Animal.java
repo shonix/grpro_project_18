@@ -14,6 +14,7 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
     protected double currentEnergy;
     protected boolean isAwake, isInfected, isPregnant;
     protected Object target;
+    protected Animal currentMate;
     protected DisplayInformation currentDisplayInformation;
     protected double hungryThreshold;
     /*
@@ -158,6 +159,12 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
     }
 
     /**
+     * Get whether the entity is awake or not
+     * @return isAwake
+     */
+    public boolean isAwake() { return isAwake; }
+
+    /**
      * Set isAwake status
      * @param awake boolean
      */
@@ -201,12 +208,6 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
      * @return currentEnergy
      */
     public double getCurrentEnergy() { return currentEnergy; }
-
-    /**
-     * Get whether the entity is awake or not
-     * @return isAwake
-     */
-    public boolean isAwake() { return isAwake; }
 
 
 

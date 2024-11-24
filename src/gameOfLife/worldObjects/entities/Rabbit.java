@@ -41,9 +41,7 @@ public class Rabbit extends Animal {
 
     //instance fields begin
     private Burrow burrow;
-    private Rabbit currentMate; //TODO consider changing type to Animal and move to Animal class
     private boolean isHiding;
-    private boolean isPregnant = false; //TODO consider moving to Animal class
 
     //instance fields end
 
