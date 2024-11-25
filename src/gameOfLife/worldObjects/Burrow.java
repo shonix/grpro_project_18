@@ -51,16 +51,13 @@ public class Burrow implements NonBlocking, DynamicDisplayInformationProvider {
     }
 
     public Burrow(int capacity, Rabbit rabbit) {
-        if(capacity < 1) throw new IllegalArgumentException("capacity must be greater than 0!");
-        this.capacity = capacity;
-        this.rabbitsInBurrow = new HashSet<>();
-        this.owners = new HashSet<>();
+        this(capacity);
         owners.add(rabbit);
-        if(capacity > SMALL_HOLE_LIMIT){
-            currentDisplayInformation = BIG_HOLE;
-        }else {
-            currentDisplayInformation = SMALL_HOLE;
-        }
+
+    }
+
+    public Burrow(){
+        this(1);
     }
 
     /**
