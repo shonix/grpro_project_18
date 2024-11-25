@@ -1,8 +1,12 @@
 package gameOfLifeTest.entitiesTest;
 
+import gameOfLife.util.DataHandler;
+import gameOfLife.util.ProgramInitializer;
 import gameOfLife.worldObjects.Burrow;
 import gameOfLife.worldObjects.entities.Animal;
+import gameOfLife.worldObjects.entities.Grass;
 import gameOfLife.worldObjects.entities.Rabbit;
+import itumulator.executable.Program;
 import itumulator.world.Location;
 import itumulator.world.World;
 import org.junit.jupiter.api.AfterEach;
@@ -16,29 +20,28 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class RabbitTest {
     private Rabbit r1, r2, r3, r4, r5;
+    private Grass grass;
     private Burrow burrow;
     private World world;
+    private Program program;
 
     @BeforeEach
     void setUp() {
+        ProgramInitializer pi = new ProgramInitializer("test", "setup_test", 800, 10);
+        program = pi.getPrograms().getFirst();
+        world = program.getWorld();
         r1 = new Rabbit();
         r2 = new Rabbit();
         r3 = new Rabbit();
         r4 = new Rabbit();
         r5 = new Rabbit();
+        grass = new Grass(1);
         burrow = new Burrow(2);
         world = new World(5);
     }
 
     @AfterEach
     void tearDown() {
-        r1 = null;
-        r2 = null;
-        r3 = null;
-        r4 = null;
-        r5 = null;
-        burrow = null;
-        world = null;
     }
 
     @Test
@@ -92,16 +95,36 @@ public class RabbitTest {
      * K1-2a project specification test.
      */
     @Test
-    void testRabbitPlacedFromFile(){
-        //TODO
+    void k1_2a_testRabbitPlacedFromFile(){
+        //Arrange
+        ProgramInitializer pi = new ProgramInitializer("test", "k1_2a_test", 800, 10);
+        Program localProgram = pi.getPrograms().getFirst();
+        World localWorld = localProgram.getWorld();
+        var entities = localWorld.getEntities();
+
+        //Act
+
+
+        //Assert
+        int expectedRabbits = 5;
+        assertEquals(expectedRabbits, entities.size(), "Expected: "+ expectedRabbits+" - Actual: "+ entities.size());
+
     }
 
     /**
      * K1-2b project specification test.
      */
     @Test
-    void testRabbitDeath(){
-        //TODO
+    void testRabbitDeathAge(){
+        //Arrange
+        world.add(r1);
+        assertTrue(world.contains(r1), "World contains Rabbit");
+
+        //Act
+        r1.die(world);
+
+        //Assert
+        assertFalse(world.contains(r1), "World does not contain Rabbit");
     }
 
     /**
@@ -109,21 +132,52 @@ public class RabbitTest {
      */
     @Test
     void testRabbitEatGrass1(){
-        //TODO
+        world.setTile(new Location(0,0), r1);
+        world.setTile(new Location(0,0), grass);
+
+        for(int i = 0; i < 20; i++)
+        {
+            r1.act(world);
+        }
+
+        assertTrue(world.contains(grass));
     }
 
     /**
      * K1-2c project specification test.
      */
     @Test
-    void testRabbitDieFromStarvation(){}
+    void testRabbitDieFromStarvation()
+    {
+        world.setTile(new Location(0,0), r1);
+        for(int i = 0; i < Rabbit.MAX_AGE; i++)
+        {
+            if(!world.contains(r1))
+            {
+                break;
+            }
+            r1.act(world);
+        }
+        assertFalse(world.contains(r1), "Rabbit has starved to death");
+    }
 
     /**
      *
      */
     @Test
-    void testRabbitDieFromOldAge(){
-        //TODO
+    void testRabbitDieFromOldAge()
+    {
+        world.setTile(new Location(0,0), r1);
+        world.setTile(new Location(0,0), new Grass(Grass.MAX_PROVIDED_SUSTENANCE));
+        for(int i = 0; i < Rabbit.MAX_AGE+1; i++)
+        {
+            if(!world.contains(r1))
+            {
+                break;
+            }
+            r1.act(world);
+        }
+        assertFalse(world.contains(r1), "Rabbit is still alive");
     }
 
     /**
@@ -139,15 +193,31 @@ public class RabbitTest {
      */
     @Test
     void testRabbitAging(){
-        //TODO
+        int rabbitStartAge = r1.getAge();
+        r1.act(world);
+        assertTrue(r1.getAge() > rabbitStartAge);
     }
 
     /**
      * K1-2e project specification test.
+     * Pregnant rabbit creates baby rabbit.
      */
     @Test
-    void testRabbitProcreation1(){
-        //TODO
+    void testRabbitProcreation1()
+    {
+        //Arrange
+        Rabbit pregnantRabbit = new Rabbit(Rabbit.AGE_OF_MATURITY+1,Animal.Sex.FEMALE,false,false);
+        pregnantRabbit.setPregnant(true);
+        pregnantRabbit.isPregnant();
+        int startRabbits = world.getEntities().size();
+
+        //Act
+        pregnantRabbit.act(world);
+        pregnantRabbit.act(world);
+
+        //Assert
+        int endRabbits = world.getEntities().size();
+        assertTrue(endRabbits > startRabbits);
     }
 
     /**
