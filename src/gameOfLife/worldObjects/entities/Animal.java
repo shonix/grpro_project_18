@@ -1,6 +1,7 @@
 package gameOfLife.worldObjects.entities;
 
 import gameOfLife.util.WorldHandler;
+import gameOfLife.worldObjects.models.EntityID;
 import itumulator.executable.DisplayInformation;
 import itumulator.executable.DynamicDisplayInformationProvider;
 import itumulator.simulator.Actor;
@@ -18,12 +19,14 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
     protected Animal currentMate;
     protected DisplayInformation currentDisplayInformation;
     protected double hungryThreshold;
-    private static final Set<Class<?>> edibles = new HashSet<>();
+    private static final Set<EntityID> edibles = new HashSet<>();
+
     /*
     TODO consider moving hungryThreshold back to individual animal implementations and as a class constant,
     TODO such that different animal species has a different hunger threshold, some animals will do something earlier than
     TODO others.
      */
+
 
     public enum Action {
         SLEEP,
@@ -37,8 +40,8 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
 
     public enum Sex {
         MALE, FEMALE;
-
     }
+
 
     public Animal(int age, Sex sex, boolean isAwake, boolean isInfected) {
         super(age);
@@ -273,26 +276,17 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
     }
 
     public Edible getClosestEdible(World world) {
-        Set<Edible> listOfEdibles = new HashSet<>();
-        for (Class<?> edibleClass : edibles) {
-            if (Edible.class.isAssignableFrom(edibleClass)) {
-                Class<? extends Edible> edibleType = (Class<? extends Edible>) edibleClass;
-                Edible closest = WorldHandler.getClosestOfEntity(world, edibleType, this);
-                listOfEdibles.add(closest);
-            }
-        }
-        Edible cloestEdible = null;
-        int closestDistance = Integer.MAX_VALUE;
+        List<Edible> listOfEdibles = WorldHandler.getEntitiesByType(world, Edible.class);
+        Set<Edible> listOfValidEdibles = new HashSet<>();
 
         for (Edible edible : listOfEdibles) {
-            if (this.getDistanceFromActorToLocation(world, world.getLocation(edible)) < closestDistance) {
-                cloestEdible = edible;
-                closestDistance = this.getDistanceFromActorToLocation(world, world.getLocation(edible));
+            if (edibles.contains(edible.getEntityID())) {
+                listOfValidEdibles.add(edible);
             }
-
-        }
-        return cloestEdible;
+        } //handle getting closest
+        return null;
     }
+
 
 
     /**

@@ -1,5 +1,6 @@
 package gameOfLife.worldObjects.entities;
 
+import gameOfLife.worldObjects.models.EntityID;
 import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
@@ -15,6 +16,7 @@ import java.util.Set;
  */
 public abstract class Entity implements Actor{
     protected int age;
+
 
     public Entity(int age) {
         this.age = age;
@@ -48,6 +50,8 @@ public abstract class Entity implements Actor{
     public int getAge() {
         return age;
     }
+
+    public abstract EntityID getEntityID();
 
     /**
      * Set the age of the entity.
