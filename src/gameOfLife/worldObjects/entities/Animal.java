@@ -160,15 +160,6 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
     }
 
     /**
-     * Set the rabbits pregnant status
-     *
-     * @param pregnant true if pregnant, false if not.
-     */
-    public void setPregnant(boolean pregnant) {
-        this.isPregnant = pregnant;
-    }
-
-    /**
      * Get whether the entity is awake or not
      *
      * @return isAwake

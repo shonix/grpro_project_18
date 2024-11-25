@@ -12,10 +12,10 @@ import java.util.List;
 
 public class Rabbit extends Animal {
     //class fields begin
-    private static final int AGE_OF_MATURITY = 60; //3 simulation days
-    private static final int MAX_AGE = 240; // 12 simulation days
-    private static final double DAILY_ENERGY_REDUCTION = 0.1;
-    private int mateSearchRadius; //TODO consider changing to class constant
+    public static final int AGE_OF_MATURITY = 60; //3 simulation days
+    public static final int MAX_AGE = 240; // 12 simulation days
+    public static final double DAILY_ENERGY_REDUCTION = 0.1;
+    public int mateSearchRadius; //TODO consider changing to class constant
     private static final Set<Class<?>> Edibles = Set.of(Grass.class);
 
     //define on the class, all possible images a rabbit can have
@@ -220,8 +220,10 @@ public class Rabbit extends Animal {
                 break;
             case Action.SEEK_SHELTER:
                 seekShelter(world);
+                break;
+
             case Action.SEEK_FOOD:
-                //seekFood(world);
+                seekFood(world);
                 break;
 
             case Action.SEEK_MATE:
@@ -262,11 +264,14 @@ public class Rabbit extends Animal {
 
     private void hideInBurrow(World world, Burrow burrow) {
         if (burrow == null) {
-            createHole();
+            createBurrow(world);
         }
-        burrow.addRabbit(this);
-        world.remove(this);
-        isHiding = true;
+        if (burrow != null) {
+            burrow.addRabbit(this);
+            world.remove(this);
+            isHiding = true;
+        }
+
     }
 
     private boolean isGrassOneTile(World world) {
@@ -402,6 +407,15 @@ public class Rabbit extends Animal {
     }
 
     /**
+     * Set the rabbits pregnant status
+     *
+     * @param pregnant true if pregnant, false if not.
+     */
+    public void setPregnant(boolean pregnant) {
+        this.isPregnant = pregnant;
+    }
+
+    /**
      * Instructs the rabbit to attempt waking up. If the rabbit is hiding, it will also be asleep and in a whole,
      * therefore it must be checked that it can exit the burrow it is residing in. If it can't nothing happens and in
      * effect the rabbit will stay asleep in its burrow. Otherwise it will either just wake up from the tile it was
@@ -414,7 +428,7 @@ public class Rabbit extends Animal {
             Set<Location> emptyTiles = world.getSurroundingTiles(world.getLocation(burrow));
             if(world.isTileEmpty(world.getLocation(burrow))) emptyTiles.add(world.getLocation(burrow));
             if(!emptyTiles.isEmpty()){
-                exitBurrow(world, emptyTiles);
+                exitBurrow(world);
             }
             //if it is hiding, but no tile is empty, nothing happens this step
 
@@ -436,6 +450,19 @@ public class Rabbit extends Animal {
         burrow.removeRabbit(this);
         isHiding = false;
         isAwake = true;
+    }
+
+    public void exitBurrow(World world)
+    {
+        if(!isHiding) throw new IllegalStateException("Rabbit is not hidden!");
+        if(!world.getEmptySurroundingTiles(world.getLocation(this.burrow)).isEmpty())
+        {
+            Set<Location> emptySurrounding = world.getEmptySurroundingTiles(world.getLocation(this.burrow));
+            world.setTile(emptySurrounding.stream().toList().getFirst(), this);
+            burrow.removeRabbit(this);
+            isHiding = false;
+            isAwake = true;
+        }
     }
 
     /**
