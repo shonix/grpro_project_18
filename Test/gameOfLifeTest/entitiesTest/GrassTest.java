@@ -1,7 +1,10 @@
 package gameOfLifeTest.entitiesTest;
 
 import gameOfLife.util.DataHandler;
+import gameOfLife.util.ProgramInitializer;
 import gameOfLife.util.WorldHandler;
+import gameOfLife.worldObjects.Burrow;
+import gameOfLife.worldObjects.entities.Entity;
 import gameOfLife.worldObjects.entities.Grass;
 import gameOfLife.worldObjects.entities.Rabbit;
 import itumulator.display.Canvas;
@@ -88,44 +91,34 @@ public class GrassTest {
      * Grass placed from input file on a random location.
      */
     @Test
-    void testGrassPlacedFromFile(){
-        //TODO
+    void k1_1a_testGrassPlacedFromFile(){
+        //using ProgramInitialiser to place grass from a custom test file, expecting a world of size 2 and 1 grass.
+        ProgramInitializer pi = new ProgramInitializer("test", "K1-1a", 200, 1);
+        program = pi.getPrograms().getFirst();
+        world = program.getWorld();
+        assertEquals(1, world.getEntities().size()); //assert the world has exactly one entity
+        assertInstanceOf(Grass.class, world.getEntities().keySet().stream().toList().getFirst()); //assert the entity is of type Grass
     }
 
     /**
      * K1-1b project specification test
-     * Grass can spread
+     * Grass can spread test. Although it actually cannot be guaranteed that grass will be spread, as it only
+     * has a certain chance to spread, this test runs a large amount of steps, always preventing the Grass entities
+     * from dying, it would be incredibly unlikely that there wouldn't be created new pieces of grass.
      */
     @Test
     void k1_1b_testGrassSpread_chance(){
-        int numberOfGrassCreated = 0;
-        int numberOfGrassSpreadOpportunities = 0;
-        Set<Grass> grasses;
-        world.setTile(new Location(world.getSize()/2, world.getSize()/2), grass); //set grass in the middle of world.
-        for(int i = 0; i<100000; i++){
-            grasses = world.getAll(Grass.class, WorldHandler.getAllTiles(world));
-            for(Grass grass : grasses){
-                numberOfGrassSpreadOpportunities += world.getEmptySurroundingTiles(world.getLocation(grass)).size();
-                grass.act(world);
-                numberOfGrassCreated += 1;
+        world.setTile(new Location(0,0), grass);
+        world.setCurrentLocation(new Location(0,0));
+        assertEquals(1, world.getEntities().size());
+        for(int i = 0; i < Integer.MAX_VALUE; i++){
+            if(world.getEntities().size() > 1) break;
+            program.simulate();
+            for(Object o : world.getEntities().keySet()){
+                if (o instanceof Grass) ((Grass) o).setAge(0);
             }
         }
-    }
-    /**
-     * K1-1b project specification test
-     * Grass can spread
-     */
-    @Test
-    void testGrassSpread2(){
-        //TODO
-    }
-    /**
-     * K1-1b project specification test
-     * Grass can spread
-     */
-    @Test
-    void testGrassSpread3(){
-        //TODO
+        assertTrue(world.getEntities().size() > 1);
     }
 
     /**
