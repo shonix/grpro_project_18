@@ -133,19 +133,18 @@ public class GrassTest {
      */
     @Test
     void k1_1c_testGrassStandOn(){
-        Location burrowLocation = new Location(2,2);
+        Location grassLocation = new Location(2,2);
         Location rabbitLocation = new Location(1,2);
         world.setCurrentLocation(rabbitLocation);
         Rabbit rabbit = new Rabbit();
-        world.setTile(burrowLocation, grass);
+        world.setTile(grassLocation, grass);
         world.setTile(rabbitLocation, rabbit);
 
         assertInstanceOf(Rabbit.class, world.getTile(rabbitLocation)); //assert that a rabbit inhabits rabbitLocation
-        assertInstanceOf(Grass.class, world.getTile(burrowLocation)); //assert that burrow inhabits burrowLocation
-        assertDoesNotThrow(()-> {rabbit.moveActor(world, Arrays.asList(burrowLocation));}); //assert movement does not throw an exception
-        assertInstanceOf(Rabbit.class, world.getTile(burrowLocation)); //assert rabbit has moved to new tile. getTile gets blocking first.
+        assertInstanceOf(Grass.class, world.getTile(grassLocation)); //assert that grass inhabits grassLocation
+        assertDoesNotThrow(()-> {rabbit.moveActor(world, Arrays.asList(grassLocation));}); //assert movement does not throw an exception
+        assertInstanceOf(Rabbit.class, world.getTile(grassLocation)); //assert rabbit has moved to new tile. getTile gets blocking first.
         assertNull(world.getTile(rabbitLocation)); //assert that rabbit does not inhabit original location.
-
     }
 
 }
