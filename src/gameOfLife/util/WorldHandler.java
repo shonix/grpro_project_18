@@ -55,7 +55,10 @@ public class WorldHandler {
     }
 
     public static Set<Location> getAllTiles(World world){
-        return world.getSurroundingTiles(new Location(world.getSize()/2, world.getSize()/2), world.getSize()+1);
+        Location midpoint = new Location(world.getSize()/2, world.getSize()/2);
+        Set<Location> out = world.getSurroundingTiles(midpoint, world.getSize()+1);
+        out.add(midpoint);
+        return out;
     }
 }
 
