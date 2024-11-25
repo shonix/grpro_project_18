@@ -203,16 +203,15 @@ public class RabbitTest {
      * Pregnant rabbit creates baby rabbit.
      */
     @Test
-    void testRabbitProcreation1()
+    void testRabbitProcreation()
     {
         //Arrange
         Rabbit pregnantRabbit = new Rabbit(Rabbit.AGE_OF_MATURITY+1,Animal.Sex.FEMALE,false,false);
         pregnantRabbit.setPregnant(true);
-        pregnantRabbit.isPregnant();
+        world.setTile(new Location(0,0), pregnantRabbit);
         int startRabbits = world.getEntities().size();
 
         //Act
-        pregnantRabbit.act(world);
         pregnantRabbit.act(world);
 
         //Assert
@@ -221,27 +220,21 @@ public class RabbitTest {
     }
 
     /**
-     * K1-2e project specification test.
-     */
-    @Test
-    void testRabbitProcreation2(){
-        //TODO
-    }
-
-    /**
      * K1-2f project specification test.
      */
     @Test
-    void testRabbitDigBurrow1(){
-        //TODO
-    }
+    void testRabbitDigBurrow1() {
+        //Arrange
+        program.getWorld().setTile(new Location(0,0), r1);
 
-    /**
-     * K1-2f project specification test.
-     */
-    @Test
-    void testRabbitDigBurrow2(){
-        //TODO
+        //Act
+        for (int i = 0; i < World.getDayDuration() +1; i++)
+        {
+            program.simulate();
+        }
+
+        //Assert
+        assertTrue(program.getWorld().contains(r1.getBurrow()));
     }
 
     /**
@@ -256,41 +249,44 @@ public class RabbitTest {
      * K1-2f project specification test.
      */
     @Test
-    void testRabbitHasOneBurrow1(){
-        //TODO
+    void testRabbitHasOneBurrow(){
+        {
+            //Arrange
+            program.getWorld().setTile(new Location(0,0), r1);
+
+            //Act
+            for (int i = 0; i < World.getDayDuration() +1; i++)
+            {
+                program.simulate();
+            }
+
+            //Assert
+            assertNotNull(r1.getBurrow());
+        }
     }
 
-    /**
-     * K1-2f project specification test.
-     */
-    @Test
-    void testRabbitHasOneBurrow2(){
-        //TODO
-    }
 
     /**
      * K1-2g project specification test.
      */
     @Test
     void testRabbitSeekBurrow1(){
-        //TODO
-    }
+        {
+            //Arrange
+            program.getWorld().setTile(new Location(0,0), r1);
 
+            //Act
+            for (int i = 0; i < World.getDayDuration() +1; i++)
+            {
+                program.simulate();
+                if(world.getCurrentTime()>12)
+                {
+                    break;
+                }
+            }
 
-    /**
-     * K1-2g project specification test.
-     */
-    @Test
-    void testRabbitSeekBurrow2(){
-        //TODO
-    }
-
-
-    /**
-     * K1-2g project specification test.
-     */
-    @Test
-    void testRabbitSeekBurrow3(){
-        //TODO
+            //Assert
+            assertTrue(r1.getBurrow().getRabbitsInHole().contains(r1));
+        }
     }
 }
