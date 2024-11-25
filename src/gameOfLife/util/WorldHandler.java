@@ -1,9 +1,7 @@
 package gameOfLife.util;
 
 import gameOfLife.worldObjects.Burrow;
-import gameOfLife.worldObjects.entities.Animal;
-import gameOfLife.worldObjects.entities.Entity;
-import gameOfLife.worldObjects.entities.Grass;
+import gameOfLife.worldObjects.entities.*;
 import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;

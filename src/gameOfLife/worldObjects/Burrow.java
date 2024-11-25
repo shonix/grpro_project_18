@@ -53,12 +53,17 @@ public class Burrow implements NonBlocking, DynamicDisplayInformationProvider {
     public Burrow(int capacity, Rabbit rabbit) {
         this(capacity);
         owners.add(rabbit);
+    }
 
+    public Burrow(Rabbit rabbit){
+        this(3, rabbit);
     }
 
     public Burrow(){
-        this(1);
+        this(3);
     }
+
+
 
     /**
      * Returns the capacity of the burrow

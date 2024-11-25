@@ -9,7 +9,7 @@ import java.util.Random;
 import java.util.Set;
 
 /**
- * Abstract class to represent the different kind of entitites and actors that can
+ * Abstract class to represent the different kind of entities and actors that can
  * populate a world. Some methods are provided that won't be logically applicable
  * to every kind of entity, but supports modularity and future feature expansion.
  */
