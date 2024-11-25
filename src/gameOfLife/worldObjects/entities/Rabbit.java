@@ -173,8 +173,10 @@ public class Rabbit extends Animal {
     protected Action determineAction(World world){
         if(world.getCurrentTime() >= 12)
             return Action.SLEEP;
-
-        else if (world.getCurrentTime() >= 8)
+        else if (isHiding && world.isNight()) {
+            return Action.SLEEP;
+        }
+        else if (world.getCurrentTime() >= 10)
             return Action.SEEK_SHELTER;
 
         if(!isAwake)
@@ -214,11 +216,10 @@ public class Rabbit extends Animal {
                     giveBirth(world);
                 }
                 break;
-
             case Action.SEEK_SHELTER:
                 seekShelter(world);
             case Action.SEEK_FOOD:
-                seekFood(world);
+                //seekFood(world);
                 break;
 
             case Action.SEEK_MATE:
@@ -263,6 +264,7 @@ public class Rabbit extends Animal {
         }
         burrow.addRabbit(this);
         world.remove(this);
+        isHiding = true;
     }
 
     private boolean isGrassOneTile(World world) {
