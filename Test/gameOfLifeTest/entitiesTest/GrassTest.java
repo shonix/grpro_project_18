@@ -107,7 +107,7 @@ public class GrassTest {
             for(Grass grass : grasses){
                 numberOfGrassSpreadOpportunities += world.getEmptySurroundingTiles(world.getLocation(grass)).size();
                 grass.act(world);
-                numberOfGrassCreated +=
+                numberOfGrassCreated += 1;
             }
         }
     }
