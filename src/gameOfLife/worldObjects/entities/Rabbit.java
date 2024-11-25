@@ -16,6 +16,7 @@ public class Rabbit extends Animal {
     private static final int MAX_AGE = 240; // 12 simulation days
     private static final double DAILY_ENERGY_REDUCTION = 0.1;
     private int mateSearchRadius; //TODO consider changing to class constant
+    private static final Set<Class<?>> Edibles = Set.of(Grass.class);
 
     //define on the class, all possible images a rabbit can have
     public static final Color RABBIT_COLOR = new Color(218, 205, 184); //color on top-down world view
@@ -51,6 +52,7 @@ public class Rabbit extends Animal {
     private boolean isHiding;
     private boolean isPregnant = false; //TODO consider moving to Animal class
     private Rabbit mother;
+
     //instance fields end
 
     /**
@@ -250,7 +252,7 @@ public class Rabbit extends Animal {
             this.moveActor(world, this.getEmptyAdjacentTiles(world));
         } else if (isGrassOneTile(world)) {
             world.delete(WorldHandler.getClosestOfEntity(world, Grass.class, (this)));
-            burrow = (new Burrow(3, this));
+            burrow = (new Burrow(this));
             world.setTile(world.getLocation(this), burrow);
         } else {
             burrow = (new Burrow(3, this));
@@ -285,7 +287,7 @@ public class Rabbit extends Animal {
     @Override
     protected void seekFood(World world)
     {
-        Edible closestEdible = getClosestEdible(world, world.getLocation(this));
+        Edible closestEdible = WorldHandler.getClosestOfEntity(world, Grass.class , this);
         if(closestEdible != null)
         {
             Location locEdible = world.getLocation(closestEdible);
