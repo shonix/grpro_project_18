@@ -235,9 +235,9 @@ public class Rabbit extends Animal {
     private void seekShelter(World world) {
         if (burrow == null) {
             createBurrow(world);
+            hideInBurrow(world, burrow);
         } else if (this.getDistanceToLocation(world, world.getLocation(this), world.getLocation(burrow)) == 0) {
-            burrow.addRabbit(this);
-            world.remove(this);
+            hideInBurrow(world, burrow);
         } else {
             this.moveActor(world, findNextTileInShortestPath(world, world.getLocation(burrow)));
 
@@ -246,14 +246,15 @@ public class Rabbit extends Animal {
 
     private void createBurrow(World world) {
         if (isBurrowOneTile(world)) {
-            world.move(world, computeNextRandom(this.getEmptyAdjacentTiles(world))); //should move to adjacent tiles without hole. Change multiple methods in entity to take and return Sets instead. Much smarter
+            this.moveActor(world, this.getEmptyAdjacentTiles(world));
         } else if (isGrassOneTile(world)) {
             world.delete(WorldHandler.getClosestOfEntity(world, Grass.class, (this)));
-            world.setTile(world.getLocation(this), (new Burrow(3, this)));
+            burrow = (new Burrow(3, this));
+            world.setTile(world.getLocation(this), burrow);
         } else {
-            world.setTile(world.getLocation(this), (new Burrow(3, this)));
+            burrow = (new Burrow(3, this));
+            world.setTile(world.getLocation(this), burrow);
         }
-
     }
 
     private void hideInBurrow(World world, Burrow burrow) {
@@ -265,11 +266,11 @@ public class Rabbit extends Animal {
     }
 
     private boolean isGrassOneTile(World world) {
-        return !world.getAll(Grass.class, List.of(world.getLocation(this))).isEmpty(); //fix to work (find out if current tile currently has grass)
+        return WorldHandler.checkIfEntityOnTile(world, world.getLocation(this), Grass.class);
     }
 
     private boolean isBurrowOneTile(World world) {
-        return !world.getAll(Burrow.class, List.of(world.getLocation(this))).isEmpty(); //fix to work (find out if current tile currently has grass)
+        return WorldHandler.checkIfEntityOnTile(world, world.getLocation(this), Burrow.class);
     }
 
     /**
