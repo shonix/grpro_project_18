@@ -259,10 +259,7 @@ public class Rabbit extends Animal {
         if (burrow == null) {
             createBurrow(world);
             hideInBurrow(world, burrow);
-        } else if (this.getDistanceToLocation(world, world.getLocation(this), world.getLocation(burrow)) <= 1) {
-            this.moveActor(world, findNextTileInShortestPath(world, world.getLocation(burrow)));
-            hideInBurrow(world, burrow);
-        } else if (this.getDistanceToLocation(world, world.getLocation(this), world.getLocation(burrow)) <= 0 ){
+        } else if (this.getDistanceToLocation(world, world.getLocation(this), world.getLocation(burrow)) <= 0) {
             hideInBurrow(world, burrow);
         } else {
             this.moveActor(world, findNextTileInShortestPath(world, world.getLocation(burrow)));
@@ -367,6 +364,7 @@ public class Rabbit extends Animal {
         return null;
     }
 
+
     /**
      * TODO
      *
@@ -383,7 +381,9 @@ public class Rabbit extends Animal {
             }
         } else {
             currentMate = findMate(world);
-            this.moveActor(world, findNextTileInShortestPath(world, world.getLocation(currentMate)));
+            if (currentMate != null) {
+                this.moveActor(world, findNextTileInShortestPath(world, world.getLocation(currentMate)));
+            }
         }
     }
 
