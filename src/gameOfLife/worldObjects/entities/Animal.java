@@ -106,11 +106,10 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
     /**
      * find a mate for the animal within a given radius
      *
-     * @param world  the animal exists in
-     * @param radius for which a mate is searched within
+     * @param world the animal exists in
      * @return Animal the mate for this animal. SHOULD BE OF THE SAME TYPE!
      */
-    protected abstract Animal findMate(World world, int radius);
+    protected abstract Animal findMate(World world);
 
     /**
      * Method for instructing the animal to seek a mate and if possible, procreate.
@@ -236,6 +235,11 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
     }
 
 
+    /**
+     * Moves actor and
+     * @param world
+     * @param locations
+     */
     public void moveActor(World world, List<Location> locations) {
         if (world
                 .getEmptySurroundingTiles()
@@ -283,9 +287,9 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
             if (edibles.contains(edible.getEntityID())) {
                 listOfValidEdibles.add(edible);
             }
-        } return WorldHandler.getClosestOfEntityFromList(world, listOfValidEdibles, this);
+        }
+        return WorldHandler.getClosestOfEntityFromList(world, listOfValidEdibles, this);
     }
-
 
 
     /**

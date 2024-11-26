@@ -33,7 +33,7 @@ public class Burrow implements NonBlocking, DynamicDisplayInformationProvider {
     private Set<Rabbit> rabbitsInBurrow, owners;
     private int capacity;
     private DisplayInformation currentDisplayInformation;
-    private EntityID entityID = EntityID.BURROW;
+    private final EntityID entityID = EntityID.BURROW;
 
     // instance fields end
 

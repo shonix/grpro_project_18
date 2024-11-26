@@ -10,6 +10,9 @@ import itumulator.world.World;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static gameOfLife.util.WorldHandler.getEntitiesByType;
 
 public class Rabbit extends Animal {
     //class fields begin
@@ -53,18 +56,19 @@ public class Rabbit extends Animal {
     private boolean isHiding;
     private boolean isPregnant = false; //TODO consider moving to Animal class
     private Rabbit mother; //TODO fix so rabbit inherits mothers burrow
-    private EntityID entityID = EntityID.RABBIT;
+    private final EntityID entityID = EntityID.RABBIT;
 
     //instance fields end
 
     /**
      * Constructor for rabbit with full parameter control.
-     * @param age the number of steps this rabbit has been alive for
-     * @param sex reproductive female or male
-     * @param isAwake if it is awake
+     *
+     * @param age        the number of steps this rabbit has been alive for
+     * @param sex        reproductive female or male
+     * @param isAwake    if it is awake
      * @param isInfected if it is infected with fungi
      */
-    public Rabbit(int age, Sex sex, boolean isAwake, boolean isInfected){
+    public Rabbit(int age, Sex sex, boolean isAwake, boolean isInfected) {
         super(age, sex, isAwake, isInfected);
         /*Rabbits right now are created without a burrow associated with it
         but could be subject to change, if child rabbits are allocated their parents' burrow
@@ -81,11 +85,12 @@ public class Rabbit extends Animal {
     /**
      * Constructor for Rabbit that doesn't take infection argument.
      * Calls the constructor with full parameters, with isInfected set to false.
-     * @param age the number of steps this rabbit has been alive for
-     * @param sex reproductive female or male
+     *
+     * @param age     the number of steps this rabbit has been alive for
+     * @param sex     reproductive female or male
      * @param isAwake if it is awake
      */
-    public Rabbit(int age, Sex sex, boolean isAwake){
+    public Rabbit(int age, Sex sex, boolean isAwake) {
         this(age, sex, isAwake, false);
     }
 
@@ -97,28 +102,40 @@ public class Rabbit extends Animal {
         this(0, Sex.FEMALE, true, false);
     }
 
-    public EntityID getEntityID() {return entityID;}
+    public EntityID getEntityID() {
+        return entityID;
+    }
 
     /**
      * Return the burrow the rabbit is associated with. If rabbit is not associated with a burrow returns null.
+     *
      * @return burrow if not null, otherwise null
      */
-    public Burrow getBurrow() {return burrow;}
+    public Burrow getBurrow() {
+        return burrow;
+    }
 
     /**
      * Sets the burrow of the rabbit to a new burrow
+     *
      * @param burrow
      */
-    public void setBurrow(Burrow burrow) {this.burrow = burrow;}
+    public void setBurrow(Burrow burrow) {
+        this.burrow = burrow;
+    }
 
     /**
      * Sets the isHiding status
+     *
      * @param isHiding boolean
      */
-    public void setHiding(boolean isHiding) {this.isHiding = isHiding;}
+    public void setHiding(boolean isHiding) {
+        this.isHiding = isHiding;
+    }
 
     /**
      * Returns the isHiding status.
+     *
      * @return boolean
      */
     public boolean isHiding() {
@@ -137,19 +154,21 @@ public class Rabbit extends Animal {
     /**
      * Method that ages the rabbit and lowers it energy
      * then checks if it is too old or has no energy and kills accordingly
+     *
      * @param world the world in which the entity exists.
      */
     @Override
-    public void age(World world){
+    public void age(World world) {
         super.age(world);
         currentEnergy -= DAILY_ENERGY_REDUCTION;
-        if(age > MAX_AGE || currentEnergy <= 0){
+        if (age > MAX_AGE || currentEnergy <= 0) {
             die(world);
         }
     }
 
     /**
      * Returns the Rabbit class field for age at which rabbits are mature adults.
+     *
      * @return AGE_OF_MATURITY
      */
     @Override
@@ -159,10 +178,11 @@ public class Rabbit extends Animal {
 
     /**
      * Method to be called by simulator to instruct the rabbit to act and age.
+     *
      * @param world providing details of the position on which the entity is currently located and much more.
      */
     @Override
-    public void act(World world){
+    public void act(World world) {
         performAction(world, determineAction(world));
         age(world);
         updateDisplayInformation();
@@ -171,53 +191,49 @@ public class Rabbit extends Animal {
     /**
      * Method for rabbit to dertermine what action it needs to perform, returning an Action enum corresponding to the
      * first applicable conditions of the rabbit, according to a specific priority of actions
+     *
      * @param world in which the rabbit exists
      * @return Action enum signifying what action the rabbit must take
      */
     @Override
-    protected Action determineAction(World world){
-        if(world.getCurrentTime() >= 12)
+    protected Action determineAction(World world) {
+        if (world.getCurrentTime() >= 12)
             return Action.SLEEP;
         else if (isHiding && world.isNight()) {
             return Action.SLEEP;
-        }
-        else if (world.getCurrentTime() >= 10)
+        } else if (world.getCurrentTime() >= 10)
             return Action.SEEK_SHELTER;
 
-        if(!isAwake)
+        if (!isAwake)
             return Action.WAKE_UP;
 
-        if(currentEnergy < hungryThreshold)
+        if (currentEnergy < hungryThreshold)
             return Action.SEEK_FOOD;
 
-        if(!isFemale() && age >= getAgeOfMaturity())
-        {
-            if(currentMate != null)
-            {
+        if (!isFemale() && age >= getAgeOfMaturity()) {
+            if (currentMate != null) {
                 return Action.SEEK_MATE;
             }
-            this.currentMate = findMate(world, mateSearchRadius);
         }
-
         return Action.DEFAULT;
     }
 
     /**
      * Instructs the rabbit to perform a specific action, calling other methods to do the actual actions.
-     * @param world the world in which the Animal exists
+     *
+     * @param world  the world in which the Animal exists
      * @param action the action to be taken
      */
     @Override
-    protected void performAction(World world, Action action){
-        switch (action){
+    protected void performAction(World world, Action action) {
+        switch (action) {
             case Action.SLEEP:
                 sleep();
                 break;
 
             case Action.WAKE_UP:
                 wakeUp(world);
-                if(isPregnant)
-                {
+                if (isPregnant) {
                     giveBirth(world);
                 }
                 break;
@@ -234,8 +250,11 @@ public class Rabbit extends Animal {
                 break;
 
             default:
-                if(new Random().nextBoolean())
-                    moveActor(world, world.getEmptySurroundingTiles(world.getLocation(this)).stream().toList()); // Move randomly / idle
+                if (new Random().nextBoolean())
+                    moveActor(world, world
+                            .getEmptySurroundingTiles(world.getLocation(this))
+                            .stream()
+                            .toList()); // Move randomly / idle
                 break;
         }
     }
@@ -292,33 +311,30 @@ public class Rabbit extends Animal {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    protected void seekFood(World world)
-    {
-        Edible closestEdible = WorldHandler.getClosestOfEntity(world, Grass.class , this);
-        if(closestEdible != null)
-        {
+    protected void seekFood(World world) {
+        Edible closestEdible = WorldHandler.getClosestOfEntity(world, Grass.class, this);
+        if (closestEdible != null) {
             Location locEdible = world.getLocation(closestEdible);
             Location curr = world.getLocation(this);
-            if (locEdible.equals(curr))
-            {
+            if (locEdible.equals(curr)) {
                 eatGrass(world, (Plant) closestEdible);
-            }
-            else
-            {
+            } else {
                 List<Location> path = findNextTileInShortestPath(world, world.getLocation(closestEdible));
                 world.move(this, path.getFirst());
             }
-        }
-        else
-        {
-            if(new Random().nextInt(100) > 80)
-                moveActor(world,world.getEmptySurroundingTiles(world.getLocation(this)).stream().toList()); // Move randomly / idle
+        } else {
+            if (new Random().nextInt(100) > 80)
+                moveActor(world, world
+                        .getEmptySurroundingTiles(world.getLocation(this))
+                        .stream()
+                        .toList()); // Move randomly / idle
         }
     }
 
     /**
      * Will eat a piece of grass, increasing the rabbit's currentEnergy according to the sustenance the grass provides.
      * It will furthermore instruct the piece of grass to die
+     *
      * @param world
      * @param grass
      */
@@ -333,70 +349,68 @@ public class Rabbit extends Animal {
 
     /**
      * TODO
-     * @param world
-     * @param radius
+     * Finds closest female rabbit within mateSearchRadius.
      * @return
      */
     @Override
-    protected Rabbit findMate(World world, int radius)
-    {
-        for(Object o : world.getEntities().keySet())
-        {
-            if(o instanceof Rabbit rabbit) //I don't like this at all - "Pattern variable". (Might want to ask TA about this).
-            {
-                if(rabbit.isFemale() && getDistanceFromActorToLocation(world,world.getLocation(o)) <= radius && rabbit.age > rabbit.getAgeOfMaturity()) //Pretty long oneliner.. Basically checks if rabbit is female, and is withing given search radius.
-                {
-                    return rabbit;
-                }
-            }
+    protected Rabbit findMate(World world) {
+        Set<Rabbit> setOfPotentialMates =
+                WorldHandler
+                        .getEntitiesByType(world, Rabbit.class)
+                        .stream()
+                        .filter(Rabbit::isFemale)
+                        .filter(rabbit -> rabbit.getDistanceToLocation(world,
+                                world.getLocation(this), world.getLocation(rabbit)) <= mateSearchRadius)
+                        .collect(Collectors.toSet());
+        if (!setOfPotentialMates.isEmpty()) {
+            return WorldHandler.getClosestOfEntityFromList(world, setOfPotentialMates, this);
         }
         return null;
     }
 
     /**
      * TODO
+     *
      * @param world
      */
     @Override
-    protected void seekMateAndCopulate(World world)
-    {
-        if(world.getEntities().containsKey(currentMate))
-        {
-            if(getDistanceFromActorToLocation(world,world.getLocation(currentMate)) <= 1)
-            {
+    protected void seekMateAndCopulate(World world) {
+        if (world.getEntities().containsKey(currentMate)) {
+            if (getDistanceFromActorToLocation(world, world.getLocation(currentMate)) <= 1) {
                 currentMate.setPregnant(true);
                 currentMate = null;
+            } else {
+                this.moveActor(world, findNextTileInShortestPath(world, world.getLocation(currentMate)));
             }
-            else {
-                List<Location> path = findNextTileInShortestPath(world, world.getLocation(currentMate));
-                world.move(this, path.getFirst());
-            }
-        }
-        else {
-            currentMate = null;
+        } else {
+            currentMate = findMate(world);
         }
     }
 
     /**
      * If the rabbit is pregnant and has an empty tile next to it, it will give birth and create a new rabbit.
+     *
      * @param world in which the rabbit exists.
      */
     @Override
-    protected void giveBirth(World world)
-    {
-        List<Location> emptySurroundingTiles = world.getEmptySurroundingTiles(world.getLocation(this)).stream().toList();
-        if(!emptySurroundingTiles.isEmpty()) {
-            world.setTile(emptySurroundingTiles.getFirst(), new Rabbit(0, new Random().nextBoolean()?Animal.Sex.FEMALE: Animal.Sex.MALE, false, this.isInfected));
+    protected void giveBirth(World world) {
+        List<Location> emptySurroundingTiles = world
+                .getEmptySurroundingTiles(world.getLocation(this))
+                .stream()
+                .toList();
+        if (!emptySurroundingTiles.isEmpty()) {
+            world.setTile(emptySurroundingTiles.getFirst(), new Rabbit(0, new Random().nextBoolean() ? Animal.Sex.FEMALE : Animal.Sex.MALE, false, this.isInfected));
             isPregnant = false;
         }
     }
 
     /**
      * Method instructing rabbit to die, deleting it from the world.
+     *
      * @param world providing details of the position on which the entity is currently located and much more.
      */
     @Override
-    public void die(World world){
+    public void die(World world) {
         world.delete(this);
     }
 
@@ -422,45 +436,52 @@ public class Rabbit extends Animal {
      * therefore it must be checked that it can exit the burrow it is residing in. If it can't nothing happens and in
      * effect the rabbit will stay asleep in its burrow. Otherwise it will either just wake up from the tile it was
      * standing on, or wake up and exit the burrow it was in.
+     *
      * @param world the world the rabbit exists in
      */
     @Override
     protected void wakeUp(World world) {
-        if(isHiding){
+        if (isHiding) {
             Set<Location> emptyTiles = world.getSurroundingTiles(world.getLocation(burrow));
-            if(world.isTileEmpty(world.getLocation(burrow))) emptyTiles.add(world.getLocation(burrow));
-            if(!emptyTiles.isEmpty()){
+            if (world.isTileEmpty(world.getLocation(burrow))) emptyTiles.add(world.getLocation(burrow));
+            if (!emptyTiles.isEmpty()) {
                 exitBurrow(world);
             }
             //if it is hiding, but no tile is empty, nothing happens this step
 
-        }else{
+        } else {
             isAwake = true;
         }
     }
 
     /**
      * OVERLOADED METHOD, sets the rabbit on a random tile free tiles around the burrow
-     * @param world in which the rabbit exists
+     *
+     * @param world     in which the rabbit exists
      * @param neighbors Set of locations to be set down around. Given as an argument to allow functionality that
      *                  mutates this set.
      */
     public void exitBurrow(World world, Set<Location> neighbors) {
-        if(!isHiding) throw new IllegalStateException("Rabbit is not hidden!");
-        if(neighbors.isEmpty()) throw new IllegalStateException("There are no available tiles!");
-        world.setTile(neighbors.iterator().next(), this);
+        if (!isHiding) throw new IllegalStateException("Rabbit is not hidden!");
+        if (neighbors.isEmpty()) throw new IllegalStateException("There are no available tiles!");
+        world.setTile(neighbors
+                .iterator()
+                .next(), this);
         burrow.removeRabbit(this);
         isHiding = false;
         isAwake = true;
     }
 
-    public void exitBurrow(World world)
-    {
-        if(!isHiding) throw new IllegalStateException("Rabbit is not hidden!");
-        if(!world.getEmptySurroundingTiles(world.getLocation(this.burrow)).isEmpty())
-        {
+    public void exitBurrow(World world) {
+        if (!isHiding) throw new IllegalStateException("Rabbit is not hidden!");
+        if (!world
+                .getEmptySurroundingTiles(world.getLocation(this.burrow))
+                .isEmpty()) {
             Set<Location> emptySurrounding = world.getEmptySurroundingTiles(world.getLocation(this.burrow));
-            world.setTile(emptySurrounding.stream().toList().getFirst(), this);
+            world.setTile(emptySurrounding
+                    .stream()
+                    .toList()
+                    .getFirst(), this);
             burrow.removeRabbit(this);
             isHiding = false;
             isAwake = true;
@@ -469,12 +490,13 @@ public class Rabbit extends Animal {
 
     /**
      * OVERLOADED METHOD, sets the rabbit on a specified location
-     * @param world in which the rabbit exists
+     *
+     * @param world    in which the rabbit exists
      * @param location on which the rabbit is to be set
      */
     public void exitBurrow(World world, Location location) {
-        if(!isHiding) throw new IllegalStateException("Rabbit is not hidden!");
-        if(!world.isTileEmpty(location)) throw new IllegalStateException("Tile is not available!");
+        if (!isHiding) throw new IllegalStateException("Rabbit is not hidden!");
+        if (!world.isTileEmpty(location)) throw new IllegalStateException("Tile is not available!");
         world.setTile(location, this);
         burrow.removeRabbit(this);
         isHiding = false;
@@ -488,11 +510,11 @@ public class Rabbit extends Animal {
     @Override
     public void updateDisplayInformation() {
         int state = 0;
-        if(age >= AGE_OF_MATURITY) state +=4;
-        if(!isInfected) state +=2;
-        if(isAwake) state += 1;
-        if(isPregnant) state +=1;
-        if(isPregnant && !isAwake) state +=2;
+        if (age >= AGE_OF_MATURITY) state += 4;
+        if (!isInfected) state += 2;
+        if (isAwake) state += 1;
+        if (isPregnant) state += 1;
+        if (isPregnant && !isAwake) state += 2;
         currentDisplayInformation = DISPLAY_INFORMATION_MAP.get(state);
     }
 
