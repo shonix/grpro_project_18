@@ -124,7 +124,7 @@ public class Rabbit extends Animal {
 
     /**
      * Calculates the maximum energy level of an animal as a parabolic function,
-     * with the vertex representing the age at which the animal is fully matured.
+     * with the vertex representing the age at which the rabbit is fully matured.
      */
     @Override
     protected double calculateMaxEnergy() {
@@ -138,7 +138,7 @@ public class Rabbit extends Animal {
      */
     @Override
     public void age(World world){
-        age++;
+        super.age(world);
         currentEnergy -= DAILY_ENERGY_REDUCTION;
         if(age > MAX_AGE || currentEnergy <= 0){
             die(world);
@@ -285,6 +285,12 @@ public class Rabbit extends Animal {
     }
 
     @Override
+    public <T> void seekFood(World world, Class<T> entityType){
+        super.seekFood(world, entityType);
+    }
+
+
+
     protected void seekFood(World world)
     {
         Edible closestEdible = WorldHandler.getClosestOfEntity(world, Grass.class , this);

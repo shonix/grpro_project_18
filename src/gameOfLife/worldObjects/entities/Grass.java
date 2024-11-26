@@ -52,7 +52,7 @@ public class Grass extends Plant implements NonBlocking {
      */
     @Override
     public void age(World world){
-        age++;
+        super.age(world);
         //die if too much has been eaten, or too old
         if (providedSustenance < MIN_PROVIDED_SUSTENANCE || age > MAX_AGE) {
             die(world);

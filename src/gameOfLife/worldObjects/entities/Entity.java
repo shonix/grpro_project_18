@@ -20,12 +20,6 @@ public abstract class Entity implements Actor{
         this.age = age;
     }
 
-    /**
-     * Instructs the entity to age. Argument world, doesn't do anything by default, but
-     * is provided to allow functionality where applicable in subclasses.
-     * @param world the world in which the entity exists.
-     */
-    public abstract void age(World world);
 
     /**
      * Instructs the entity to act in the world.
@@ -118,6 +112,14 @@ public abstract class Entity implements Actor{
             }
         }
         return (Edible) foundGrass;
+    }
+    /**
+     * Instructs the entity to age. Argument world, doesn't do anything by default, but
+     * is provided to allow functionality where applicable in subclasses.
+     * @param world the world in which the entity exists.
+     */
+    public void age(World world){
+        age++;
     }
 
 

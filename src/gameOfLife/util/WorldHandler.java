@@ -52,6 +52,11 @@ public class WorldHandler {
         return false;
     }
 
+    /**
+     * Returns a set of all locations in the world
+     * @param world
+     * @return Set<Location>
+     */
     public static Set<Location> getAllTiles(World world){
         Location midpoint = new Location(world.getSize()/2, world.getSize()/2);
         Set<Location> out = world.getSurroundingTiles(midpoint, world.getSize()+1);
