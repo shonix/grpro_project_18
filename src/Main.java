@@ -17,9 +17,7 @@ public class Main {
         List<Program> programs = pi.getPrograms();
         for(Program p : programs) {
             p.setDisplayInformation(Grass.class, new DisplayInformation(Color.green, "grass"));
-            p.setDisplayInformation(Burrow.class, new DisplayInformation(Color.green, "hole"));
-            p.setDisplayInformation(Rabbit.class, new DisplayInformation(Color.green, "rabbit-large"));
-
+            p.setDisplayInformation(Burrow.class, new DisplayInformation(Color.DARK_GRAY, "hole"));
             p.show();
 
 

@@ -1,6 +1,6 @@
 package gameOfLife.worldObjects.entities;
 
-import gameOfLife.worldObjects.entities.enums.EntityID;
+import gameOfLife.worldObjects.entities.enums.EntityTypeID;
 import itumulator.world.Location;
 import itumulator.world.NonBlocking;
 import itumulator.world.World;
@@ -14,18 +14,26 @@ import java.util.Set;
  * Grass can spread instantiating a new piece of grass in a neighbouring location.
  */
 public class Grass extends Plant implements NonBlocking {
-    //class constants
+    //class fields begin
     public static final double GRASS_SPREAD_CHANCE = 0.01;
     public static final int MIN_PROVIDED_SUSTENANCE = 1, MAX_PROVIDED_SUSTENANCE = 10, MAX_AGE = 120;
+    //class fields end
 
-    private EntityID entityID = EntityID.GRASS;
-
-    public EntityID getEntityID() {return entityID;}
-
+    /**
+     * Constructor for Grass instances.
+     * @param sustenance the amount of sustenance provided when eaten
+     */
     public Grass(int sustenance){
         super(0,true);
         if(sustenance < MIN_PROVIDED_SUSTENANCE || sustenance > MAX_PROVIDED_SUSTENANCE) throw new IllegalArgumentException("Invalid amount of sustenance");
         this.providedSustenance = sustenance;
+    }
+
+    /**
+     * Default constructor for grass, setting providedSustenance field to 1 (one)
+     */
+    public Grass(){
+        this(1);
     }
 
     /**
@@ -74,5 +82,12 @@ public class Grass extends Plant implements NonBlocking {
         world.delete(this);
     }
 
-
+    /**
+     * Return the EntityTypeID associated with Grass entities.
+     * @return EntityTypeID.GRASS
+     */
+    @Override
+    public EntityTypeID getEntityTypeID() {
+        return EntityTypeID.GRASS;
+    }
 }

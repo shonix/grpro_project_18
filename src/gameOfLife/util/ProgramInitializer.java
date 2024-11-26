@@ -1,12 +1,13 @@
 package gameOfLife.util;
 
-import gameOfLife.worldObjects.entities.Animal;
 import gameOfLife.worldObjects.entities.Grass;
 import gameOfLife.worldObjects.Burrow;
 import gameOfLife.worldObjects.entities.Rabbit;
 import itumulator.executable.Program;
 import itumulator.world.Location;
 import itumulator.world.World;
+
+import gameOfLife.worldObjects.entities.enums.Sex;
 
 import java.io.*;
 import java.util.*;
@@ -182,7 +183,7 @@ public class ProgramInitializer {
                 {
                     Location location = new Location(rand.nextInt(world.getSize()),rand.nextInt(world.getSize()));
                     if(world.isTileEmpty(location)) {
-                        world.setTile(location, new Rabbit(0, rand.nextBoolean()?Animal.Sex.FEMALE: Animal.Sex.MALE, true, false));
+                        world.setTile(location, new Rabbit(0, rand.nextBoolean()? Sex.FEMALE: Sex.MALE, true, false));
                     }
                 }
                 break;

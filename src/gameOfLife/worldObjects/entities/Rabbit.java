@@ -2,7 +2,9 @@ package gameOfLife.worldObjects.entities;
 
 import gameOfLife.util.WorldHandler;
 import gameOfLife.worldObjects.Burrow;
-import gameOfLife.worldObjects.entities.enums.EntityID;
+import gameOfLife.worldObjects.entities.enums.EntityTypeID;
+import gameOfLife.worldObjects.entities.enums.Action;
+import gameOfLife.worldObjects.entities.enums.Sex;
 import itumulator.executable.DisplayInformation;
 import itumulator.world.Location;
 import itumulator.world.World;
@@ -12,15 +14,14 @@ import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static gameOfLife.util.WorldHandler.getEntitiesByType;
-
 public class Rabbit extends Animal {
     //class fields begin
     public static final int AGE_OF_MATURITY = 60; //3 simulation days
     public static final int MAX_AGE = 240; // 12 simulation days
     public static final double DAILY_ENERGY_REDUCTION = 0.1;
     public int mateSearchRadius; //TODO consider changing to class constant
-    public static final Set<EntityID> edibles = Set.of(EntityID.GRASS);
+    public static final Set<EntityTypeID> edibles = Set.of(EntityTypeID.GRASS);
+
 
     //define on the class, all possible images a rabbit can have
     public static final Color RABBIT_COLOR = new Color(218, 205, 184); //color on top-down world view
@@ -56,7 +57,6 @@ public class Rabbit extends Animal {
     private boolean isHiding;
     private boolean isPregnant = false; //TODO consider moving to Animal class
     private Rabbit mother; //TODO fix so rabbit inherits mothers burrow
-    private final EntityID entityID = EntityID.RABBIT;
 
     //instance fields end
 
@@ -100,10 +100,6 @@ public class Rabbit extends Animal {
      */
     public Rabbit() {
         this(0, Sex.FEMALE, true, false);
-    }
-
-    public EntityID getEntityID() {
-        return entityID;
     }
 
     /**
@@ -399,7 +395,7 @@ public class Rabbit extends Animal {
                 .stream()
                 .toList();
         if (!emptySurroundingTiles.isEmpty()) {
-            world.setTile(emptySurroundingTiles.getFirst(), new Rabbit(0, new Random().nextBoolean() ? Animal.Sex.FEMALE : Animal.Sex.MALE, false, this.isInfected));
+            world.setTile(emptySurroundingTiles.getFirst(), new Rabbit(0, new Random().nextBoolean() ? Sex.FEMALE : Sex.MALE, false, this.isInfected));
             isPregnant = false;
         }
     }
@@ -412,6 +408,14 @@ public class Rabbit extends Animal {
     @Override
     public void die(World world) {
         world.delete(this);
+    }
+
+    /**
+     * @return
+     */
+    @Override
+    public EntityTypeID getEntityTypeID() {
+        return EntityTypeID.RABBIT;
     }
 
     /**

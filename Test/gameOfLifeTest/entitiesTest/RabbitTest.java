@@ -6,6 +6,7 @@ import gameOfLife.worldObjects.Burrow;
 import gameOfLife.worldObjects.entities.Animal;
 import gameOfLife.worldObjects.entities.Grass;
 import gameOfLife.worldObjects.entities.Rabbit;
+import gameOfLife.worldObjects.entities.enums.Sex;
 import itumulator.executable.Program;
 import itumulator.world.Location;
 import itumulator.world.World;
@@ -206,7 +207,7 @@ public class RabbitTest {
     void testRabbitProcreation()
     {
         //Arrange
-        Rabbit pregnantRabbit = new Rabbit(Rabbit.AGE_OF_MATURITY+1,Animal.Sex.FEMALE,false,false);
+        Rabbit pregnantRabbit = new Rabbit(Rabbit.AGE_OF_MATURITY+1, Sex.FEMALE,false,false);
         pregnantRabbit.setPregnant(true);
         world.setTile(new Location(0,0), pregnantRabbit);
         int startRabbits = world.getEntities().size();

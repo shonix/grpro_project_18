@@ -1,8 +1,8 @@
 package gameOfLife.worldObjects.entities;
 
-import gameOfLife.worldObjects.entities.enums.EntityID;
+import gameOfLife.worldObjects.entities.enums.EntityTypeID;
 
 public interface Edible {
-    public EntityID getEntityID();
+    EntityTypeID getEntityTypeID();
     int getProvidedSustenance();
 }

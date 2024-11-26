@@ -1,8 +1,7 @@
 package gameOfLife.worldObjects;
 
-import gameOfLife.worldObjects.entities.Entity;
 import gameOfLife.worldObjects.entities.Rabbit;
-import gameOfLife.worldObjects.entities.enums.EntityID;
+import gameOfLife.worldObjects.entities.enums.EntityTypeID;
 import itumulator.executable.DisplayInformation;
 import itumulator.executable.DynamicDisplayInformationProvider;
 import itumulator.world.Location;
@@ -10,34 +9,16 @@ import itumulator.world.NonBlocking;
 import itumulator.world.World;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
  * Represents a burrow a rabbit can hide in
  */
-public class Burrow implements NonBlocking, DynamicDisplayInformationProvider {
-    // class fields begin
-
-    private static final int SMALL_HOLE_LIMIT = 2; //the limit after which burrow is displayed as big
-
-    //possible images for burrows
-    private static final DisplayInformation SMALL_HOLE = new DisplayInformation(Color.green, "hole-small");
-    private static final DisplayInformation BIG_HOLE = new DisplayInformation(Color.green, "hole");
-
-    // class fields end
-
-    // instance fields begin
+public class Burrow implements NonBlocking {
 
     private Set<Rabbit> rabbitsInBurrow, owners;
     private int capacity;
-    private DisplayInformation currentDisplayInformation;
-    private final EntityID entityID = EntityID.BURROW;
-
-    // instance fields end
-
-    public EntityID getEntityID() {return entityID;}
 
     /**
      * Burrow constructor
@@ -48,11 +29,6 @@ public class Burrow implements NonBlocking, DynamicDisplayInformationProvider {
         this.capacity = capacity;
         this.rabbitsInBurrow = new HashSet<>();
         this.owners = new HashSet<>();
-        if(capacity > SMALL_HOLE_LIMIT){
-            currentDisplayInformation = BIG_HOLE;
-        }else {
-            currentDisplayInformation = SMALL_HOLE;
-        }
     }
 
     public Burrow(int capacity, Rabbit rabbit) {
@@ -92,11 +68,6 @@ public class Burrow implements NonBlocking, DynamicDisplayInformationProvider {
      */
     public void setCapacity(int capacity) {
         this.capacity = capacity;
-        if(capacity > SMALL_HOLE_LIMIT){
-            currentDisplayInformation = BIG_HOLE;
-        }else {
-            currentDisplayInformation = SMALL_HOLE;
-        }
     }
 
     /**
@@ -163,11 +134,10 @@ public class Burrow implements NonBlocking, DynamicDisplayInformationProvider {
     }
 
     /**
-     * Method to get the current DisplayInformation for the burrow, which is subject to change
-     * @return currentDisplayInformation current display information to be given when burrow is drawn
+     * Get the EntityTypeID associated with burrows
+     * @return EntityTypeID.BURROW
      */
-    @Override
-    public DisplayInformation getInformation() {
-        return currentDisplayInformation;
-    }
+    public EntityTypeID getEntityTypeID() {return EntityTypeID.BURROW;}
+
+
 }

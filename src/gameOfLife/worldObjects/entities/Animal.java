@@ -1,7 +1,9 @@
 package gameOfLife.worldObjects.entities;
 
 import gameOfLife.util.WorldHandler;
-import gameOfLife.worldObjects.entities.enums.EntityID;
+import gameOfLife.worldObjects.entities.enums.Action;
+import gameOfLife.worldObjects.entities.enums.EntityTypeID;
+import gameOfLife.worldObjects.entities.enums.Sex;
 import itumulator.executable.DisplayInformation;
 import itumulator.executable.DynamicDisplayInformationProvider;
 import itumulator.world.Location;
@@ -18,28 +20,13 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
     protected Animal currentMate;
     protected DisplayInformation currentDisplayInformation;
     protected double hungryThreshold;
-    protected Set<EntityID> edibles;
+    protected Set<EntityTypeID> edibles;
 
     /*
     TODO consider moving hungryThreshold back to individual animal implementations and as a class constant,
     TODO such that different animal species has a different hunger threshold, some animals will do something earlier than
     TODO others.
      */
-
-    public enum Action {
-        SLEEP,
-        WAKE_UP,
-        GIVE_BIRTH,
-        SEEK_SHELTER,
-        SEEK_FOOD,
-        SEEK_MATE,
-        DEFAULT
-    }
-
-    public enum Sex {
-        MALE, FEMALE;
-
-    }
 
     public Animal(int age, Sex sex, boolean isAwake, boolean isInfected) {
         super(age);
@@ -62,8 +49,6 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
     /*
     START OF ABSTRACT METHODS
      */
-
-    public abstract EntityID getEntityID();
 
     /**
      * Calculates the maximum energy level of an animal.
@@ -284,7 +269,7 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
         Set<Edible> listOfValidEdibles = new HashSet<>();
 
         for (Edible edible : listOfEdibles) {
-            if (edibles.contains(edible.getEntityID())) {
+            if (edibles.contains(edible.getEntityTypeID())) {
                 listOfValidEdibles.add(edible);
             }
         }

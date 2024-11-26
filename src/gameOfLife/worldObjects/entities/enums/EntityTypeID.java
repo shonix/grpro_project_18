@@ -1,6 +1,6 @@
 package gameOfLife.worldObjects.entities.enums;
 
-public enum EntityID {
+public enum EntityTypeID {
     GRASS,
     RABBIT,
     BURROW

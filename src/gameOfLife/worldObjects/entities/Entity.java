@@ -1,5 +1,6 @@
 package gameOfLife.worldObjects.entities;
 
+import gameOfLife.worldObjects.entities.enums.EntityTypeID;
 import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
@@ -34,6 +35,12 @@ public abstract class Entity implements Actor{
      * @param world providing details of the position on which the entity is currently located and much more.
      */
     public abstract void die(World world);
+
+    /**
+     * Return the EntityTypeID of the entity
+     * @return EntityTypeID
+     */
+    public abstract EntityTypeID getEntityTypeID();
 
     /**
      * Get the entity's age
