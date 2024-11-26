@@ -15,19 +15,18 @@ import java.util.stream.Collectors;
 public class WorldHandler {
 
 
-    public static <T> List<T> getEntitiesByType(World world, Class<T> entityType) {
+    public static <T> Set<T> getEntitiesByType(World world, Class<T> entityType) {
         return world
                 .getEntities()
                 .keySet()
                 .stream()
                 .filter(entityType::isInstance) //filters by isInstance
                 .map(entityType::cast) //type casts
-                .collect(Collectors.toList()); //puts it in mutable list
+                .collect(Collectors.toSet()); //puts it in mutable list
     }
 
+    public static <T> T getClosestOfEntityFromList(World world, Set<T> entities, Entity actor) {
 
-    public static <T> T getClosestOfEntity(World world, Class<T> entityType, Entity actor) {
-        List<T> entities = getEntitiesByType(world, entityType);
         int currShortest = Integer.MAX_VALUE;
         T foundEntity = null;
 
@@ -41,9 +40,15 @@ public class WorldHandler {
         return foundEntity;
     }
 
+    public static <T> T getClosestOfEntity(World world, Class<T> entityType, Entity actor) {
+        Set<T> entities = getEntitiesByType(world, entityType);
+        return getClosestOfEntityFromList(world, entities, actor);
+    }
+
+
 
     public static <T> boolean checkIfEntityOnTile(World world, Location location, Class<T> type) {
-        List<T> listOfEntities = getEntitiesByType(world, type);
+        Set<T> listOfEntities = getEntitiesByType(world, type);
         if (!listOfEntities.isEmpty()) {
             return getEntitiesByType(world, type)
                     .stream()

@@ -1,5 +1,6 @@
 package gameOfLife.worldObjects.entities;
 
+import gameOfLife.worldObjects.entities.enums.EntityID;
 import itumulator.world.Location;
 import itumulator.world.NonBlocking;
 import itumulator.world.World;
@@ -13,8 +14,13 @@ import java.util.Set;
  * Grass can spread instantiating a new piece of grass in a neighbouring location.
  */
 public class Grass extends Plant implements NonBlocking {
+    //class constants
     public static final double GRASS_SPREAD_CHANCE = 0.01;
     public static final int MIN_PROVIDED_SUSTENANCE = 1, MAX_PROVIDED_SUSTENANCE = 10, MAX_AGE = 120;
+
+    private EntityID entityID = EntityID.GRASS;
+
+    public EntityID getEntityID() {return entityID;}
 
     public Grass(int sustenance){
         super(0,true);

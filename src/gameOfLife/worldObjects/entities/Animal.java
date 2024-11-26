@@ -1,9 +1,9 @@
 package gameOfLife.worldObjects.entities;
 
 import gameOfLife.util.WorldHandler;
+import gameOfLife.worldObjects.entities.enums.EntityID;
 import itumulator.executable.DisplayInformation;
 import itumulator.executable.DynamicDisplayInformationProvider;
-import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
 
@@ -18,7 +18,8 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
     protected Animal currentMate;
     protected DisplayInformation currentDisplayInformation;
     protected double hungryThreshold;
-    private static final Set<Class<?>> edibles = new HashSet<>();
+    protected Set<EntityID> edibles;
+
     /*
     TODO consider moving hungryThreshold back to individual animal implementations and as a class constant,
     TODO such that different animal species has a different hunger threshold, some animals will do something earlier than
@@ -61,6 +62,8 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
     /*
     START OF ABSTRACT METHODS
      */
+
+    public abstract EntityID getEntityID();
 
     /**
      * Calculates the maximum energy level of an animal.
@@ -273,26 +276,16 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
     }
 
     public Edible getClosestEdible(World world) {
-        Set<Edible> listOfEdibles = new HashSet<>();
-        for (Class<?> edibleClass : edibles) {
-            if (Edible.class.isAssignableFrom(edibleClass)) {
-                Class<? extends Edible> edibleType = (Class<? extends Edible>) edibleClass;
-                Edible closest = WorldHandler.getClosestOfEntity(world, edibleType, this);
-                listOfEdibles.add(closest);
-            }
-        }
-        Edible cloestEdible = null;
-        int closestDistance = Integer.MAX_VALUE;
+        Set<Edible> listOfEdibles = WorldHandler.getEntitiesByType(world, Edible.class);
+        Set<Edible> listOfValidEdibles = new HashSet<>();
 
         for (Edible edible : listOfEdibles) {
-            if (this.getDistanceFromActorToLocation(world, world.getLocation(edible)) < closestDistance) {
-                cloestEdible = edible;
-                closestDistance = this.getDistanceFromActorToLocation(world, world.getLocation(edible));
+            if (edibles.contains(edible.getEntityID())) {
+                listOfValidEdibles.add(edible);
             }
-
-        }
-        return cloestEdible;
+        } return WorldHandler.getClosestOfEntityFromList(world, listOfValidEdibles, this);
     }
+
 
 
     /**

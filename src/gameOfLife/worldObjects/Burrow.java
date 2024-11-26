@@ -1,6 +1,8 @@
 package gameOfLife.worldObjects;
 
+import gameOfLife.worldObjects.entities.Entity;
 import gameOfLife.worldObjects.entities.Rabbit;
+import gameOfLife.worldObjects.entities.enums.EntityID;
 import itumulator.executable.DisplayInformation;
 import itumulator.executable.DynamicDisplayInformationProvider;
 import itumulator.world.Location;
@@ -31,8 +33,11 @@ public class Burrow implements NonBlocking, DynamicDisplayInformationProvider {
     private Set<Rabbit> rabbitsInBurrow, owners;
     private int capacity;
     private DisplayInformation currentDisplayInformation;
+    private EntityID entityID = EntityID.BURROW;
 
     // instance fields end
+
+    public EntityID getEntityID() {return entityID;}
 
     /**
      * Burrow constructor

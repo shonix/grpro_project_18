@@ -2,6 +2,7 @@ package gameOfLife.worldObjects.entities;
 
 import gameOfLife.util.WorldHandler;
 import gameOfLife.worldObjects.Burrow;
+import gameOfLife.worldObjects.entities.enums.EntityID;
 import itumulator.executable.DisplayInformation;
 import itumulator.world.Location;
 import itumulator.world.World;
@@ -16,7 +17,7 @@ public class Rabbit extends Animal {
     public static final int MAX_AGE = 240; // 12 simulation days
     public static final double DAILY_ENERGY_REDUCTION = 0.1;
     public int mateSearchRadius; //TODO consider changing to class constant
-    private static final Set<Class<?>> Edibles = Set.of(Grass.class);
+    public static final Set<EntityID> edibles = Set.of(EntityID.GRASS);
 
     //define on the class, all possible images a rabbit can have
     public static final Color RABBIT_COLOR = new Color(218, 205, 184); //color on top-down world view
@@ -51,7 +52,8 @@ public class Rabbit extends Animal {
     private Rabbit currentMate; //TODO consider changing type to Animal and move to Animal class
     private boolean isHiding;
     private boolean isPregnant = false; //TODO consider moving to Animal class
-    private Rabbit mother;
+    private Rabbit mother; //TODO fix so rabbit inherits mothers burrow
+    private EntityID entityID = EntityID.RABBIT;
 
     //instance fields end
 
@@ -93,8 +95,9 @@ public class Rabbit extends Animal {
      */
     public Rabbit() {
         this(0, Sex.FEMALE, true, false);
-
     }
+
+    public EntityID getEntityID() {return entityID;}
 
     /**
      * Return the burrow the rabbit is associated with. If rabbit is not associated with a burrow returns null.
@@ -288,13 +291,6 @@ public class Rabbit extends Animal {
     private void createHole() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
-    @Override
-    public <T> void seekFood(World world, Class<T> entityType){
-        super.seekFood(world, entityType);
-    }
-
-
 
     protected void seekFood(World world)
     {
