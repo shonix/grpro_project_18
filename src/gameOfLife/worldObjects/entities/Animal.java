@@ -268,7 +268,7 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
         Set<Edible> listOfEdibles = WorldHandler.getEntitiesByType(world, Edible.class);
         Set<Edible> listOfValidEdibles = new HashSet<>();
 
-        for (Edible edible : listOfEdibles) {
+        for (Edible   edible : listOfEdibles) {
             if (edibles.contains(edible.getEntityTypeID())) {
                 listOfValidEdibles.add(edible);
             }

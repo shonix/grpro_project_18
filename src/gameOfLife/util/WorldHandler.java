@@ -26,14 +26,13 @@ public class WorldHandler {
     }
 
     public static <T> T getClosestOfEntityFromList(World world, Set<T> entities, Entity actor) {
-
-        int currShortest = Integer.MAX_VALUE;
+        int currentShortest = Integer.MAX_VALUE;
         T foundEntity = null;
 
         for (T entity : entities) {
             int distance = actor.getDistanceToLocation(world, world.getLocation(actor), world.getLocation(entity));
-            if (distance < currShortest) {
-                currShortest = distance;
+            if (distance < currentShortest) {
+                currentShortest = distance;
                 foundEntity = entity;
             }
         }

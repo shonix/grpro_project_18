@@ -94,32 +94,6 @@ public abstract class Entity implements Actor{
         } return distanceToTarget;
     }
 
-
-
-    /**
-     * Returns the closest edible object.
-     * @param world world object.
-     * @param startLocation From where the check is made
-     * @return Closest edible object.
-     */
-    public Edible getClosestEdible(World world, Location startLocation)
-    {
-        int currShortest = Integer.MAX_VALUE;
-        Object foundGrass = null;
-        for ( Object o : world.getEntities().keySet())
-        {
-            if(o instanceof Edible)
-            {
-                int distance = getDistanceToLocation(world, startLocation,world.getEntities().get(o));
-                if(distance < currShortest)
-                {
-                    currShortest = distance;
-                    foundGrass = o;
-                }
-            }
-        }
-        return (Edible) foundGrass;
-    }
     /**
      * Instructs the entity to age. Argument world, doesn't do anything by default, but
      * is provided to allow functionality where applicable in subclasses.
