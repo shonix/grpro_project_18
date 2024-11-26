@@ -207,12 +207,12 @@ public class Rabbit extends Animal {
             return Action.SEEK_FOOD;
 
         if (!isFemale() && age >= getAgeOfMaturity()) {
-            if (currentMate != null) {
-                return Action.SEEK_MATE;
+            return Action.SEEK_MATE;
             }
-        }
+
         return Action.DEFAULT;
-    }
+        }
+
 
     /**
      * Instructs the rabbit to perform a specific action, calling other methods to do the actual actions.
@@ -259,7 +259,7 @@ public class Rabbit extends Animal {
         if (burrow == null) {
             createBurrow(world);
             hideInBurrow(world, burrow);
-        } else if (this.getDistanceToLocation(world, world.getLocation(this), world.getLocation(burrow)) == 0) {
+        } else if (this.getDistanceToLocation(world, world.getLocation(this), world.getLocation(burrow)) <= 1) {
             hideInBurrow(world, burrow);
         } else {
             this.moveActor(world, findNextTileInShortestPath(world, world.getLocation(burrow)));
@@ -346,7 +346,7 @@ public class Rabbit extends Animal {
     /**
      * TODO
      * Finds closest female rabbit within mateSearchRadius.
-     * @return
+     * @return Female Rabbit
      */
     @Override
     protected Rabbit findMate(World world) {
@@ -380,6 +380,7 @@ public class Rabbit extends Animal {
             }
         } else {
             currentMate = findMate(world);
+            this.moveActor(world, findNextTileInShortestPath(world, world.getLocation(currentMate)));
         }
     }
 
