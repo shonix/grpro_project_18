@@ -1,10 +1,7 @@
 package gameOfLife.util;
 
-import gameOfLife.worldObjects.entities.BerryBush;
-import gameOfLife.worldObjects.entities.Entity;
-import gameOfLife.worldObjects.entities.Grass;
+import gameOfLife.worldObjects.entities.*;
 import gameOfLife.worldObjects.Burrow;
-import gameOfLife.worldObjects.entities.Rabbit;
 import itumulator.executable.Program;
 import itumulator.world.Location;
 import itumulator.world.World;
@@ -13,6 +10,7 @@ import gameOfLife.worldObjects.entities.enums.Sex;
 
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ProgramInitializer {
     private final DataHandler dh;
@@ -20,6 +18,8 @@ public class ProgramInitializer {
     private final int resolution;
     private final int programDelay;
     private List<Program> programs;
+    private Map<Entity, Location> blockingEntityMap;
+    private Map<Object, Location> nonblockingEntityMap;
 
     /**
      * Initializes the program, as well as populates the world in said program, based on input file supplied.
@@ -165,9 +165,8 @@ public class ProgramInitializer {
                 while(population >= world.getEntities().size())
                 {
                     Location location = new Location(rand.nextInt(world.getSize()),rand.nextInt(world.getSize()));
-                    if(!world.containsNonBlocking(location))
-                    {
-                        world.setTile(location, new Grass(1));
+                    if(!world.containsNonBlocking(location)) {
+                        world.setTile(location, new Grass());
                     }
                 }
                 break;
@@ -197,8 +196,17 @@ public class ProgramInitializer {
                     }
                 }
                 break;
+            case "bear":
+                while(population >= world.getEntities().size())
+                {
+                    Bear bear = new Bear(0, rand.nextBoolean() ? Sex.FEMALE : Sex.MALE, true, false);
+                    bear.createTerritory(world);
+                }
+                break;
         }
+
     }
+
 
     /**
      * Initializes all possible entities for creation.

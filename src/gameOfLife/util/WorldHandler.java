@@ -8,6 +8,7 @@ import itumulator.world.World;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -80,6 +81,20 @@ public class WorldHandler {
         Set<Location> out = world.getSurroundingTiles(location, radius);
         out.add(location);
         return out;
+    }
+
+    public static Location getRandomLocation(World world) {
+        Random rand = new Random();
+        return new Location(rand.nextInt(world.getSize()),rand.nextInt(world.getSize()));
+    }
+
+    public  static Location getRandomValidLocation(World world) {
+        Location location = getRandomLocation(world);
+
+        while (!world.isTileEmpty(location)) {
+            location = getRandomLocation(world);
+        }
+        return location;
     }
 }
 
