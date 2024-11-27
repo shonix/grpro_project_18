@@ -1,6 +1,7 @@
 package gameOfLife.worldObjects.entities;
 
 import gameOfLife.util.WorldHandler;
+import gameOfLife.worldObjects.UpdatableDisplayInformation;
 import gameOfLife.worldObjects.entities.enums.Action;
 import gameOfLife.worldObjects.entities.enums.EntityTypeID;
 import gameOfLife.worldObjects.entities.enums.Sex;
@@ -11,7 +12,7 @@ import itumulator.world.World;
 
 import java.util.*;
 
-public abstract class Animal extends Entity implements DynamicDisplayInformationProvider {
+public abstract class Animal extends Entity implements DynamicDisplayInformationProvider, UpdatableDisplayInformation {
     protected Sex sex;
     protected double energyMax;
     protected double currentEnergy;
@@ -43,8 +44,9 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
     }
 
     public Animal() {
-        this(0, Sex.FEMALE, true, false);
+        this(0, ((new Random()).nextBoolean() ? Sex.FEMALE : Sex.MALE), true, false);
     }
+
 
     /*
     START OF ABSTRACT METHODS

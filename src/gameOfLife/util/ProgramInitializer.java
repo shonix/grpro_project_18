@@ -1,5 +1,7 @@
 package gameOfLife.util;
 
+import gameOfLife.worldObjects.entities.BerryBush;
+import gameOfLife.worldObjects.entities.Entity;
 import gameOfLife.worldObjects.entities.Grass;
 import gameOfLife.worldObjects.Burrow;
 import gameOfLife.worldObjects.entities.Rabbit;
@@ -187,6 +189,14 @@ public class ProgramInitializer {
                     }
                 }
                 break;
+            case "berry":
+                while(population >= world.getEntities().size()){
+                    Location location = new Location(rand.nextInt(world.getSize()),rand.nextInt(world.getSize()));
+                    if(world.isTileEmpty(location)){
+                        world.setTile(location, new BerryBush());
+                    }
+                }
+                break;
         }
     }
 
@@ -198,5 +208,6 @@ public class ProgramInitializer {
         this.entities.add("rabbit");
         this.entities.add("grass");
         this.entities.add("burrow");
+        this.entities.add("berry");
     }
 }
