@@ -231,16 +231,13 @@ public class Rabbit extends Animal implements HomeOwner {
                 break;
 
             default:
-                if (new Random().nextBoolean())
-                    moveActor(world, world
-                            .getEmptySurroundingTiles(world.getLocation(this))
-                            .stream()
-                            .toList()); // Move randomly / idle
+                if (new Random().nextBoolean())moveActor(world, world.getEmptySurroundingTiles(world.getLocation(this)).stream().toList()); // Move randomly / idle
                 break;
         }
     }
 
-    private void seekShelter(World world) {
+    @Override
+    protected void seekShelter(World world) {
         if (burrow == null) {
             createBurrow(world);
             hideInBurrow(world, burrow);
@@ -351,7 +348,7 @@ public class Rabbit extends Animal implements HomeOwner {
     protected void seekMateAndCopulate(World world) {
         if (world.getEntities().containsKey(currentMate)) {
             if (getDistanceFromActorToLocation(world, world.getLocation(currentMate)) <= 1) {
-                currentMate.setPregnant(true);
+                currentMate.setPregnant();
                 currentMate = null;
             } else {
                 this.moveActor(world, findNextTileInShortestPath(world, world.getLocation(currentMate)));
@@ -379,6 +376,11 @@ public class Rabbit extends Animal implements HomeOwner {
             world.setTile(emptySurroundingTiles.getFirst(), new Rabbit(0, new Random().nextBoolean() ? Sex.FEMALE : Sex.MALE, false, this.isInfected));
             isPregnant = false;
         }
+    }
+
+    @Override
+    public void setPregnant() {
+        this.isPregnant = true;
     }
 
     /**
@@ -411,15 +413,6 @@ public class Rabbit extends Animal implements HomeOwner {
     @Override
     public void sleep() {
         isAwake = false;
-    }
-
-    /**
-     * Set the rabbits pregnant status
-     *
-     * @param pregnant true if pregnant, false if not.
-     */
-    public void setPregnant(boolean pregnant) {
-        this.isPregnant = pregnant;
     }
 
     /**
