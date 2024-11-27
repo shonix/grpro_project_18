@@ -405,10 +405,14 @@ public class Rabbit extends Animal {
      */
     @Override
     public void die(World world) {
-        world.remove(this);
-        if(world.isOnTile(this)) world.setTile(world.getCurrentLocation(),
-                new Carcass(age < AGE_OF_MATURITY ? SMALL_CARCASS_SUSTENANCE : LARGE_CARCASS_SUSTENANCE, EntityTypeID.CARCASS_RABBIT));
-        world.delete(this);
+        if(world.isOnTile(this)){
+            Carcass carcass = new Carcass(age < AGE_OF_MATURITY ? SMALL_CARCASS_SUSTENANCE : LARGE_CARCASS_SUSTENANCE, EntityTypeID.CARCASS_RABBIT);
+            Location location = world.getLocation(this);
+            world.delete(this);
+            world.setTile(location, carcass);
+        }else{
+            world.delete(this);
+        }
     }
 
     /**

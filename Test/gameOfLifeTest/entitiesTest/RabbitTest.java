@@ -2,10 +2,13 @@ package gameOfLifeTest.entitiesTest;
 
 import gameOfLife.util.DataHandler;
 import gameOfLife.util.ProgramInitializer;
+import gameOfLife.util.WorldHandler;
 import gameOfLife.worldObjects.Burrow;
 import gameOfLife.worldObjects.entities.Animal;
+import gameOfLife.worldObjects.entities.Carcass;
 import gameOfLife.worldObjects.entities.Grass;
 import gameOfLife.worldObjects.entities.Rabbit;
+import gameOfLife.worldObjects.entities.enums.EntityTypeID;
 import gameOfLife.worldObjects.entities.enums.Sex;
 import itumulator.executable.Program;
 import itumulator.world.Location;
@@ -124,6 +127,7 @@ public class RabbitTest {
         //Act
         r1.die(world);
 
+
         //Assert
         assertFalse(world.contains(r1), "World does not contain Rabbit");
     }
@@ -160,6 +164,35 @@ public class RabbitTest {
             r1.act(world);
         }
         assertFalse(world.contains(r1), "Rabbit has starved to death");
+    }
+
+    /**
+     * Tests that a rabbit that dies while in a burrow, does not throw an exception and does not leave a carcass,
+     * and that a rabbit that dies outside of a burrow also doesn't throw an exception, but does leave a carcass.
+     */
+    @Test
+    void testRabbitCarcassCreation(){
+        world.setTile(new Location(0,0), burrow);
+        world.add(r1);
+        burrow.addOwner(r1);
+        burrow.addRabbit(r1);
+        world.setTile(new Location(0,1), r2);
+
+        //assert that a burrow and two rabbits exists
+        assertEquals(3, world.getEntities().size());
+        assertTrue(world.getEntities().containsKey(r1));
+        assertTrue(world.getEntities().containsKey(r2));
+        assertTrue(world.getEntities().containsKey(burrow));
+
+        //assert deaths does not throw exceptions in World
+        assertDoesNotThrow(() -> {r1.die(world);});
+        assertDoesNotThrow(() -> {r2.die(world);});
+
+        //assert that a burrow and a rabbit carcass exists
+        assertEquals(2, world.getEntities().size());
+        assertEquals(1, WorldHandler.getEntitiesByType(world, Burrow.class).size());
+        assertEquals(1, WorldHandler.getEntitiesByType(world, Carcass.class).size());
+        assertEquals(EntityTypeID.CARCASS_RABBIT, WorldHandler.getEntitiesByType(world, Carcass.class).stream().toList().getFirst().getEntityTypeID());
     }
 
     /**
