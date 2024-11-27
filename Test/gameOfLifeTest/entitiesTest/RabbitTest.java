@@ -1,10 +1,8 @@
 package gameOfLifeTest.entitiesTest;
 
-import gameOfLife.util.DataHandler;
 import gameOfLife.util.ProgramInitializer;
 import gameOfLife.util.WorldHandler;
 import gameOfLife.worldObjects.Burrow;
-import gameOfLife.worldObjects.entities.Animal;
 import gameOfLife.worldObjects.entities.Carcass;
 import gameOfLife.worldObjects.entities.Grass;
 import gameOfLife.worldObjects.entities.Rabbit;
@@ -232,7 +230,7 @@ public class RabbitTest {
     {
         //Arrange
         Rabbit pregnantRabbit = new Rabbit(Rabbit.AGE_OF_MATURITY+1, Sex.FEMALE,false,false);
-        pregnantRabbit.setPregnant(true);
+        pregnantRabbit.setPregnant();
         world.setTile(new Location(0,0), pregnantRabbit);
         int startRabbits = world.getEntities().size();
 
