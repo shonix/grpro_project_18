@@ -57,11 +57,11 @@ public class BurrowTest {
     @Test
     void k1_3b_testBurrowDugByRabbit(){
         world.setTile(new Location(0,0),rabbit);
-        assertNull(rabbit.getBurrow()); //assert rabbit does not have a burrow already.
+        assertNull(rabbit.getHome()); //assert rabbit does not have a burrow already.
         for(int i = 0; i<20; i++){
             program.simulate();
         }
-        assertNotNull(rabbit.getBurrow()); //assert that the rabbit now has a burrow which means it must have dug it.
+        assertNotNull(rabbit.getHome()); //assert that the rabbit now has a burrow which means it must have dug it.
     }
     /**
      * K1-3c project specification test.

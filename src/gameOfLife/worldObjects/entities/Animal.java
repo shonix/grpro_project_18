@@ -221,6 +221,7 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
         return currentEnergy;
     }
 
+    public void setCurrentEnergy(double energy) {currentEnergy = energy;}
 
     /**
      * Moves actor and
