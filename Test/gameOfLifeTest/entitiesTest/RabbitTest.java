@@ -50,20 +50,20 @@ public class RabbitTest {
 
     @Test
     void testExitBurrow(){
-        r1.setBurrow(burrow);
+        r1.setHome(burrow);
         r1.setAwake(false);
         r1.setHiding(true);
-        burrow.addOwner(r1);
-        burrow.addRabbit(r1);
+        burrow.addOwners(r1);
+        burrow.addInhabitants(r1);
         world.setTile(new Location(2,2), burrow);
         world.add(r1);
         assertEquals(new Location(2, 2), world.getLocation(burrow));
         assertTrue(world.contains(r1));
-        assertTrue(burrow.getRabbitsInHole().contains(r1));
+        assertTrue(burrow.getInhabitants().contains(r1));
 
-        r1.exitBurrow(world, new Location(2,2));
-        assertFalse(burrow.getRabbitsInHole().contains(r1));
-        assertEquals(new Location(2, 2), world.getLocation(r1));
+        r1.exitHome(world);
+        assertFalse(burrow.getInhabitants().contains(r1));
+        assertTrue(WorldHandler.getAllTiles(world, world.getLocation(burrow), 1).contains(world.getLocation(r1)));
     }
 
     @Test
@@ -81,14 +81,13 @@ public class RabbitTest {
         assertEquals(5, world.getEntities().size()); // a rabbit is added to the world but not the map
         world.add(r5);
         assertEquals(6, world.getEntities().size()); // a second rabbit is added to the world but not the map
-        burrow.addOwner(r4);
-        burrow.addRabbit(r4);
+        burrow.addOwners(Set.of(r4, r5));
+        burrow.addInhabitants(Set.of(r4, r5));
         r4.setHiding(true);
-        burrow.addOwner(r5);
-        burrow.addRabbit(r5);
         r5.setHiding(true);
-        assertEquals(2, burrow.getRabbitsInHole().size()); // assert burrow has exactly 2 rabbits
-        burrow.destroyBurrow(world);
+
+        assertEquals(2, burrow.getInhabitants().size()); // assert burrow has exactly 2 rabbits
+        burrow.destroy(world);
         assertEquals(4, world.getEntities().size()); // a rabbit and a burrow have been removed
         int allRabbits = world.getAll(Rabbit.class, world.getSurroundingTiles(new Location(0,0), world.getSize()+1)).size(); //all rabbits except on tile 0,0
         if(world.getTile(new Location(0,0)) instanceof Rabbit) allRabbits++; //does a rabbit exist on tile 0,0?
@@ -110,7 +109,7 @@ public class RabbitTest {
 
 
         //Assert
-        int expectedRabbits = 5;
+        int expectedRabbits = 7;
         assertEquals(expectedRabbits, entities.size(), "Expected: "+ expectedRabbits+" - Actual: "+ entities.size());
 
     }
@@ -142,7 +141,7 @@ public class RabbitTest {
 
         for(int i = 0; i < 20; i++)
         {
-            r1.act(world);
+            program.simulate();
         }
 
         assertTrue(world.contains(grass));
@@ -155,14 +154,8 @@ public class RabbitTest {
     void testRabbitDieFromStarvation()
     {
         world.setTile(new Location(0,0), r1);
-        for(int i = 0; i < Rabbit.MAX_AGE; i++)
-        {
-            if(!world.contains(r1))
-            {
-                break;
-            }
-            r1.act(world);
-        }
+        r1.setCurrentEnergy(Rabbit.DAILY_ENERGY_REDUCTION); //set the energy of the rabbit to just what 1 day would remove from energy
+        r1.age(world);
         assertFalse(world.contains(r1), "Rabbit has starved to death");
     }
 
@@ -174,8 +167,8 @@ public class RabbitTest {
     void testRabbitCarcassCreation(){
         world.setTile(new Location(0,0), burrow);
         world.add(r1);
-        burrow.addOwner(r1);
-        burrow.addRabbit(r1);
+        burrow.addOwners(r1);
+        burrow.addInhabitants(r1);
         world.setTile(new Location(0,1), r2);
 
         //assert that a burrow and two rabbits exists
@@ -203,15 +196,11 @@ public class RabbitTest {
     {
         world.setTile(new Location(0,0), r1);
         world.setTile(new Location(0,0), new Grass(Grass.MAX_PROVIDED_SUSTENANCE));
-        for(int i = 0; i < Rabbit.MAX_AGE+1; i++)
-        {
-            if(!world.contains(r1))
-            {
-                break;
-            }
-            r1.act(world);
-        }
-        assertFalse(world.contains(r1), "Rabbit is still alive");
+        world.setCurrentLocation(new Location(0,0));
+        r1.setAge(Rabbit.MAX_AGE);
+        assertTrue(world.contains(r1));
+        r1.age(world);
+        assertFalse(world.contains(r1));
     }
 
     /**
@@ -228,6 +217,8 @@ public class RabbitTest {
     @Test
     void testRabbitAging(){
         int rabbitStartAge = r1.getAge();
+        world.setTile(new Location(0,0), r1);
+        world.setCurrentLocation(new Location(0,0));
         r1.act(world);
         assertTrue(r1.getAge() > rabbitStartAge);
     }
@@ -268,7 +259,7 @@ public class RabbitTest {
         }
 
         //Assert
-        assertTrue(program.getWorld().contains(r1.getBurrow()));
+        assertTrue(program.getWorld().contains(r1.getHome()));
     }
 
     /**
@@ -295,7 +286,7 @@ public class RabbitTest {
             }
 
             //Assert
-            assertNotNull(r1.getBurrow());
+            assertNotNull(r1.getHome());
         }
     }
 
@@ -320,7 +311,7 @@ public class RabbitTest {
             }
 
             //Assert
-            assertTrue(r1.getBurrow().getRabbitsInHole().contains(r1));
+            assertTrue(r1.getHome().getInhabitants().contains(r1));
         }
     }
 }

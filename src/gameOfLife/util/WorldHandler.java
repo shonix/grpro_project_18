@@ -67,5 +67,11 @@ public class WorldHandler {
         out.add(midpoint);
         return out;
     }
+
+    public static Set<Location> getAllTiles(World world, Location location, int radius) {
+        Set<Location> out = world.getSurroundingTiles(location, radius);
+        out.add(location);
+        return out;
+    }
 }
 

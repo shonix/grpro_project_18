@@ -1,7 +1,9 @@
 package gameOfLife.worldObjects.entities;
 
 import gameOfLife.util.WorldHandler;
+import gameOfLife.worldObjects.AnimalHome;
 import gameOfLife.worldObjects.Burrow;
+import gameOfLife.worldObjects.HomeOwner;
 import gameOfLife.worldObjects.entities.enums.EntityTypeID;
 import gameOfLife.worldObjects.entities.enums.Action;
 import gameOfLife.worldObjects.entities.enums.Sex;
@@ -9,13 +11,12 @@ import itumulator.executable.DisplayInformation;
 import itumulator.world.Location;
 import itumulator.world.World;
 
-import javax.print.attribute.standard.RequestingUserName;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Rabbit extends Animal {
+public class Rabbit extends Animal implements HomeOwner {
     //class fields begin
     public static final int AGE_OF_MATURITY = 60; //3 simulation days
     public static final int MAX_AGE = 240; // 12 simulation days
@@ -44,7 +45,7 @@ public class Rabbit extends Animal {
     //class fields end
 
     //instance fields begin
-    private Burrow burrow;
+    private AnimalHome burrow;
     private Rabbit currentMate; //TODO consider changing type to Animal and move to Animal class
     private boolean isHiding;
     private boolean isPregnant = false; //TODO consider moving to Animal class
@@ -102,24 +103,6 @@ public class Rabbit extends Animal {
      */
     public Rabbit() {
         this(0, ((new Random()).nextBoolean() ? Sex.FEMALE : Sex.MALE), true, false);
-    }
-
-    /**
-     * Return the burrow the rabbit is associated with. If rabbit is not associated with a burrow returns null.
-     *
-     * @return burrow if not null, otherwise null
-     */
-    public Burrow getBurrow() {
-        return burrow;
-    }
-
-    /**
-     * Sets the burrow of the rabbit to a new burrow
-     *
-     * @param burrow
-     */
-    public void setBurrow(Burrow burrow) {
-        this.burrow = burrow;
     }
 
     /**
@@ -282,13 +265,12 @@ public class Rabbit extends Animal {
         }
     }
 
-    private void hideInBurrow(World world, Burrow burrow) {
+    private void hideInBurrow(World world, AnimalHome burrow) {
         if (burrow == null) {
             createBurrow(world);
         }
         if (burrow != null) {
-            burrow.addRabbit(this);
-            world.remove(this);
+            this.enterHome(world);
             isHiding = true;
         }
 
@@ -454,62 +436,13 @@ public class Rabbit extends Animal {
             Set<Location> emptyTiles = world.getSurroundingTiles(world.getLocation(burrow));
             if (world.isTileEmpty(world.getLocation(burrow))) emptyTiles.add(world.getLocation(burrow));
             if (!emptyTiles.isEmpty()) {
-                exitBurrow(world);
+                exitHome(world);
             }
             //if it is hiding, but no tile is empty, nothing happens this step
 
         } else {
             isAwake = true;
         }
-    }
-
-    /**
-     * OVERLOADED METHOD, sets the rabbit on a random tile free tiles around the burrow
-     *
-     * @param world     in which the rabbit exists
-     * @param neighbors Set of locations to be set down around. Given as an argument to allow functionality that
-     *                  mutates this set.
-     */
-    public void exitBurrow(World world, Set<Location> neighbors) {
-        if (!isHiding) throw new IllegalStateException("Rabbit is not hidden!");
-        if (neighbors.isEmpty()) throw new IllegalStateException("There are no available tiles!");
-        world.setTile(neighbors
-                .iterator()
-                .next(), this);
-        burrow.removeRabbit(this);
-        isHiding = false;
-        isAwake = true;
-    }
-
-    public void exitBurrow(World world) {
-        if (!isHiding) throw new IllegalStateException("Rabbit is not hidden!");
-        if (!world
-                .getEmptySurroundingTiles(world.getLocation(this.burrow))
-                .isEmpty()) {
-            Set<Location> emptySurrounding = world.getEmptySurroundingTiles(world.getLocation(this.burrow));
-            world.setTile(emptySurrounding
-                    .stream()
-                    .toList()
-                    .getFirst(), this);
-            burrow.removeRabbit(this);
-            isHiding = false;
-            isAwake = true;
-        }
-    }
-
-    /**
-     * OVERLOADED METHOD, sets the rabbit on a specified location
-     *
-     * @param world    in which the rabbit exists
-     * @param location on which the rabbit is to be set
-     */
-    public void exitBurrow(World world, Location location) {
-        if (!isHiding) throw new IllegalStateException("Rabbit is not hidden!");
-        if (!world.isTileEmpty(location)) throw new IllegalStateException("Tile is not available!");
-        world.setTile(location, this);
-        burrow.removeRabbit(this);
-        isHiding = false;
-        isAwake = true;
     }
 
     /**
@@ -540,4 +473,49 @@ public class Rabbit extends Animal {
         }
     }
 
+    /**
+     * @param world
+     */
+    @Override
+    public void exitHome(World world) {
+        if (!isHiding) throw new IllegalStateException("Rabbit is not hidden!");
+        if (!world
+                .getEmptySurroundingTiles(world.getLocation(this.burrow))
+                .isEmpty()) {
+            Set<Location> emptySurrounding = world.getEmptySurroundingTiles(world.getLocation(this.burrow));
+            world.setTile(emptySurrounding
+                    .stream()
+                    .toList()
+                    .getFirst(), this);
+            burrow.removeInhabitants(this);
+            isHiding = false;
+            isAwake = true;
+        }
+    }
+
+    /**
+     * @param world
+     */
+    @Override
+    public void enterHome(World world) {
+        burrow.addInhabitants(this);
+        world.remove(this);
+    }
+
+
+    /**
+     * @return
+     */
+    @Override
+    public AnimalHome getHome() {
+        return burrow;
+    }
+
+    /**
+     * @param home
+     */
+    @Override
+    public void setHome(AnimalHome home) {
+        this.burrow = home;
+    }
 }
