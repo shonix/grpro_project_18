@@ -31,7 +31,7 @@ public class Rabbit extends Animal {
     private static final DisplayInformation SMALL_RABBIT_FUNGI_SLEEPING = new DisplayInformation(RABBIT_COLOR, "rabbit-fungi-small-sleeping");
     private static final DisplayInformation LARGE_RABBIT = new DisplayInformation(RABBIT_COLOR, "rabbit-large");
     private static final DisplayInformation LARGE_RABBIT_SLEEPING = new DisplayInformation(RABBIT_COLOR, "rabbit-sleeping");
-    private static final DisplayInformation LARGE_RABBIT_FUNGI = new DisplayInformation(RABBIT_COLOR, "rabbit-fungi");
+    private static final DisplayInformation LARGE_RABBIT_FUNGI = new DisplayInformation(RABBIT_COLOR, "rabbit-large-fungi");
     private static final DisplayInformation LARGE_RABBIT_FUNGI_SLEEPING = new DisplayInformation(RABBIT_COLOR, "rabbit-fungi-sleeping");
     private static final DisplayInformation LARGE_RABBIT_PREGNANT = new DisplayInformation(RABBIT_COLOR, "rabbit-large-pregnant");
     private static final DisplayInformation LARGE_RABBIT_PREGNANT_SLEEPING = new DisplayInformation(RABBIT_COLOR, "rabbit-large-pregnant-sleeping");

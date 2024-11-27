@@ -1,5 +1,8 @@
 package gameOfLifeTest.entitiesTest;
 
+import itumulator.executable.Program;
+import itumulator.world.World;
+
 public class BearTest {
     Program program;
     World world;
