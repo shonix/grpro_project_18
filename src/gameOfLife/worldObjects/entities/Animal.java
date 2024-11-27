@@ -77,7 +77,7 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
     /**
      * Method for performing an action. To be called in the act method
      *
-     * @param world  the world in which the Animal exitsts
+     * @param world  in which the animal exists
      * @param action the action to be taken
      */
     protected abstract void performAction(World world, Action action);
@@ -85,7 +85,7 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
     /**
      * Determines what action the animal must take.
      *
-     * @param world
+     * @param world in which the animal exists
      * @return Action. an Action enum signifying the action the animal is about to take.
      */
     protected abstract Action determineAction(World world);
@@ -106,9 +106,15 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
     protected abstract void seekMateAndCopulate(World world);
 
     /**
+     * Method for instructing animal to seek shelter/home, and enter for the night.
+     * @param world in which the animal exists
+     */
+    protected abstract void seekShelter(World world);
+
+    /**
      * Method for instructing the animal to eat
      *
-     * @param world
+     * @param world in which the animal exists
      */
     protected abstract void seekFood(World world);
 
@@ -118,6 +124,11 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
      * @param world in which the animal exists
      */
     protected abstract void giveBirth(World world);
+
+    /**
+     * Instructs the animal to be pregnant
+     */
+    public abstract void setPregnant();
 
     /**
      * Instructs the animal to wake up in the world
@@ -224,7 +235,7 @@ public abstract class Animal extends Entity implements DynamicDisplayInformation
     public void setCurrentEnergy(double energy) {currentEnergy = energy;}
 
     /**
-     * Moves actor and
+     * Moves actor and.. and what? TODO TELL ME AND WHAT!?!!
      * @param world
      * @param locations
      */
