@@ -39,6 +39,14 @@ public class WorldHandler {
         return foundEntity;
     }
 
+    /**
+     * A method for locating the generic entity of the type supplied, to the actor calling this method.
+     * @param world world.
+     * @param entityType Class of the entity which is being located.
+     * @param actor Actor which are looking for the closest entity
+     * @return The closest entity, of the class which has been supplied as entityType
+     * @param <T> Generic class of type Entity
+     */
     public static <T> T getClosestOfEntity(World world, Class<T> entityType, Entity actor) {
         Set<T> entities = getEntitiesByType(world, entityType);
         return getClosestOfEntityFromList(world, entities, actor);
