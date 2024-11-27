@@ -33,23 +33,13 @@ public class Rabbit extends Animal {
     private static final DisplayInformation SMALL_RABBIT_FUNGI_SLEEPING = new DisplayInformation(RABBIT_COLOR, "rabbit-fungi-small-sleeping");
     private static final DisplayInformation LARGE_RABBIT = new DisplayInformation(RABBIT_COLOR, "rabbit-large");
     private static final DisplayInformation LARGE_RABBIT_SLEEPING = new DisplayInformation(RABBIT_COLOR, "rabbit-sleeping");
-    private static final DisplayInformation LARGE_RABBIT_FUNGI = new DisplayInformation(RABBIT_COLOR, "rabbit-fungi");
+    private static final DisplayInformation LARGE_RABBIT_FUNGI = new DisplayInformation(RABBIT_COLOR, "rabbit-large-fungi");
     private static final DisplayInformation LARGE_RABBIT_FUNGI_SLEEPING = new DisplayInformation(RABBIT_COLOR, "rabbit-fungi-sleeping");
     private static final DisplayInformation LARGE_RABBIT_PREGNANT = new DisplayInformation(RABBIT_COLOR, "rabbit-large-pregnant");
     private static final DisplayInformation LARGE_RABBIT_PREGNANT_SLEEPING = new DisplayInformation(RABBIT_COLOR, "rabbit-large-pregnant-sleeping");
-    private static final Map<Integer, DisplayInformation> DISPLAY_INFORMATION_MAP = Map.of(
-            0, SMALL_RABBIT_FUNGI_SLEEPING,
-            1, SMALL_RABBIT_FUNGI,
-            2, SMALL_RABBIT_SLEEPING,
-            3, SMALL_RABBIT,
-            4, LARGE_RABBIT_FUNGI_SLEEPING,
-            5, LARGE_RABBIT_FUNGI,
-            6, LARGE_RABBIT_SLEEPING,
-            7, LARGE_RABBIT,
-            8, LARGE_RABBIT_PREGNANT,
-            9, LARGE_RABBIT_PREGNANT_SLEEPING
+    private static final DisplayInformation LARGE_RABBIT_FUNGI_PREGNANT = new DisplayInformation(RABBIT_COLOR, "rabbit-large-fungi-pregnant");
+    private static final DisplayInformation LARGE_RABBIT_FUNGI_PREGNANT_SLEEPING = new DisplayInformation(RABBIT_COLOR, "rabbit-fungi-sleeping-pregnant");
 
-    );
 
     //class fields end
 
@@ -271,10 +261,7 @@ public class Rabbit extends Animal {
         if (burrow == null) {
             createBurrow(world);
             hideInBurrow(world, burrow);
-        } else if (this.getDistanceToLocation(world, world.getLocation(this), world.getLocation(burrow)) <= 1) {
-            this.moveActor(world, findNextTileInShortestPath(world, world.getLocation(burrow)));
-            hideInBurrow(world, burrow);
-        } else if (this.getDistanceToLocation(world, world.getLocation(this), world.getLocation(burrow)) <= 0 ){
+        } else if (this.getDistanceToLocation(world, world.getLocation(this), world.getLocation(burrow)) <= 0) {
             hideInBurrow(world, burrow);
         } else {
             this.moveActor(world, findNextTileInShortestPath(world, world.getLocation(burrow)));
@@ -372,6 +359,7 @@ public class Rabbit extends Animal {
         return null;
     }
 
+
     /**
      * TODO
      *
@@ -388,7 +376,9 @@ public class Rabbit extends Animal {
             }
         } else {
             currentMate = findMate(world);
-            this.moveActor(world, findNextTileInShortestPath(world, world.getLocation(currentMate)));
+            if (currentMate != null) {
+                this.moveActor(world, findNextTileInShortestPath(world, world.getLocation(currentMate)));
+            }
         }
     }
 
@@ -520,17 +510,30 @@ public class Rabbit extends Animal {
 
     /**
      * Updates the currentDisplayInformation field of the rabbit.
-     * Current implementation is hard to read, but did away with nested if statements
      */
     @Override
     public void updateDisplayInformation() {
-        int state = 0;
-        if (age >= AGE_OF_MATURITY) state += 4;
-        if (!isInfected) state += 2;
-        if (isAwake) state += 1;
-        if (isPregnant) state += 1;
-        if (isPregnant && !isAwake) state += 2;
-        currentDisplayInformation = DISPLAY_INFORMATION_MAP.get(state);
+        if(age < AGE_OF_MATURITY){
+            if(isAwake){
+                currentDisplayInformation = isInfected ? SMALL_RABBIT_FUNGI : SMALL_RABBIT;
+            }else{
+                currentDisplayInformation = isInfected ? SMALL_RABBIT_FUNGI_SLEEPING : SMALL_RABBIT_SLEEPING;
+            }
+        }else{
+            if(isAwake){
+                if(isPregnant){
+                    currentDisplayInformation = isInfected ? LARGE_RABBIT_FUNGI_PREGNANT : LARGE_RABBIT_PREGNANT;
+                }else{
+                    currentDisplayInformation = isInfected ? LARGE_RABBIT_FUNGI : LARGE_RABBIT;
+                }
+            }else{
+                if(isPregnant){
+                    currentDisplayInformation = isInfected ? LARGE_RABBIT_FUNGI_PREGNANT_SLEEPING : LARGE_RABBIT_PREGNANT_SLEEPING;
+                }else{
+                    currentDisplayInformation = isInfected ? LARGE_RABBIT_FUNGI_SLEEPING : LARGE_RABBIT_SLEEPING;
+                }
+            }
+        }
     }
 
 }
