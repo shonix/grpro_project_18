@@ -267,7 +267,7 @@ public class Rabbit extends Animal implements HomeOwner {
             createBurrow(world);
         }
         if (burrow != null) {
-            this.enterHome(world);
+            burrow.enterHome(world, this);
             isHiding = true;
         }
 
@@ -429,7 +429,8 @@ public class Rabbit extends Animal implements HomeOwner {
             Set<Location> emptyTiles = world.getSurroundingTiles(world.getLocation(burrow));
             if (world.isTileEmpty(world.getLocation(burrow))) emptyTiles.add(world.getLocation(burrow));
             if (!emptyTiles.isEmpty()) {
-                exitHome(world);
+                burrow.exitHome(world, emptyTiles, this);
+                isHiding = false;
             }
             //if it is hiding, but no tile is empty, nothing happens this step
 
@@ -465,36 +466,6 @@ public class Rabbit extends Animal implements HomeOwner {
             }
         }
     }
-
-    /**
-     * @param world
-     */
-    @Override
-    public void exitHome(World world) {
-        if (!isHiding) throw new IllegalStateException("Rabbit is not hidden!");
-        if (!world
-                .getEmptySurroundingTiles(world.getLocation(this.burrow))
-                .isEmpty()) {
-            Set<Location> emptySurrounding = world.getEmptySurroundingTiles(world.getLocation(this.burrow));
-            world.setTile(emptySurrounding
-                    .stream()
-                    .toList()
-                    .getFirst(), this);
-            burrow.removeInhabitants(this);
-            isHiding = false;
-            isAwake = true;
-        }
-    }
-
-    /**
-     * @param world
-     */
-    @Override
-    public void enterHome(World world) {
-        burrow.addInhabitants(this);
-        world.remove(this);
-    }
-
 
     /**
      * @return

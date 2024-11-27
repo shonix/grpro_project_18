@@ -265,7 +265,8 @@ public class Wolf extends Animal implements HomeOwner, Predator {
 
                 if (!emptyTiles.isEmpty())
                 {
-                    exitHome(world);
+                    wolfDen.exitHome(world, emptyTiles, this);
+                    insideDen = false;
                 }
             }
 
@@ -302,20 +303,6 @@ public class Wolf extends Animal implements HomeOwner, Predator {
     @Override
     public EntityTypeID getEntityTypeID() {
         return EntityTypeID.WOLF;
-    }
-
-    @Override
-    public void exitHome(World world) {
-        if (!insideDen) throw new IllegalStateException("Wolf is not home!");
-
-        if (!world.getEmptySurroundingTiles(world.getLocation(this.wolfDen)).isEmpty())
-        {
-            Set<Location> emptySurrounding = world.getEmptySurroundingTiles(world.getLocation(this.wolfDen));
-            world.setTile(emptySurrounding.stream().toList().getFirst(), this);
-            wolfDen.removeInhabitants(this);
-            insideDen = false;
-            isAwake = true;
-        }
     }
 
     @Override
@@ -381,15 +368,10 @@ public class Wolf extends Animal implements HomeOwner, Predator {
             createWolfDen(world);
         }
         if (burrow != null) {
-            this.enterHome(world);
+            wolfDen.enterHome(world, this);
             insideDen = true;
         }
 
-    }
-
-    public void enterHome(World world) {
-        wolfDen.addInhabitants(this);
-        world.remove(this);
     }
 
     /**

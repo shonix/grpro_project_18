@@ -11,8 +11,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public abstract class AnimalHome implements NonBlocking {
-    protected Set<HomeOwner> inhabitants;
-    protected Set<HomeOwner> owners;
+    protected Set<Animal> inhabitants;
+    protected Set<Animal> owners;
     protected EntityTypeID type;
 
     public AnimalHome() {
@@ -20,12 +20,12 @@ public abstract class AnimalHome implements NonBlocking {
         this.owners = new HashSet<>();
     }
 
-    public AnimalHome(HomeOwner animal){
+    public AnimalHome(Animal animal){
         this();
         this.owners.add(animal);
     }
 
-    public AnimalHome(Set<HomeOwner> animals){
+    public AnimalHome(Set<Animal> animals){
         this();
         this.inhabitants.addAll(animals);
     }
@@ -45,58 +45,71 @@ public abstract class AnimalHome implements NonBlocking {
 
         //Place as many animals as possible
         for(int i = 1; i <= toPlace; i++){
-            HomeOwner animal = this.getInhabitants().iterator().next();
+            Animal animal = this.getInhabitants().iterator().next();
             Location location = emptyTiles.iterator().next();
             world.setTile(location, animal);
             this.removeInhabitants(animal);
         }
 
         //kill remaining animals in home that could not be placed
-        for(HomeOwner animal : this.getInhabitants()){
+        for(Animal animal : this.getInhabitants()){
             world.delete(animal);
         }
 
         world.delete(this);
     }
 
+    public void exitHome(World world, Set<Location> tiles, Animal animal){
+        if(tiles.isEmpty()) throw new IllegalStateException("Animal shouldn't have tried to exit when no tile is available!");
+        if(!inhabitants.contains(animal)) throw new IllegalStateException("Animal not home!");
+        inhabitants.remove(animal);
+        world.setTile(tiles.stream().toList().getFirst(), animal);
+        animal.setAwake(true);
+    }
 
-    public Set<HomeOwner> getInhabitants() {
+    public void enterHome(World world, Animal animal){
+        if(!world.isOnTile(animal)) throw new IllegalStateException("Animal not on map!");
+        inhabitants.add(animal);
+        world.remove(animal);
+    }
+
+    public Set<Animal> getInhabitants() {
         return inhabitants;
     }
 
-    public Set<HomeOwner> getOwners() {
+    public Set<Animal> getOwners() {
         return owners;
     }
 
-    public void addInhabitants(Set<HomeOwner> inhabitants) {
+    public void addInhabitants(Set<Animal> inhabitants) {
         this.inhabitants.addAll(inhabitants);
     }
 
-    public void addInhabitants(HomeOwner animal) {
+    public void addInhabitants(Animal animal) {
         this.inhabitants.add(animal);
     }
 
-    public void removeInhabitants(Set<HomeOwner> inhabitants) {
+    public void removeInhabitants(Set<Animal> inhabitants) {
         this.inhabitants.removeAll(inhabitants);
     }
 
-    public void removeInhabitants(HomeOwner animal) {
+    public void removeInhabitants(Animal animal) {
         this.inhabitants.remove(animal);
     }
 
-    public void addOwners(Set<HomeOwner> owners){
+    public void addOwners(Set<Animal> owners){
         this.owners.addAll(owners);
     }
 
-    public void addOwners(HomeOwner animal) {
+    public void addOwners(Animal animal) {
         this.owners.add(animal);
     }
 
-    public void removeOwners(Set<HomeOwner> owners){
+    public void removeOwners(Set<Animal> owners){
         this.owners.removeAll(owners);
     }
 
-    public void removeOwners(HomeOwner animal) {
+    public void removeOwners(Animal animal) {
         this.owners.remove(animal);
     }
 
