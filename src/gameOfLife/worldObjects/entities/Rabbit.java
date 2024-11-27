@@ -9,6 +9,7 @@ import itumulator.executable.DisplayInformation;
 import itumulator.world.Location;
 import itumulator.world.World;
 
+import javax.print.attribute.standard.RequestingUserName;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
@@ -18,6 +19,7 @@ public class Rabbit extends Animal {
     //class fields begin
     public static final int AGE_OF_MATURITY = 60; //3 simulation days
     public static final int MAX_AGE = 240; // 12 simulation days
+    public static final int LARGE_CARCASS_SUSTENANCE = 3, SMALL_CARCASS_SUSTENANCE = 1;
     public static final double DAILY_ENERGY_REDUCTION = 0.1;
     public int mateSearchRadius; //TODO consider changing to class constant
     public static final Set<EntityTypeID> edibles = Set.of(EntityTypeID.GRASS);
@@ -95,11 +97,21 @@ public class Rabbit extends Animal {
     }
 
     /**
+     * Constructor for Rabbit that takes isAwake and isInfected boolean arguments and produces a Rabbit of zero age
+     * and random sex
+     * @param isAwake boolean indicating if the Rabbit is awake
+     * @param isInfected boolean indicating if the Rabbit is infected
+     */
+    public Rabbit(boolean isAwake, boolean isInfected){
+        this(0, ((new Random()).nextBoolean() ? Sex.FEMALE : Sex.MALE), isAwake, isInfected);
+    }
+
+    /**
      * Constructor for Rabbit, that doesn't any arguments, which means the rabbit gets default parameters
      * Calls the constructor with full parameters, with age set to 0, sex set to female, isAwake set to true and isInfected set to false
      */
     public Rabbit() {
-        this(0, Sex.FEMALE, true, false);
+        this(0, ((new Random()).nextBoolean() ? Sex.FEMALE : Sex.MALE), true, false);
     }
 
     /**
@@ -303,13 +315,6 @@ public class Rabbit extends Animal {
         return WorldHandler.checkIfEntityOnTile(world, world.getLocation(this), Burrow.class);
     }
 
-    /**
-     * TODO
-     */
-    private void createHole() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     protected void seekFood(World world) {
         Edible closestEdible = WorldHandler.getClosestOfEntity(world, Grass.class, this);
         if (closestEdible != null) {
@@ -405,12 +410,14 @@ public class Rabbit extends Animal {
     }
 
     /**
-     * Method instructing rabbit to die, deleting it from the world.
-     *
+     * Method instructing rabbit to die, deleting it from the world. and possibly leaving a carcass in its stead.
      * @param world providing details of the position on which the entity is currently located and much more.
      */
     @Override
     public void die(World world) {
+        world.remove(this);
+        if(world.isOnTile(this)) world.setTile(world.getCurrentLocation(),
+                new Carcass(age < AGE_OF_MATURITY ? SMALL_CARCASS_SUSTENANCE : LARGE_CARCASS_SUSTENANCE, EntityTypeID.CARCASS_RABBIT));
         world.delete(this);
     }
 

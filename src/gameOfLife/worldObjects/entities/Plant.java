@@ -17,6 +17,7 @@ public abstract class Plant extends Entity implements Edible{
      * Returns the boolean representing if the Plant is edible by an animal
      * @return isEdible
      */
+    @Override
     public boolean isEdible() {
         return isEdible;
     }
@@ -34,6 +35,7 @@ public abstract class Plant extends Entity implements Edible{
      * Returns the amount of providedSustenance the Grass provides.
      * @return providedSustenance. Maximum amount provided when eaten.
      */
+    @Override
     public int getProvidedSustenance() {
         return providedSustenance;
     }

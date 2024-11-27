@@ -4,19 +4,18 @@ import itumulator.executable.Program;
 import itumulator.world.World;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
-public class LairTest {
+public class DenTest {
     Program program;
     World world;
     //Wolf wolf1, wolf2;
-    //Lair lair;
+    //Den den;
 
     @BeforeEach
     void setUp(){
         program = new Program(20, 800, 1);
         world = program.getWorld();
-        //lair = new Lair();
+        //Den = new Lair();
         //wolf1 = new Wolf();
         //wolf2 = new Wolf();
     }
@@ -26,7 +25,7 @@ public class LairTest {
         program = null;
         world = null;
         //wolf1 = wolf2 = null;
-        //lair = null;
+        //Den = null;
     }
 
     //TODO insert tests
