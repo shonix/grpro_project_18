@@ -3,13 +3,17 @@ package gameOfLife.worldObjects.entities;
 import gameOfLife.util.WorldHandler;
 import gameOfLife.worldObjects.AnimalHome;
 import gameOfLife.worldObjects.HomeOwner;
+import gameOfLife.worldObjects.UpdatableDisplayInformation;
 import gameOfLife.worldObjects.WolfDen;
 import gameOfLife.worldObjects.entities.enums.Action;
 import gameOfLife.worldObjects.entities.enums.EntityTypeID;
 import gameOfLife.worldObjects.entities.enums.Sex;
+import itumulator.executable.DisplayInformation;
+import itumulator.executable.DynamicDisplayInformationProvider;
 import itumulator.world.Location;
 import itumulator.world.World;
 
+import java.awt.*;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -17,10 +21,21 @@ import java.util.Set;
 import static gameOfLife.worldObjects.entities.Rabbit.LARGE_CARCASS_SUSTENANCE;
 import static gameOfLife.worldObjects.entities.Rabbit.SMALL_CARCASS_SUSTENANCE;
 
-public class Wolf extends Animal implements HomeOwner, Predator {
+public class Wolf extends Animal implements HomeOwner, Predator{
+    //class fields begin
+    private static final int AGE_OF_MATURITY = 40;
+    private static final int MATE_SEARCH_RADIUS = 2;
+    //Set up possible displayinformation
+    private static final Color WOLF_COLOR = Color.GRAY;
+    private static final DisplayInformation WOLF_SMALL = new DisplayInformation(WOLF_COLOR, "wolf-small");
+    private static final DisplayInformation WOLF_SMALL_SLEEPING = new DisplayInformation(WOLF_COLOR, "wolf-small-sleeping");
+    private static final DisplayInformation WOLF_FUNGI_SMALL = new DisplayInformation(WOLF_COLOR, "wolf-fungi-small");
+    private static final DisplayInformation WOLF_FUNGI_SMALL_SLEEPING = new DisplayInformation(WOLF_COLOR, "wolf-fungi-small-sleeping");
+    private static final DisplayInformation WOLF = new DisplayInformation(WOLF_COLOR, "wolf");
+    private static final DisplayInformation WOLF_SLEEPING = new DisplayInformation(WOLF_COLOR, "wolf-sleeping");
+    private static final DisplayInformation WOLF_FUNGI = new DisplayInformation(WOLF_COLOR, "wolf-fungi");
+    private static final DisplayInformation WOLF_FUNGI_SLEEPING = new DisplayInformation(WOLF_COLOR, "wolf-fungi-sleeping");
 
-    private final int ageOfMaturity = 40;
-    private final int mateSearchRadius = 2;
     public boolean insideDen = false;
     public Wolf mother = null;
     private Wolf alpha;
@@ -110,19 +125,31 @@ public class Wolf extends Animal implements HomeOwner, Predator {
     @Override
     protected double calculateMaxEnergy()
     {
-        return Math.pow(age, 2) + ageOfMaturity * age + 5;
+        return Math.pow(age, 2) + AGE_OF_MATURITY * age + 5;
     }
 
     @Override
     public int getAgeOfMaturity()
     {
-        return this.ageOfMaturity;
+        return AGE_OF_MATURITY;
     }
 
     @Override
     public void updateDisplayInformation()
     {
-
+        if(age < AGE_OF_MATURITY){
+            if(isAwake){
+                currentDisplayInformation = isInfected ? WOLF_FUNGI_SMALL : WOLF_SMALL;
+            }else{
+                currentDisplayInformation = isInfected ? WOLF_FUNGI_SMALL_SLEEPING : WOLF_SMALL_SLEEPING;
+            }
+        }else{
+            if(isAwake){
+                currentDisplayInformation = isInfected ? WOLF_FUNGI : WOLF;
+            }else{
+                currentDisplayInformation = isInfected ? WOLF_FUNGI_SLEEPING : WOLF_FUNGI;
+            }
+        }
     }
 
     @Override
@@ -139,7 +166,7 @@ public class Wolf extends Animal implements HomeOwner, Predator {
         {
             if(wolf.getSex() == Sex.FEMALE)
             {
-                if(getDistanceToLocation(world, world.getLocation(this), world.getLocation(wolf))<= mateSearchRadius)
+                if(getDistanceToLocation(world, world.getLocation(this), world.getLocation(wolf))<= MATE_SEARCH_RADIUS)
                 {
                     setOfPotentialMates.add(wolf);
                 }
@@ -291,7 +318,7 @@ public class Wolf extends Animal implements HomeOwner, Predator {
     @Override
     public void die(World world) {
         if(world.isOnTile(this)){
-            Carcass carcass = new Carcass(age < ageOfMaturity ? SMALL_CARCASS_SUSTENANCE : LARGE_CARCASS_SUSTENANCE, EntityTypeID.CARCASS_WOLF);
+            Carcass carcass = new Carcass(age < AGE_OF_MATURITY ? SMALL_CARCASS_SUSTENANCE : LARGE_CARCASS_SUSTENANCE, EntityTypeID.CARCASS_WOLF);
             Location location = world.getLocation(this);
             world.delete(this);
             world.setTile(location, carcass);
