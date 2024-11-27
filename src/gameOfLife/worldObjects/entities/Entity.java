@@ -79,6 +79,13 @@ public abstract class Entity implements Actor{
         return getDistanceToLocation(world, world.getLocation(this), targetLocation);
     }
 
+    /**
+     * Method to find distance from one object to another (Or one location to another).
+     * @param world World.
+     * @param startLocation Location of start object.
+     * @param targetLocation Location of target object.
+     * @return int describing distance from start location to target location.
+     */
     public int getDistanceToLocation(World world, Location startLocation, Location targetLocation) {
         if (startLocation.equals(targetLocation)) { return 0;}
 
